@@ -79,7 +79,7 @@
                 class="col-lg-6 col-md-0 left-bg col-sm-0 d-flex d-none d-lg-flex flex-column align-items-center justify-content-center">
                 <div class="logo-section text-center">
                     <img src="../07_Assets/images/logo-white.png" alt="BukSU Linked Logo" class="logo-img mb-3">
-                    <h1 class="brand-title">MediFind</h1>
+                    <h1 class="brand-title">MediFind 123</h1>
                     <p class="brand-sub">Malaybalay Medicine Availability Checker</p>
                 </div>
 
