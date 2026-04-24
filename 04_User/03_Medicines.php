@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFind: Medicines</title>
 
-    <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/07_Assets/css/medicines.css" />
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/medicines.css" />
   </head>
   <body>
     <div class="wrapper d-flex align-items-stretch">
@@ -167,7 +167,7 @@
                   <div class="medicine-list">
                     <div class="medicine-card">
                       <img
-                        src="/07_Assets/images/medicines/Paracetamol.png"
+                        src="../07_Assets/images/medicines/Paracetamol.png"
                         alt="Paracetamol"
                         class="medicine-card-img"
                       />
@@ -199,7 +199,7 @@
 
                     <div class="medicine-card">
                       <img
-                        src="/07_Assets/images/medicines/Ibuprofen.png"
+                        src="../07_Assets/images/medicines/Ibuprofen.png"
                         alt="Ibuprofen"
                         class="medicine-card-img"
                       />
@@ -231,7 +231,7 @@
 
                     <div class="medicine-card">
                       <img
-                        src="/07_Assets/images/medicines/Amoxicilin.png"
+                        src="../07_Assets/images/medicines/Amoxicilin.png"
                         alt="Amoxicillin"
                         class="medicine-card-img"
                       />
@@ -313,11 +313,11 @@
       });
     </script>
 
-    <script src="/07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/bootstrap/js/jquery.min.js"></script>
-    <script src="/bootstrap/js/popper.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
+    <script src="../07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../bootstrap/js/jquery.min.js"></script>
+    <script src="../bootstrap/js/popper.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
   </body>
 </html>

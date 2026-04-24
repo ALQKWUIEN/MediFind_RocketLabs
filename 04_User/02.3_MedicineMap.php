@@ -4,285 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFind: Find Medicine</title>
-    <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/07_Assets/node_modules/material-symbols/outlined.css" />
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
+    <link rel="stylesheet" href="../07_Assets/node_modules/material-symbols/outlined.css" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/medicinemap.css"/>
 
-      body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        background: #f4f7f6;
-        height: 100vh;
-        overflow: hidden;
-      }
-
-      /* ── Same wrapper/main-panel pattern as all other pages ── */
-      .wrapper {
-        display: flex;
-        height: 100vh;
-        overflow: hidden;
-      }
-
-      #sidebar-container { flex-shrink: 0; }
-
-      .main-panel {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        min-width: 0;
-      }
-
-      #topbar-container { flex-shrink: 0; z-index: 10; }
-
-      /*
-       * #content fills whatever height remains after the topbar.
-       * position:relative makes it the anchor for all absolute overlays.
-       */
-      #content {
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-      }
-
-      /* MAP stretches to fill #content completely */
-      #map-full {
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-      }
-
-      /* ── TOP SEARCH BAR — floats at top of #content ── */
-      .top-bar {
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        z-index: 600;
-        padding: 12px 16px 10px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(255, 255, 255, 0.97);
-        backdrop-filter: blur(8px);
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-      }
-
-      .back-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: #1d9e75;
-        color: #fff;
-        border: none;
-        border-radius: 99px;
-        padding: 7px 14px 7px 10px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        cursor: pointer;
-        white-space: nowrap;
-        flex-shrink: 0;
-        text-decoration: none;
-      }
-      .back-pill .material-symbols-outlined { font-size: 1rem; }
-
-      .search-bar {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        background: #f0f4f2;
-        border-radius: 99px;
-        padding: 7px 16px;
-        gap: 8px;
-        border: 1.5px solid #e2e8e6;
-        transition: border-color 0.2s;
-      }
-      .search-bar:focus-within { border-color: #1d9e75; }
-      .search-bar .material-symbols-outlined { color: #87a199; font-size: 1.1rem; }
-      .search-bar input {
-        border: none;
-        background: transparent;
-        outline: none;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.88rem;
-        color: #2d3748;
-        width: 100%;
-      }
-
-      /* ── BOTTOM SHEET — floats at bottom of #content ── */
-      .bottom-sheet {
-        position: absolute;
-        bottom: 0; left: 0; right: 0;
-        z-index: 500;
-        background: #fff;
-        border-radius: 20px 20px 0 0;
-        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.13);
-        transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        height: 320px;
-        display: flex;
-        flex-direction: column;
-      }
-      .bottom-sheet.expanded { height: 70%; }
-
-      .sheet-handle-row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px 0 4px;
-        cursor: pointer;
-        flex-shrink: 0;
-      }
-      .sheet-handle {
-        width: 40px; height: 4px;
-        background: #d1d5db;
-        border-radius: 99px;
-      }
-
-      .sheet-header { padding: 0 16px 8px; flex-shrink: 0; }
-      .result-summary {
-        font-size: 0.9rem; color: #374151; font-weight: 600;
-        display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-      }
-      .medicine-badge {
-        background: #e8f7f2; color: #1d9e75;
-        border-radius: 99px; padding: 2px 10px;
-        font-size: 0.75rem; font-weight: 700;
-      }
-      .result-count { font-size: 0.78rem; color: #87a199; margin-top: 2px; }
-
-      .filter-chips {
-        display: flex; gap: 8px;
-        padding: 0 16px 8px;
-        overflow-x: auto; flex-shrink: 0;
-        scrollbar-width: none;
-      }
-      .filter-chips::-webkit-scrollbar { display: none; }
-      .chip {
-        display: flex; align-items: center; gap: 4px;
-        border: 1.5px solid #e2e8e6; background: #fff;
-        border-radius: 99px; padding: 4px 12px;
-        font-size: 0.75rem; font-weight: 600; color: #4b5563;
-        cursor: pointer; white-space: nowrap; transition: all 0.18s;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-      }
-      .chip.active, .chip:hover { background: #1d9e75; border-color: #1d9e75; color: #fff; }
-      .chip .material-symbols-outlined { font-size: 0.9rem; }
-
-      .pharmacy-scroll {
-        flex: 1; overflow-y: auto;
-        padding: 4px 16px 20px;
-        scrollbar-width: thin; scrollbar-color: #d1d5db transparent;
-      }
-
-      .pharmacy-result-card {
-        background: #fff; border-radius: 14px;
-        border: 1.5px solid #e8eeec; padding: 12px;
-        margin-bottom: 10px;
-        display: flex; gap: 12px; align-items: flex-start;
-        cursor: pointer;
-        transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s;
-      }
-      .pharmacy-result-card:hover {
-        box-shadow: 0 4px 18px rgba(29,158,117,0.12);
-        border-color: #1d9e75; transform: translateY(-1px);
-      }
-      .pharmacy-result-card.selected { border-color: #1d9e75; background: #f0fbf7; }
-
-      .pharmacy-logo-placeholder {
-        width: 48px; height: 48px; border-radius: 10px;
-        background: #e8f7f2;
-        display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0;
-      }
-      .pharmacy-logo-placeholder .material-symbols-outlined { color: #1d9e75; font-size: 1.4rem; }
-
-      .pharmacy-info { flex: 1; min-width: 0; }
-      .pharmacy-name {
-        font-size: 0.9rem; font-weight: 700; color: #1a202c;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
-      .pharmacy-addr {
-        font-size: 0.72rem; color: #87a199; margin-top: 2px;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
-      .pharmacy-meta {
-        display: flex; align-items: center; gap: 6px;
-        margin-top: 5px; flex-wrap: wrap;
-      }
-      .meta-pill { font-size: 0.68rem; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
-      .open-pill { background: #e8f7f2; color: #1d9e75; }
-      .closed-pill { background: #fee2e2; color: #ef4444; }
-      .dist-pill { background: #f0f4f2; color: #4b5563; display: flex; align-items: center; gap: 2px; }
-      .dist-pill .material-symbols-outlined { font-size: 0.72rem; }
-
-      .medicine-stock-row {
-        margin-top: 7px; background: #f8fffe;
-        border-radius: 10px; padding: 7px 10px;
-        display: flex; align-items: center; justify-content: space-between;
-        border: 1px solid #d1f0e6;
-      }
-      .stock-info { display: flex; flex-direction: column; }
-      .med-name-sm { font-size: 0.75rem; font-weight: 700; color: #2d3748; }
-      .stock-badge {
-        font-size: 0.67rem; font-weight: 600; margin-top: 2px;
-        display: flex; align-items: center; gap: 3px;
-      }
-      .in-stock { color: #1d9e75; }
-      .low-stock { color: #f59e0b; }
-      .price-tag { font-size: 0.9rem; font-weight: 800; color: #1d9e75; text-align: right; }
-      .per-unit { font-size: 0.63rem; color: #87a199; font-weight: 400; }
-
-      .card-action-row { display: flex; gap: 8px; margin-top: 8px; }
-      .btn-directions {
-        flex: 1; background: #1d9e75; color: #fff; border: none;
-        border-radius: 8px; padding: 6px 12px;
-        font-size: 0.76rem; font-weight: 600;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        cursor: pointer; display: flex; align-items: center;
-        justify-content: center; gap: 4px; transition: background 0.18s;
-      }
-      .btn-directions:hover { background: #178a63; }
-      .btn-directions .material-symbols-outlined { font-size: 0.9rem; }
-      .btn-save {
-        background: #f0f4f2; color: #4b5563; border: none;
-        border-radius: 8px; padding: 6px 10px;
-        font-size: 0.76rem; font-weight: 600;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        cursor: pointer; display: flex; align-items: center; gap: 4px;
-        transition: background 0.18s;
-      }
-      .btn-save:hover { background: #e8f7f2; color: #1d9e75; }
-      .btn-save .material-symbols-outlined { font-size: 0.9rem; }
-
-      /* Floating button — also absolute inside #content */
-      .floating-btns {
-        position: absolute;
-        bottom: 330px; right: 16px;
-        z-index: 550;
-      }
-      .float-btn {
-        width: 44px; height: 44px; border-radius: 50%;
-        background: #1d9e75; color: #fff; border: none;
-        box-shadow: 0 4px 14px rgba(29,158,117,0.35);
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: transform 0.18s, background 0.18s;
-      }
-      .float-btn:hover { transform: scale(1.08); background: #178a63; }
-      .float-btn .material-symbols-outlined { font-size: 1.25rem; }
-
-      /* Leaflet popup */
-      .leaflet-popup-content-wrapper {
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.14);
-      }
-      .popup-inner { font-family: 'Plus Jakarta Sans', sans-serif; }
-      .popup-name { font-weight: 700; font-size: 0.85rem; color: #1a202c; }
-      .popup-avail { font-size: 0.73rem; color: #1d9e75; font-weight: 600; margin-top: 3px; }
-      .popup-price { font-size: 0.78rem; font-weight: 800; color: #1d9e75; margin-top: 2px; }
-    </style>
   </head>
   <body>
     <div class="wrapper">
@@ -304,7 +33,7 @@
 
           <!-- TOP SEARCH BAR (absolute top of #content) -->
           <div class="top-bar">
-            <a href="02_ScanRX.html" class="back-pill">
+            <a href="02_ScanRX.php" class="back-pill">
               <span class="material-symbols-outlined">arrow_back</span>
               Back
             </a>
@@ -492,7 +221,7 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
     <script>
       // ── MAP INIT ──
       const map = L.map('map-full').setView([8.1555, 125.1275], 15);

@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Topbar</title>
     <!-- <link rel="icon" href="/07_Assets/images/logo.png" type="image/png"> -->
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="/07_Assets/css/topbar.css" />
+    <link rel="stylesheet" href="../07_Assets/css/04_Includes CSS/topbar.css" />
   </head>
   <body>
     <!--  Topbar  -->
@@ -128,7 +128,7 @@
             data-bs-toggle="dropdown"
           >
             <img
-              src="/07_Assets/images/person.jpg"
+              src="../07_Assets/images/person.jpg"
               alt="User"
               class="topbar-avatar-img"
             />
@@ -150,7 +150,7 @@
       </div>
     </div>
 
-    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
       const sidebar = document.getElementById("sidebar");
       const sidebarToggle = document.getElementById("sidebarToggle");

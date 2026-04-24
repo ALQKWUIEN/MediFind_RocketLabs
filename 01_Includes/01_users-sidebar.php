@@ -5,12 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sidebar</title>
-  <link
-    rel="stylesheet"
-    href="/07_Assets/node_modules/material-symbols/outlined.css" />
-  <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-  <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/07_Assets/css/sidebar.css" />
+  <link rel="stylesheet" href="../07_Assets/node_modules/material-symbols/outlined.css" />
+  <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+  <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../07_Assets/css/sidebar.css" />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
@@ -32,7 +30,7 @@
 
 
     <div class="sidebar-brand">
-      <img src="/07_Assets/images/logo.png" alt="MediFind Logo" width="80">
+      <img src="../07_Assets/images/logo.png" alt="MediFind Logo" width="80">
       <div class="hero-title">Medi<span>Find</span></div>
       <div class="hero-subtitle">Malaybalay Medicine Availability Checker</div>
     </div>
@@ -44,33 +42,33 @@
     <!-- Main Nav  -->
     <ul class="list-unstyled sidebar-nav">
       <li>
-        <a href="/04_User/01_Home.html">
+        <a href="../04_User/01_Home.php">
           <span
             class="material-symbols-outlined">home</span>
           <span class="sidebar-label">Home</span>
         </a>
       </li>
       <li>
-        <a href="/04_User/02_ScanRX.html">
+        <a href="../04_User/02_ScanRX.php">
           <span
             class="material-symbols-outlined">document_scanner</span>
           <span class="sidebar-label">Scan RX</span>
         </a>
       </li>
       <li>
-        <a href="/04_User/03_Medicines.html">
+        <a href="../04_User/03_Medicines.php">
           <span class="material-symbols-outlined">pill</span>
           <span class="sidebar-label">Medicines</span>
         </a>
       </li>
       <li>
-        <a href="/04_User/04_Pharmacies.html">
+        <a href="../04_User/04_Pharmacies.php">
           <span class="material-symbols-outlined">local_hospital</span>
           <span class="sidebar-label">Pharmacies</span>
         </a>
       </li>
       <li>
-        <a href="/04_User/05_Profile.html">
+        <a href="../04_User/05_Profile.php">
           <span class="material-symbols-outlined">person</span>
           <span class="sidebar-label">Profile</span>
         </a>
@@ -136,8 +134,7 @@
           <a
             href="/03_Authentication/login.php"
             class="btn px-4 text-white"
-            style="background: #1d9e75;"
-            >Yes, Log Out</a>
+            style="background: #1d9e75;">Yes, Log Out</a>
         </div>
       </div>
     </div>

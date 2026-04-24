@@ -1,5 +1,7 @@
 // assets/js/main.js
 
+
+
 // ── Load HTML includes ──
 function loadHTML(filePath, elementId) {
     return fetch(filePath)
@@ -18,13 +20,53 @@ function highlightActiveMenu() {
     const currentPage = window.location.pathname;
     document.querySelectorAll('#sidebar ul li').forEach(li => {
         const link = li.querySelector('a');
-        if (link && link.getAttribute('href') === currentPage) {
-            li.classList.add('active');
-        } else {
-            li.classList.remove('active');
+        if (link) {
+            const href = link.getAttribute('href');
+            // Skip modal triggers / anchor-only links
+            if (!href || href === '#') return;
+
+            const linkPath = new URL(link.href, window.location.origin).pathname;
+            if (linkPath === currentPage) {
+                li.classList.add('active');
+            } else {
+                li.classList.remove('active');
+            }
         }
     });
-}
+} 
+
+window.onload = function () {
+    const path = window.location.pathname;
+
+    let sidebarFile;
+    if (path.includes('/04_User/')) {
+        sidebarFile = '../01_Includes/01_users-sidebar.php'; // sidebar for Users
+    } else if (path.includes('/05_PharmacyAdmin/')) {
+        sidebarFile = '../01_Includes/02_pharmacy-sidebar.php'; // sidebar for Pharmacy Admin
+    } else if (path.includes('/06_SystemAdmin/')) {
+        sidebarFile = '../01_Includes/03_admin-sidebar.php'; // sidebar for System Admin
+    }
+
+    if (sidebarFile) {
+        loadHTML(sidebarFile, 'sidebar-container');
+    }
+
+    loadHTML('../01_Includes/topbar.php', 'topbar-container').then(() => {
+        initTopbar();
+        document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => {
+            new bootstrap.Dropdown(el);
+        });
+    });
+
+    setTimeout(() => {
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('#sidebarToggle')) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.classList.toggle('hidden');
+            }
+        });
+    }, 300);
+};
 
 function initTopbar() {
 
@@ -111,23 +153,3 @@ function initTopbar() {
     renderMessages();
 }
 
-window.onload = function () {
-    loadHTML('../01_Includes/sidebar.php', 'sidebar-container');
-    loadHTML('../01_Includes/topbar.php',  'topbar-container').then(() => {
-        initTopbar();
-
-        // ← Reinitialize Bootstrap dropdowns after topbar is injected
-        document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => {
-            new bootstrap.Dropdown(el);
-        });
-    });
-
-    setTimeout(() => {
-        document.addEventListener('click', function (e) {
-            if (e.target.closest('#sidebarToggle')) {
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar) sidebar.classList.toggle('hidden');
-            }
-        });
-    }, 300);
-};

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFind: Home</title>
-    <link rel="stylesheet" href="../07_Assets/css/01_Home.css" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
     <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
     <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     
@@ -167,7 +167,7 @@
                   <div class="pharmacy-list">
                     <div class="pharmacy-card">
                       <img
-                        src="/07_Assets/images/pharmacies/RosePharmacy.png"
+                        src="../07_Assets/images/pharmacies/RosePharmacy.png"
                         alt="Rojon Pharmacy"
                         class="pharmacy-card-img"
                       />
@@ -199,7 +199,7 @@
 
                     <div class="pharmacy-card">
                       <img
-                        src="/07_Assets/images/pharmacies/RosePharmacy.png"
+                        src="../07_Assets/images/pharmacies/RosePharmacy.png"
                         alt="Rojon Pharmacy"
                         class="pharmacy-card-img"
                       />
@@ -231,7 +231,7 @@
 
                     <div class="pharmacy-card">
                       <img
-                        src="/07_Assets/images/pharmacies/RosePharmacy.png"
+                        src="../07_Assets/images/pharmacies/RosePharmacy.png"
                         alt="Rojon Pharmacy"
                         class="pharmacy-card-img"
                       />

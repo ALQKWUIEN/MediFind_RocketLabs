@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFind: Scan Prescriptions</title>
-    <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/07_Assets/css/scannedrx.css" />
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/scannedrx.css" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -28,7 +28,7 @@
           <div class="content-body">
             <div class="page-wrapper container-fluid">
 
-              <a href="02_ScanRX.html" class="back-btn" onclick="history.back()" href="#">
+              <a href="02_ScanRX.php" class="back-btn" onclick="history.back()" href="#">
                 <span class="material-symbols-outlined">arrow_back</span>
                 Back
               </a>
@@ -82,7 +82,7 @@
 
                     <button
                       class="btn-continue"
-                      onclick="window.location.href = '02.3_MedicineMap.html'"
+                      onclick="window.location.href = '02.3_MedicineMap.php   '"
                     >
                       Continue
                       <span class="material-symbols-outlined align-middle"
@@ -120,7 +120,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
     <script>
       const savedImage = sessionStorage.getItem("uploadedRx");
       if (savedImage) {
