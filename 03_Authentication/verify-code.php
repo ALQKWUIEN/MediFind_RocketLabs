@@ -56,8 +56,8 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" data-swup>
+  <head data-swup>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BukSU Linked - Login</title>
@@ -67,9 +67,12 @@
     <link href="../07_Assets/css/Auth-style.css" rel="stylesheet">
     <link href="../07_Assets/css/navbar.css" rel="stylesheet">
 
-</head>
+    <?php include '../01_Includes/page-transition.php'; ?>
 
-<body>
+  </head>
+  
+<body id="swup" class="transition-fade">
+
 
     <?php include_once '../01_Includes/navbar_forgot-reset.php'?>
     <div class="container-fluid min-vh-100 p-0">

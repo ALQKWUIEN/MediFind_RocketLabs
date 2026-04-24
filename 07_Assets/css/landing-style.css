@@ -6,10 +6,23 @@ body {
     background-size: cover;
     background-attachment: fixed;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+    overflow: hidden;
   
   }
   
-  
+
+  /* Hide scrollbar but keep scrolling functional */
+html, body {
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* IE/Edge */
+  overflow-y: scroll;            /* keep scroll always active */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;                 /* Chrome/Safari */
+}
   
   .material-symbols-outlined {
     font-variation-settings:
@@ -21,7 +34,6 @@ body {
   
   /* NAVBAR */
   .navbar {
-    background-color: #ffffff !important;
     position: sticky;
     top: 0;
     z-index: 1000;

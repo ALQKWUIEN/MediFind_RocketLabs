@@ -1,182 +1,219 @@
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 300,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+/* ── BODY ── */
 body {
   min-height: 100vh;
-  background-image: url("../../07_Assets/images/auth-bg2.png");
+  background-image: 
+      linear-gradient(rgba(29, 158, 117, 0.55), rgba(29, 158, 117, 0.55)),
+      url("../../07_Assets/images/user-role-bg.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   background-attachment: fixed;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-
+  
   overflow: hidden;
+}
+
+/* ── NAVBAR OVERRIDES (white text for green bg) ── */
+.navbar-logo {
+  color: #ffffff !important;
+}
+
+.navbar-logo .brand-tagline {
+  color: #ffffff !important;
+}
+
+.navlogo-forgot-reset {
+  color: #ffffff !important;
+}
+
+.navlogo-forgot-reset .brand-tagline2 {
+  color: #ffffff !important;
+}
+
+.brand2, .brand3 {
+  color: #ffffff !important;
+}
+
+.navbar-nav .nav-link {
+  color: #ffffff !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #f2f2f2 !important;
+}
+
+@media (min-width: 992px) {
+  .navbar-nav .nav-link {
+      color: #ffffff !important;
+  }
+}
+
+.btn-login-nav {
+  border: 1.5px solid #ffffff !important;
+  color: #ffffff !important;
+  background-color: transparent !important;
+}
+
+.btn-login-nav:hover {
+  background-color: #ffffff !important;
+  color: #1d9e75 !important;
+}
+
+.btn-signup {
+  background-color: #ffffff !important;
+  color: #1d9e75 !important;
+}
+
+.btn-signup:hover {
+  background-color: #f2f2f2 !important;
+  color: #1d9e75 !important;
+}
+
+/* ── MOBILE NAVBAR TOGGLE ── */
+.navbar-toggler {
+  border-color: #ffffff !important;
+}
+
+.navbar-toggler-icon {
+  filter: brightness(0) invert(1); /* makes icon white */
+}
+
+@media (max-width: 991px) {
+  .navbar-collapse {
+      margin-top: 10px;
+      background-color: #ffffff !important;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   }
 
-  
-  /* NAVBAR */
-  .navbar {
-    /* semi-transparent teal glass */
-    background: rgba(255, 255, 255, 0.12) !important;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+  /* Restore original font colors inside collapsed menu */
+  .navbar-collapse .navbar-nav .nav-link {
+      color: #1d9e75 !important;
   }
-  
-  .navbar-logo {
-    font-weight: 900;
-    font-size: 1.5rem;
-    font-family: "Plus Jakarta Sans", sans-serif;
+
+  .navbar-collapse .navbar-nav .nav-link:hover {
+      color: #178a63 !important;
   }
-  
-  .navbar-logo .brand-tagline {
-    display: block;
-    font-size: 0.6rem;
-    font-weight: 400;
-    color: #ffffff;
-    letter-spacing: 0.03em;
-    margin-top: -4px;
+
+  .navbar-collapse .navlogo-forgot-reset {
+      color: #1d9e75 !important;
   }
-  
-  .brand2 {
-    color: #ffffff;
-    font-weight: 900;
-    font-family: "Plus Jakarta Sans", sans-serif;
+
+  .navbar-collapse .brand2,
+  .navbar-collapse .brand3 {
+      color: #ff5b27 !important;
   }
-  
-  .navbar-nav .nav-link {
-    color: #ffffff;
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  .navbar-nav .nav-link:hover {
-    color: #f2f2f2;
-  }
-  
-  @media (max-width: 991px) {
-    .navbar-nav {
-      gap: 0.5rem !important;
-    }
-  }
-  
-  .btn-login {
-    background-color: #ffffff;
-    color: #1d9e75;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  
-  .btn-login:hover {
-    background-color: #f2f2f2;
-    color: #1d9e75;
-  }
-  
-  .btn-signup {
-    background-color: #ffffff;
-    color: #1d9e75;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  
-  .btn-signup:hover {
-    background-color: #f2f2f2;
-    color: #1d9e75;
-  }
-  
-  @media (max-width: 991px) {
-    .d-flex.gap-3 {
-      flex-direction: column; /* stack vertically */
+
+  .navbar-collapse .btn-login-nav {
+      background-color: #ff5b27 !important;
+      border: none !important;
+      color: #ffffff !important;
       width: 100%;
-    }
-  
-    .btn-login,
-    .btn-signup {
-      width: 100%; /* full width each */
       text-align: center;
-    }
   }
-  
-  /* ── MAIN CONTENT ── */
-  .main-content {
-    min-height: calc(100vh - 72px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 1rem;
+
+  .navbar-collapse .btn-signup {
+      background-color: #1d9e75 !important;
+      color: #ffffff !important;
+      width: 100%;
+      text-align: center;
   }
-  
-  /* ── Card ── */
-  .hero-card {
-    background: rgba(255, 255, 255);
-    border-radius: 1.5rem;
-    padding: 3rem 2.5rem;
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+
+  .d-flex.gap-3 {
+      flex-direction: column;
+      width: 100%;
   }
-  
-  
-  .hero-card p {
-    color: #1d9e75;
-    font-size: 0.88rem;
-    margin-bottom: 0.6rem;
-  }
-  
-  .hero-title {
-    font-size: 4rem;
-    font-weight: 900;
-    color: #1d9e75;
-    line-height: 1;
-    margin-bottom: 4px;
-    font-family: "Plus Jakarta Sans", sans-serif;
-  }
-  .hero-title span {
-    color: #ff5b27;
-  }
-  .hero-subtitle {
-    font-size: 0.85rem;
-    color: #1d9e75;
-    margin-bottom: 30px;
-    font-weight: 400;
-  }
-  
-  /* Card action buttons — white bg, teal text */
-  .card-btn {
-    display: block;
-    width: 100%;
-    padding: 0.75rem 1.25rem;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.22s ease;
-    cursor: pointer;
-  }
-  
-  .card-btn-primary {
-    background-color: #ffffff;
-    color: #1d9e75;
-    border: none;
-    border: 1.5px solid #1d9e75;
-  }
-  .card-btn-primary:hover {
-    background-color: rgba(255, 255, 255, 0.88);
-    color: #178a63;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-  }
-  
-  .btn-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-  
-  .card-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
+}
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+/* ── CARD ── */
+.hero-card {
+  background: rgba(255, 255, 255);
+  border-radius: 1.5rem;
+  margin-top: 3rem;
+  padding: 3rem 2.5rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+}
+
+.hero-card p {
+  color: #1d9e75;
+  font-size: 0.88rem;
+  margin-bottom: 0.6rem;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #1d9e75;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.hero-title span {
+  color: #ff5b27;
+}
+
+.hero-subtitle {
+  font-size: 0.85rem;
+  color: #1d9e75;
+  margin-bottom: 30px;
+  font-weight: 400;
+}
+
+/* ── CARD BUTTONS ── */
+.card-btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.22s ease;
+  cursor: pointer;
+}
+
+.card-btn-primary {
+  background-color: #ffffff;
+  color: #1d9e75;
+  border: 1.5px solid #1d9e75;
+}
+
+.card-btn-primary:hover {
+  background-color: rgba(255, 255, 255, 0.88);
+  color: #178a63;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}

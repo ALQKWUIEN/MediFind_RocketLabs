@@ -23,8 +23,8 @@
           </ul>
 
           <div class="d-flex gap-3">
-            <a href="../03_Authentication/login_role.php" class="btn btn-login-nav px-5 py-2 rounded-pill">Login</a>
-            <a href="../03_Authentication/signup.php" class="btn btn-signup px-5 py-2 rounded-pill"
+          <a href="../User Login - Role.php" class="btn btn-login-nav px-5 py-2 rounded-pill">Login</a>
+          <a href="../03_Authentication/signup.php" class="btn btn-signup px-5 py-2 rounded-pill"
               >Sign Up</a>
               
           </div>

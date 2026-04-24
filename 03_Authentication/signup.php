@@ -33,21 +33,26 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="en" data-swup>
+  <head data-swup>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BukSU Linked - Login</title>
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <title>Sign Up</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
     <link href="../07_Assets/css/Auth-style.css" rel="stylesheet">
     <link href="../07_Assets/css/navbar.css" rel="stylesheet">
 
-</head>
+     <?php include '../01_Includes/page-transition.php'; ?>
 
-<body>
+  </head>
+  
+<body id="swup" class="transition-fade">
+
     <?php include_once '../01_Includes/navbar.php' ?>
 
     <div class="container-fluid vh-100 p-0">
@@ -71,7 +76,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                         <h1 class="welcomeText text-center">Create an Account</h1>
                         <p class="loginText text-center">Level up your medicine access!</p>
 
-                        <form id="signupForm" action="signup.php" method="post" onsubmit="return validateForm()">
+                        <form id="signupForm" action="signup-validate.php" method="post" onsubmit="return validateForm()">
                         
                             <div class="form-step" id="step1">
                                 <div class="step-wizard">
@@ -190,7 +195,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
                                 <button type="button" class="btn form-back-btn w-100 mt-2" onclick="changeStep(2)">Back</button>
                             </div>
                         
-                            <p class="report-text text-center">Already have an account? <a href="login.php" class="signup-link">Login</a></p>
+                            <p class="report-text text-center">Already have an account? <a href="../02_UserLogin - Role.php" class="signup-link">Login</a></p>
                         </form>
                     </div>
                 </div>

@@ -43,19 +43,25 @@
 
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" data-swup>
+  <head data-swup>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BukSU Linked - Reset Password</title>
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <title>Reset Password</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../07_Assets/css/Auth-style.css" rel="stylesheet">
     <link href="../07_Assets/css/navbar.css" rel="stylesheet">
 
-</head>
+    <?php include '../01_Includes/page-transition.php'; ?>
 
-<body>
+  </head>
+  
+<body id="swup" class="transition-fade">
+
+
     <?php include_once '../01_Includes/navbar_forgot-reset.php'?>
 
     <div class="container-fluid min-vh-100 p-0">
