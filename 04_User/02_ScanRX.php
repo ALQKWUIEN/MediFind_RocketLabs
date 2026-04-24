@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFind: Scan Prescriptions</title>
-    <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/07_Assets/css/scanrx.css" />
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/scanrx.css" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -254,7 +254,7 @@
               <div class="prescription-reader-panel">
                 <div class="reader-icon-wrap">
                   <img
-                    src="/07_Assets/images/icons/location.png"
+                    src="../07_Assets/images/icons/location.png"
                     alt="Prescription Icon"
                     class="reader-icon"
                     width="100"
@@ -277,7 +277,7 @@
 
                   <a
                     class="btn-scan"
-                    href="/04_User/02.2_ScannedRx.html"
+                    href="../04_User/02.2_ScannedRx.php"
                     style="text-decoration: none"
                   >
                     <span class="material-symbols-outlined"
@@ -329,7 +329,7 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
     <script>
       document

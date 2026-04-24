@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Medicine Details – MediFind</title>
 
-    <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
       rel="stylesheet"
@@ -15,7 +15,7 @@
       rel="stylesheet"
       href="/07_Assets/node_modules/material-symbols/outlined.css"
     />
-    <link rel="stylesheet" href="/07_Assets/css/medicinedetails.css" />
+    <link rel="stylesheet" href="/07_Assets/css/01_PatientUser CSS/medicinedetails.css" />
   </head>
   <body>
     <div class="wrapper d-flex align-items-stretch">
@@ -256,8 +256,8 @@
       </div>
     </div>
 
-    <script src="/07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
+    <script src="../07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
   </body>
 </html>

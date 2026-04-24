@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFind: Profile</title>
 
-    <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/07_Assets/css/profile.css" />
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/profile.css" />
   </head>
   <body>
     <div class="wrapper d-flex align-items-stretch">
@@ -25,7 +25,7 @@
                   <div class="profile-header-left">
                     <div class="profile-avatar">
                       <img
-                        src="/07_Assets/images/person.jpg"
+                        src="../07_Assets/images/person.jpg"
                         alt="Profile Picture"
                       />
                     </div>
@@ -41,7 +41,7 @@
 
                   <div class="profile-header-center">
                     <img
-                      src="/07_Assets/images/logo.png"
+                      src="../07_Assets/images/logo.png"
                       alt="MediFind Logo"
                       class="medifind-logo"
                     />
@@ -496,10 +496,10 @@
       </div>
     </div>
 
-    <script src="/07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/bootstrap/js/jquery.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
+    <script src="../07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../bootstrap/js/jquery.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
     <script>
       // Profile tabs

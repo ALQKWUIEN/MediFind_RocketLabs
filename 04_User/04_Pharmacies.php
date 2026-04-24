@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFind: Pharmacies</title>
 
-    <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/07_Assets/css/pharmacies.css" />
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/pharmacies.css" />
   </head>
   <body>
     <div class="wrapper d-flex align-items-stretch">
@@ -64,10 +64,10 @@
                       data-status="Open · Closes 10PM"
                       data-lat="8.1548"
                       data-lng="125.1281"
-                      data-img="/07_Assets/images/pharmacies/RosePharmacy.png"
+                      data-img="../07_Assets/images/pharmacies/RosePharmacy.png"
                     >
                       <img
-                        src="/07_Assets/images/pharmacies/RosePharmacy.png"
+                        src="../07_Assets/images/pharmacies/RosePharmacy.png"
                         alt="Rose Pharmacy"
                         class="pharmacy-card-img"
                       />
@@ -100,10 +100,10 @@
                       data-status="Open · Closes 9PM"
                       data-lat="8.1563"
                       data-lng="125.1285"
-                      data-img="/07_Assets/images/pharmacies/Generika.png"
+                      data-img="../07_Assets/images/pharmacies/Generika.png"
                     >
                       <img
-                        src="/07_Assets/images/pharmacies/Generika.png"
+                        src="../07_Assets/images/pharmacies/Generika.png"
                         alt="Generika Drugstore"
                         class="pharmacy-card-img"
                       />
@@ -136,10 +136,10 @@
                       data-status="Open · Open 24 Hours"
                       data-lat="8.1547"
                       data-lng="125.1279"
-                      data-img="/07_Assets/images/pharmacies/MercuryDrug.png"
+                      data-img="../07_Assets/images/pharmacies/MercuryDrug.png"
                     >
                       <img
-                        src="/07_Assets/images/pharmacies/MercuryDrug.jpg"
+                        src="../07_Assets/images/pharmacies/MercuryDrug.jpg"
                         alt="Mercury Drug"
                         class="pharmacy-card-img"
                       />
@@ -172,10 +172,10 @@
                       data-status="Open · Closes 9PM"
                       data-lat="8.1547"
                       data-lng="125.1275"
-                      data-img="/07_Assets/images/pharmacies/Watsons.png"
+                      data-img="../07_Assets/images/pharmacies/Watsons.png"
                     >
                       <img
-                        src="/07_Assets/images/pharmacies/Watsons.png"
+                        src="../07_Assets/images/pharmacies/Watsons.png"
                         alt="Watsons Pharmacy"
                         class="pharmacy-card-img"
                       />
@@ -208,10 +208,10 @@
                       data-status="Open · Closes 10PM"
                       data-lat="8.1558"
                       data-lng="125.1269"
-                      data-img="/07_Assets/images/pharmacies/RojonPharmacy.png"
+                      data-img="../07_Assets/images/pharmacies/RojonPharmacy.png"
                     >
                       <img
-                        src="/07_Assets/images/pharmacies/RojonPharmacy.png"
+                        src="../07_Assets/images/pharmacies/RojonPharmacy.png"
                         alt="Rojon Pharmacy"
                         class="pharmacy-card-img"
                       />
@@ -244,10 +244,10 @@
                       data-status="Open · Closes 8PM"
                       data-lat="8.1567"
                       data-lng="125.1263"
-                      data-img="/07_Assets/images/pharmacies/TGP.png"
+                      data-img="../07_Assets/images/pharmacies/TGP.png"
                     >
                       <img
-                        src="/07_Assets/images/pharmacies/TGP.png"
+                        src="../07_Assets/images/pharmacies/TGP.png"
                         alt="TGP The Generics Pharmacy"
                         class="pharmacy-card-img"
                       />
@@ -372,11 +372,11 @@
       </button>
     </div>
 
-    <script src="/07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/bootstrap/js/jquery.min.js"></script>
-    <script src="/bootstrap/js/popper.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
+    <script src="../07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../bootstrap/js/jquery.min.js"></script>
+    <script src="../bootstrap/js/popper.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
     <link
       rel="stylesheet"
