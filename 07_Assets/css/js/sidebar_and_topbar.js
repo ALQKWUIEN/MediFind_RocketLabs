@@ -112,8 +112,8 @@ function initTopbar() {
 }
 
 window.onload = function () {
-    loadHTML('/01_Includes/sidebar.php', 'sidebar-container');
-    loadHTML('/01_Includes/topbar.php',  'topbar-container').then(() => {
+    loadHTML('../01_Includes/sidebar.php', 'sidebar-container');
+    loadHTML('../01_Includes/topbar.php',  'topbar-container').then(() => {
         initTopbar();
 
         // ← Reinitialize Bootstrap dropdowns after topbar is injected
