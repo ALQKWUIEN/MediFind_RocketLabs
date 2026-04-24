@@ -23,7 +23,6 @@
   <nav id="sidebar">
     <!-- Brand / Logo -->
 
-
     <div class="close-btn">
       <a href="#" class="btn btn-sm" id="closeSidebar" onclick="document.getElementById('sidebar').classList.toggle('hidden')">
         <span class="material-symbols-outlined">close</span>
@@ -155,6 +154,8 @@
       }
     });
   </script>
+
+  
 </body>
 
 </html>
