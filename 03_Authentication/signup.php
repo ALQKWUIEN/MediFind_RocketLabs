@@ -47,7 +47,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     <link href="../07_Assets/css/00_Global CSS/Auth-style.css" rel="stylesheet">
     <link href="../07_Assets/css/04_Includes CSS/navbar.css" rel="stylesheet">
 
-     <?php include '../01_Includes/page-transition.php'; ?>
+    <!-- ?php include '../01_Includes/page-transition.php'; ?> -->
 
   </head>
   

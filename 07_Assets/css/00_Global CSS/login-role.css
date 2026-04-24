@@ -3,7 +3,7 @@ body {
   
     background:
       linear-gradient(rgba(30, 157, 117, 0.94), rgba(30, 157, 117, 0.9)),
-      url("../../07_Assets/images/auth-bg2.png");
+      url("../..images/auth-bg2.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

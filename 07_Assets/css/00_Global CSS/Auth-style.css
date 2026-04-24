@@ -1,6 +1,6 @@
 body {
   min-height: 100vh;
-  background-image: url("../../07_Assets/images/auth-bg2.png");
+  background-image: url("../../images/auth-bg3.png"); 
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -11,7 +11,7 @@ body {
 }
 
 .left-bg {
-  background-image: url("../../07_Assets/images/auth-bg3.png");
+  background-image: url("../../images/auth-bg3.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
