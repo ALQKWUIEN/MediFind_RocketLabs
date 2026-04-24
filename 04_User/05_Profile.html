@@ -75,24 +75,6 @@
                     </svg>
                     Edit Profile
                   </button>
-                  <!-- <button class="tab-btn" data-tab="prescriptions">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
-                      />
-                      <rect x="9" y="3" width="6" height="4" rx="2" />
-                      <line x1="9" y1="12" x2="15" y2="12" />
-                      <line x1="9" y1="16" x2="13" y2="16" />
-                    </svg>
-                    My Prescriptions
-                  </button> -->
                   <button class="tab-btn" data-tab="saved">
                     <svg
                       width="16"
@@ -155,6 +137,7 @@
                     About
                   </button>
                 </div>
+
                 <div class="profile-tab-content">
                   <!-- EDIT PROFILE TAB -->
                   <div class="tab-panel active" id="tab-edit">
@@ -188,15 +171,23 @@
                                   placeholder="Last Name"
                                 />
                               </div>
+
+                              <!-- Civil Status — Dropdown -->
                               <div class="col-md-6">
                                 <label>Civil Status</label>
-                                <input
-                                  type="text"
-                                  class="form-control custom-input"
-                                  placeholder="Civil Status"
-                                />
+                                <select class="form-control custom-input">
+                                  <option value="" disabled selected>
+                                    Select Civil Status
+                                  </option>
+                                  <option value="single">Single</option>
+                                  <option value="married">Married</option>
+                                  <option value="widowed">Widowed</option>
+                                  <option value="separated">Separated</option>
+                                  <option value="divorced">Divorced</option>
+                                </select>
                               </div>
-                              <div class="col-12">
+
+                              <div class="col-md-6">
                                 <label>Contact Number</label>
                                 <input
                                   type="text"
@@ -204,14 +195,56 @@
                                   placeholder="Contact Number"
                                 />
                               </div>
+
+                              <!-- Gender — Radio Buttons -->
                               <div class="col-md-6">
-                                <label>Gender</label>
-                                <input
-                                  type="text"
-                                  class="form-control custom-input"
-                                  placeholder="Gender"
-                                />
+                                <label class="d-block mb-1">Gender</label>
+                                <div class="d-flex flex-wrap gap-3">
+                                  <div class="form-check">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      id="genderMale"
+                                      value="male"
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="genderMale"
+                                      >Male</label
+                                    >
+                                  </div>
+                                  <div class="form-check">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      id="genderFemale"
+                                      value="female"
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="genderFemale"
+                                      >Female</label
+                                    >
+                                  </div>
+                                  <div class="form-check">
+                                    <input
+                                      class="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      id="genderOther"
+                                      value="other"
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="genderOther"
+                                      >Prefer not to say</label
+                                    >
+                                  </div>
+                                </div>
                               </div>
+
                               <div class="col-md-6">
                                 <label>Birth Date</label>
                                 <input
@@ -222,26 +255,82 @@
                             </div>
                           </div>
                         </div>
+
                         <div class="col-lg-6">
                           <div class="info-section mb-4">
                             <h4>Address Information</h4>
                             <div class="row g-3">
+                              <!-- Province — Dropdown -->
                               <div class="col-md-6">
                                 <label>Province</label>
-                                <input
-                                  type="text"
+                                <select
                                   class="form-control custom-input"
-                                  placeholder="Province"
-                                />
+                                  id="provinceSelect"
+                                >
+                                  <option value="" disabled selected>
+                                    Select Province
+                                  </option>
+                                  <option value="bukidnon">Bukidnon</option>
+                                  <option value="camiguin">Camiguin</option>
+                                  <option value="lanao-del-norte">
+                                    Lanao del Norte
+                                  </option>
+                                  <option value="misamis-occidental">
+                                    Misamis Occidental
+                                  </option>
+                                  <option value="misamis-oriental">
+                                    Misamis Oriental
+                                  </option>
+                                </select>
                               </div>
+
+                              <!-- City — Dropdown -->
                               <div class="col-md-6">
-                                <label>City</label>
-                                <input
-                                  type="text"
+                                <label>City / Municipality</label>
+                                <select
                                   class="form-control custom-input"
-                                  placeholder="City"
-                                />
+                                  id="citySelect"
+                                >
+                                  <option value="" disabled selected>
+                                    Select City
+                                  </option>
+                                  <option value="malaybalay">
+                                    Malaybalay City
+                                  </option>
+                                  <option value="valencia">
+                                    Valencia City
+                                  </option>
+                                  <option value="cabanglasan">
+                                    Cabanglasan
+                                  </option>
+                                  <option value="damulog">Damulog</option>
+                                  <option value="dangcagan">Dangcagan</option>
+                                  <option value="don-carlos">Don Carlos</option>
+                                  <option value="impasug-ong">
+                                    Impasug-ong
+                                  </option>
+                                  <option value="kadingilan">Kadingilan</option>
+                                  <option value="kalilangan">Kalilangan</option>
+                                  <option value="kibawe">Kibawe</option>
+                                  <option value="kitaotao">Kitaotao</option>
+                                  <option value="lantapan">Lantapan</option>
+                                  <option value="libona">Libona</option>
+                                  <option value="manolo-fortich">
+                                    Manolo Fortich
+                                  </option>
+                                  <option value="maramag">Maramag</option>
+                                  <option value="pangantucan">
+                                    Pangantucan
+                                  </option>
+                                  <option value="quezon">Quezon</option>
+                                  <option value="san-fernando">
+                                    San Fernando
+                                  </option>
+                                  <option value="sumilao">Sumilao</option>
+                                  <option value="talakag">Talakag</option>
+                                </select>
                               </div>
+
                               <div class="col-md-6">
                                 <label>Barangay</label>
                                 <input
@@ -260,6 +349,7 @@
                               </div>
                             </div>
                           </div>
+
                           <div class="info-section">
                             <h4>Login Information</h4>
                             <div class="row g-3">
@@ -283,6 +373,7 @@
                           </div>
                         </div>
                       </div>
+
                       <div class="edit-save-row">
                         <button class="btn-profile btn-edit">
                           Save Changes
@@ -291,31 +382,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- MY PRESCRIPTIONS TAB
-                  <div class="tab-panel" id="tab-prescriptions">
-                    <div class="profile-info-card tab-empty-state">
-                      <div class="empty-icon">
-                        <svg
-                          width="48"
-                          height="48"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#20a16b"
-                          stroke-width="1.5"
-                        >
-                          <path
-                            d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
-                          />
-                          <rect x="9" y="3" width="6" height="4" rx="2" />
-                          <line x1="9" y1="12" x2="15" y2="12" />
-                          <line x1="9" y1="16" x2="13" y2="16" />
-                        </svg>
-                      </div>
-                      <h5>No Prescriptions Yet</h5>
-                      <p>Your scanned prescriptions will appear here.</p>
-                    </div>
-                  </div> -->
 
                   <!-- SAVED TAB -->
                   <div class="tab-panel" id="tab-saved">
@@ -434,7 +500,6 @@
     <script src="/bootstrap/js/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/07_Assets/css/js/sidebar_and_topbar.js"></script>
-    
 
     <script>
       // Profile tabs
