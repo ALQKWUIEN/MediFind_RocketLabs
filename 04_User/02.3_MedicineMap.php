@@ -33,7 +33,11 @@
 
           <!-- TOP SEARCH BAR (absolute top of #content) -->
           <div class="top-bar">
-            <a href="02_ScanRX.php" class="back-pill">
+            <!-- <a href="02_ScanRX.php" class="back-pill">
+              <span class="material-symbols-outlined">arrow_back</span>
+              Back
+            </a> -->
+            <a class="back-btn" onclick="history.back()" href="02_ScanRX.php">
               <span class="material-symbols-outlined">arrow_back</span>
               Back
             </a>
