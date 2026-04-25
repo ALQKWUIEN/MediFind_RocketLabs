@@ -191,7 +191,7 @@
                         <a
                           class="view-details-btn"
                           style="text-decoration: none"
-                          href="/04_User/03.2_MedicineDetails.html"
+                          href="../04_User/03.2_MedicineDetails.php"
                           >View Details</a
                         >
                       </div>
@@ -223,7 +223,7 @@
                         <a
                           class="view-details-btn"
                           style="text-decoration: none"
-                          href="/04_User/03.2_MedicineDetails.html"
+                          href="../04_User/03.2_MedicineDetails.php"
                           >View Details</a
                         >
                       </div>
@@ -257,7 +257,7 @@
                         <a
                           class="view-details-btn"
                           style="text-decoration: none"
-                          href="/04_User/03.2_MedicineDetails.html"
+                          href="../04_User/03.2_MedicineDetails.php"
                           >View Details</a
                         >
                       </div>
