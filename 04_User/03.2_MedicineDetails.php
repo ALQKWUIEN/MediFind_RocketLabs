@@ -13,9 +13,9 @@
     />
     <link
       rel="stylesheet"
-      href="/07_Assets/node_modules/material-symbols/outlined.css"
+      href="../07_Assets/node_modules/material-symbols/outlined.css"
     />
-    <link rel="stylesheet" href="/07_Assets/css/01_PatientUser CSS/medicinedetails.css" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/medicinedetails.css" />
   </head>
   <body>
     <div class="wrapper d-flex align-items-stretch">
@@ -37,7 +37,7 @@
               <div class="hero-inner">
                 <div class="medicine-img-wrap">
                   <img
-                    src="/07_Assets/images/medicines/Ibuprofen.png"
+                    src="../07_Assets/images/medicines/Ibuprofen.png"
                     alt="Ibuprofen 200mg"
                   />
                 </div>

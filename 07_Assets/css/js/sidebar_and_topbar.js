@@ -36,23 +36,11 @@ function highlightActiveMenu() {
 } 
 
 window.onload = function () {
-    const path = window.location.pathname;
-
-    let sidebarFile;
-    if (path.includes('/04_User/')) {
-        sidebarFile = '../01_Includes/01_users-sidebar.php'; // sidebar for Users
-    } else if (path.includes('/05_PharmacyAdmin/')) {
-        sidebarFile = '../01_Includes/02_pharmacy-sidebar.php'; // sidebar for Pharmacy Admin
-    } else if (path.includes('/06_SystemAdmin/')) {
-        sidebarFile = '../01_Includes/03_admin-sidebar.php'; // sidebar for System Admin
-    }
-
-    if (sidebarFile) {
-        loadHTML(sidebarFile, 'sidebar-container');
-    }
-
-    loadHTML('../01_Includes/topbar.php', 'topbar-container').then(() => {
+    loadHTML('../01_Includes/01_users-sidebar.php', 'sidebar-container');
+    loadHTML('../01_Includes/topbar.php',  'topbar-container').then(() => {
         initTopbar();
+
+        // ← Reinitialize Bootstrap dropdowns after topbar is injected
         document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => {
             new bootstrap.Dropdown(el);
         });

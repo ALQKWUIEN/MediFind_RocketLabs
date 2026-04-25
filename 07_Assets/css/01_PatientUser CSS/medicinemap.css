@@ -68,25 +68,30 @@ body {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-.back-pill {
+/* ── Back button ── */
+.back-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: #1d9e75;
-  color: #fff;
-  border: none;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #dce9e3;
   border-radius: 99px;
-  padding: 7px 14px 7px 10px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  font-family: "Plus Jakarta Sans", sans-serif;
+  padding: 7px 16px 7px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #3f444d;
   cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
   text-decoration: none;
+  flex-shrink: 0;       /* add this so it doesn't get squeezed */
+  transition: all 0.2s;
 }
-.back-pill .material-symbols-outlined {
-  font-size: 1rem;
+.back-btn:hover {
+  background: #eef9f4;
+  border-color: #5dcaa5;
+  color: #0f6e56;
+}
+.back-btn .material-symbols-outlined {
+  font-size: 1.1rem;
 }
 
 .search-bar {

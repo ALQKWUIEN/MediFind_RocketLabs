@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../07_Assets/node_modules/material-symbols/outlined.css" />
   <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
   <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="../07_Assets/css/sidebar.css" />
+  <link rel="stylesheet" href="../07_Assets/css/04_Includes CSS/sidebar.css" />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
@@ -140,6 +140,7 @@
     </div>
   </div>
 
+  
   <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
     const currentPage = window.location.pathname;
