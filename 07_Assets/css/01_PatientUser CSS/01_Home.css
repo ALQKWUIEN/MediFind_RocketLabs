@@ -497,7 +497,7 @@ body {
    ============================================= */
 
 /* Tablet */
-@media (max-width: 992px) {
+@media (max-width: 991px) {
   .pharmacy-list {
     grid-template-columns: repeat(2, 1fr);
   }

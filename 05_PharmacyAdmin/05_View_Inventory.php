@@ -1,29 +1,86 @@
-<!doctype html>
-<html class="is-animating">
-  <head >
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MediFind: Home</title>
-
-    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <title>Pharmacy Dashboard</title>
 
-    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-
+    <!-- Bootstrap and Js Framework -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Page transition -->
-    <?php include '../01_Includes/page-transition-hardcode.php'?>
     
-  </head>
-  <body>
+    <!-- CSS and other Assets -->
+    <link rel="stylesheet" href="../07_Assets/css/sidebar.css">
+    <link rel="stylesheet" href="../07_Assets/css/topbar.css">
+    <link rel="stylesheet" href="../07_Assets/css/04_Includes CSS/sidebar.css">    
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
+    <link rel="stylesheet" href="../07_Assets/node_modules/material-symbols/outlined.css" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"     rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JavaScript -->
+
+
+    <!-- Page Transition -->
+    <?php include '../01_Includes/page-transition-hardcode.php'; ?>
+
+</head>
+
+<body>
+
+
+    <div class="wrapper d-flex align-items-stretch"> 
+
+        <!-- Include Pharmacy Sidebar -->
+        <?php include '../01_Includes/02_pharmacy-sidebar.php'; ?>
+    
+        <!-- Main Content -->
+         <div class="main-panel d-flex flex-column flex-grow-1">
+
+             <!-- Include Bar -->
+            <?php include '../01_Includes/topbar.php'; ?>
+              
+            <!-- Page Content -->
+
+         </div>
+       
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="wrapper d-flex align-items-stretch">
-      <div id="sidebar-container"></div>
+      <?php include '../01_Includes/02_pharmacy-sidebar.php'; ?>
 
       <div class="main-panel d-flex flex-column flex-grow-1">
-        <div id="topbar-container"></div>
+      <?php include '../01_Includes/topbar.php'; ?>
+
 
         <div id="content">
           <div class="content-body">
@@ -352,53 +409,5 @@
         </div>
       </div>
     </div>
-
-    <div class="floating-btns">
-      <button class="float-btn" onclick="history.back()">
-        <span class="material-symbols-outlined bot-icon">smart_toy</span>
-      </button>
-    </div>
-
-    <script>
-      const categories = document.getElementById("quickCategories");
-      const prevBtn = document.querySelector(".category-nav.prev");
-      const nextBtn = document.querySelector(".category-nav.next");
-      const categoryItems = document.querySelectorAll(".category-item");
-
-      function updateNavVisibility() {
-        const isOverflowing = categories.scrollWidth > categories.clientWidth;
-        prevBtn.style.display = isOverflowing ? "" : "none";
-        nextBtn.style.display = isOverflowing ? "" : "none";
-      }
-
-      if (prevBtn && nextBtn && categories) {
-        prevBtn.addEventListener("click", () => {
-          categories.scrollBy({ left: -220, behavior: "smooth" });
-        });
-
-        nextBtn.addEventListener("click", () => {
-          categories.scrollBy({ left: 220, behavior: "smooth" });
-        });
-
-        // Run on load and whenever the container resizes
-        updateNavVisibility();
-        new ResizeObserver(updateNavVisibility).observe(categories);
-      }
-
-      categoryItems.forEach((item) => {
-        item.addEventListener("click", function () {
-          categoryItems.forEach((el) => el.classList.remove("active"));
-          this.classList.add("active");
-        });
-      });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="../bootstrap/js/jquery.min.js"></script>
-    <script src="../bootstrap/js/popper.js"></script>
-    <script src="../bootstrap/js/bootstrap.min.js"></script>
-    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
-
-  </body>
+</body>
 </html>

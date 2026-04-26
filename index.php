@@ -30,9 +30,12 @@
     <?php include_once '01_Includes/navbar_landing-role.php' ?>
 
     <!-- HERO -->
-    <div class="hero mt-5">
-      <div class="hero-title">Medi<span>Find</span></div>
-      <div class="hero-subtitle">Malaybalay Medicine Availability Checker</div>
+    <div class="hero mt-5 mobile-mt">
+
+    <div class="webname">
+        <div class="hero-title">Medi<span>Find</span></div>
+        <div class="hero-subtitle">Malaybalay Medicine Availability Checker</div>
+    </div>
 
       <div class="d-flex align-items-center justify-content-center gap-2">
         <div class="search-wrapper">
@@ -418,7 +421,6 @@
         });
       });
     </script>
-
 
   </body>
 </html>

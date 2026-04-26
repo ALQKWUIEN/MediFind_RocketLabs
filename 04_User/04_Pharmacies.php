@@ -9,6 +9,10 @@
   <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
   <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/pharmacies.css" />
+  
+  <!-- Page transition -->
+  <?php include '../01_Includes/page-transition-hardcode.php'?>
+
 </head>
 
 <body>

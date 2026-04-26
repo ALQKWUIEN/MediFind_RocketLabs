@@ -131,7 +131,7 @@
           </button>
 
           <a
-            href="/03_Authentication/login.php"
+            href="../index.php"
             class="btn px-4 text-white"
             style="background: #1d9e75;">Yes, Log Out</a>
         </div>

@@ -275,6 +275,21 @@ body::-webkit-scrollbar {
   .card-body-custom {
     padding: 12px 14px 0;
   }
+
+  @media (max-width: 991px) {
+
+    .hero, .nearby-section{
+      margin: 20px;
+    }
+
+    .webname{
+      margin-top: 25px !important;
+    }
+
+    .nearby-label{
+      margin-top: -30px;
+    }
+  }
   
   @media (max-width: 968px) {
     .pharmacy-card {

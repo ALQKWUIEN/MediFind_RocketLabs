@@ -1,5 +1,3 @@
-
-
 .material-symbols-outlined {
 font-variation-settings:
 'FILL' 0,
@@ -145,6 +143,8 @@ color: white;
     
     .navbar{
         margin-bottom: 50px;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
     }
 
 }

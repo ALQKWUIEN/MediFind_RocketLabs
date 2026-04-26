@@ -16,6 +16,10 @@
       href="../07_Assets/node_modules/material-symbols/outlined.css"
     />
     <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/medicinedetails.css" />
+    
+    <!-- Page transition -->
+    <?php include '../01_Includes/page-transition-hardcode.php'?>
+    
   </head>
   <body>
     <div class="wrapper d-flex align-items-stretch">

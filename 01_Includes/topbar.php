@@ -151,6 +151,7 @@
     </div>
 
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+
     <script>
       const sidebar = document.getElementById("sidebar");
       const sidebarToggle = document.getElementById("sidebarToggle");
@@ -159,6 +160,7 @@
         sidebar.classList.toggle("hidden"); // uses your existing #sidebar.hidden CSS
       });
     </script>
+    
     <script>
       //  Current date
       const dateEl = document.getElementById("topbar-date-text");

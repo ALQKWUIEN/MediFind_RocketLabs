@@ -3,7 +3,7 @@
   <head >
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
+    <title>Profile</title>
 
     <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
     <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />

@@ -23,83 +23,19 @@
 
   
     <div class="wrapper d-flex align-items-stretch">
-        <div id="pharmacy-sidebar-container"></div>
+        <div id="system-sidebar-container"></div>
 
       <div class="main-panel d-flex flex-column flex-grow-1">
         <div id="topbar-container"></div>
 
         <div id="content">
           <div class="content-body">
-            <div class="hero">
-              <!-- Search Section -->
-              <div class="search-section">
-                <div class="welcome-location-block">
-                  <h2 class="welcome-user">Hello, User 👋</h2>
 
-                  <div class="user-location">
-                    <span class="material-symbols-outlined">location_on</span>
-                    <span>Malaybalay, 8700, Bukidnon, Philippines</span>
-                  </div>
-                </div>
-
-                <div class="search-row">
-                  <div class="search-wrapper">
-                    <span
-                      class="material-symbols-outlined"
-                      style="color: #87a199; font-size: 1.2rem"
-                    >
-                      search
-                    </span>
-                    <input
-                      type="text"
-                      placeholder="Search medicine by name..."
-                    />
-                  </div>
-
-                  <button class="search-filter-btn">
-                    <span class="material-symbols-outlined">
-                      discover_tune
-                    </span>
-                  </button>
-                </div>
-
-
-      
-            </div>
-          </div>
         </div>
 
         </div>
     </div>
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div class="floating-btns">
       <button class="float-btn" onclick="history.back()">
         <span class="material-symbols-outlined bot-icon">smart_toy</span>

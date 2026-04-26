@@ -1,21 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-animating">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFind: Find Medicine</title>
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../07_Assets/node_modules/material-symbols/outlined.css" />
+    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/medicinemap.css"/>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MediFind: Find Medicine</title>
-  <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
-  <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../07_Assets/node_modules/material-symbols/outlined.css" />
-  <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/medicinemap.css" />
-</head>
-
-<body>
-  <div class="wrapper">
+  </head>
+  <body>
+    <div class="wrapper">
 
     <!-- Sidebar -->
     <div id="sidebar-container"></div>

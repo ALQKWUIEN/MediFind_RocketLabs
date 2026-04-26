@@ -39,10 +39,13 @@
 
     <main class="main-content">
       <div class="hero-card mt-5" style="margin-top: 50px !important;">
-        <div class="hero-title">Medi<span>Find</span></div>
-        <div class="hero-subtitle">
-          Malaybalay Medicine Availability Checker
+        <div class="user-role-mobile">
+          <div class="hero-title user-role">Medi<span>Find</span></div>
+          <div class="hero-subtitle">
+            Malaybalay Medicine Availability Checker
+          </div>
         </div>
+
         <p>
           Select an Account Type to Continue
         </p>
