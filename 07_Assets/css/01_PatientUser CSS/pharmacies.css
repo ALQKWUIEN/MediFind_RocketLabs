@@ -427,3 +427,166 @@ body {
   transform: scale(1.08);
   opacity: 0.9;
 }
+
+
+/* ── LEAFLET POPUP ── */
+.leaflet-popup-content-wrapper {
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  overflow: hidden;
+  border: none;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;  /* ← add !important, Leaflet forces inline margin */
+  padding: 0 !important;
+  width: auto !important;
+}
+.leaflet-popup-tip-container {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.08));
+}
+.popup-inner {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  min-width: 200px;
+}
+.popup-top-bar {
+  background: #2d3748;
+  padding: 10px 14px 10px;
+  border-radius: 16px 16px 0 0;
+}
+.popup-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+.popup-bottom-bar {
+  background: #fff;
+  padding: 8px 14px 10px;
+  border-radius: 0 0 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.popup-address {
+  font-size: 0.72rem;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.popup-dist {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #1d9e75;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── MEDICINES SECTION ── */
+.medicines-section {
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.medicines-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 16px 11px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #23423a;
+  border-bottom: 1px solid #f0f0f0;
+  background: #f8fffe;
+}
+.medicines-section-header .material-symbols-outlined {
+  font-size: 1.1rem;
+  color: #1d9e75;
+}
+
+.medicine-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 16px;
+  border-bottom: 1px solid #f5f5f5;
+  transition: background 0.15s;
+}
+.medicine-item:last-child {
+  border-bottom: none;
+}
+.medicine-item:hover {
+  background: #fafafa;
+}
+
+.medicine-item-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.medicine-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #2d3748;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.medicine-dosage {
+  font-size: 0.75rem;
+  color: #87a199;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.medicine-stock {
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.medicine-stock .material-symbols-outlined {
+  font-size: 0.72rem;
+}
+.medicine-stock.in-stock {
+  color: #1d9e75;
+}
+.medicine-stock.low-stock {
+  color: #d97706;
+}
+
+.medicine-item-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.medicine-price {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1d9e75;
+  line-height: 1.1;
+}
+
+.medicine-per {
+  font-size: 0.68rem;
+  color: #9ca3af;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.no-medicines {
+  padding: 14px 16px;
+  font-size: 0.82rem;
+  color: #9ca3af;
+  text-align: center;
+}

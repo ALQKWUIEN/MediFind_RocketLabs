@@ -11,7 +11,6 @@ body {
   overflow: hidden;
 }
 
-/* ── Same wrapper/main-panel pattern as all other pages ── */
 .wrapper {
   display: flex;
   height: 100vh;
@@ -35,24 +34,19 @@ body {
   z-index: 10;
 }
 
-/*
-       * #content fills whatever height remains after the topbar.
-       * position:relative makes it the anchor for all absolute overlays.
-       */
 #content {
   flex: 1;
   position: relative;
   overflow: hidden;
 }
 
-/* MAP stretches to fill #content completely */
 #map-full {
   position: absolute;
   inset: 0;
   z-index: 0;
 }
 
-/* ── TOP SEARCH BAR — floats at top of #content ── */
+/* ── TOP SEARCH BAR ── */
 .top-bar {
   position: absolute;
   top: 0;
@@ -68,7 +62,6 @@ body {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* ── Back button ── */
 .back-btn {
   display: inline-flex;
   align-items: center;
@@ -82,7 +75,7 @@ body {
   color: #3f444d;
   cursor: pointer;
   text-decoration: none;
-  flex-shrink: 0;       /* add this so it doesn't get squeezed */
+  flex-shrink: 0;
   transition: all 0.2s;
 }
 .back-btn:hover {
@@ -122,7 +115,7 @@ body {
   width: 100%;
 }
 
-/* ── BOTTOM SHEET — floats at bottom of #content ── */
+/* ── BOTTOM SHEET ── */
 .bottom-sheet {
   position: absolute;
   bottom: 0;
@@ -133,9 +126,10 @@ body {
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.13);
   transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 320px;
+  height: 310px; /* ← reduce this from 420px to ~310px */
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .bottom-sheet.expanded {
   height: 70%;
@@ -186,7 +180,7 @@ body {
 .filter-chips {
   display: flex;
   gap: 8px;
-  padding: 0 16px 8px;
+  padding: 0 16px 10px;
   overflow-x: auto;
   flex-shrink: 0;
   scrollbar-width: none;
@@ -201,7 +195,7 @@ body {
   border: 1.5px solid #e2e8e6;
   background: #fff;
   border-radius: 99px;
-  padding: 4px 12px;
+  padding: 5px 14px;
   font-size: 0.75rem;
   font-weight: 600;
   color: #4b5563;
@@ -217,168 +211,239 @@ body {
   color: #fff;
 }
 .chip .material-symbols-outlined {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
+/* ── CARD GRID (3 columns) ── */
 .pharmacy-scroll {
   flex: 1;
-  overflow-y: auto;
-  padding: 4px 16px 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; /* never wraps */
+  gap: 12px;
+  overflow-x: auto; /* scroll horizontally */
+  overflow-y: hidden;
+  padding: 4px 16px 16px;
   scrollbar-width: thin;
   scrollbar-color: #d1d5db transparent;
+  align-items: stretch;
+}
+.pharmacy-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.pharmacy-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 99px;
 }
 
+/* ── PHARMACY CARD ── */
 .pharmacy-result-card {
+  flex: 0 0 200px; /* fixed 200px, won't grow or shrink */
+  width: 200px;
   background: #fff;
-  border-radius: 14px;
-  border: 1.5px solid #e8eeec;
-  padding: 12px;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  border-radius: 24px;
+  border: 1px solid #d8d8d8;
+  overflow: hidden;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
   transition:
     box-shadow 0.18s,
     border-color 0.18s,
     transform 0.15s;
 }
 .pharmacy-result-card:hover {
-  box-shadow: 0 4px 18px rgba(29, 158, 117, 0.12);
+  box-shadow: 0 6px 20px rgba(29, 158, 117, 0.14);
   border-color: #1d9e75;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 .pharmacy-result-card.selected {
   border-color: #1d9e75;
-  background: #f0fbf7;
 }
 
-.pharmacy-logo-placeholder {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: #e8f7f2;
+/* ── IMAGE AREA ── */
+.card-img-wrap {
+  width: 100%;
+  height: 100px;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  margin-bottom: 10px;
+  background: #edf8f4;
+}
+
+.card-pharmacy-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Stock ribbon — overlaid on image top-right */
+.stock-ribbon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  gap: 3px;
+  white-space: nowrap;
+  line-height: 1.3;
 }
-.pharmacy-logo-placeholder .material-symbols-outlined {
-  color: #1d9e75;
-  font-size: 1.4rem;
+.stock-ribbon .material-symbols-outlined {
+  font-size: 0.68rem;
+}
+.stock-ribbon.in-stock {
+  background: #e8f7f2;
+  color: #0f6e56;
+}
+.stock-ribbon.low-stock {
+  background: #fef3c7;
+  color: #92400e;
 }
 
-.pharmacy-info {
+/* Card body */
+.card-body-inner {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  min-width: 0;
+  gap: 0;
 }
-.pharmacy-name {
-  font-size: 0.9rem;
-  font-weight: 700;
+
+.card-pharmacy-name {
+  font-size: 0.82rem;
+  font-weight: 800;
   color: #1a202c;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.3;
 }
-.pharmacy-addr {
-  font-size: 0.72rem;
+.card-pharmacy-addr {
+  font-size: 0.68rem;
   color: #87a199;
-  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.card-status-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+.open-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #1d9e75;
+  flex-shrink: 0;
+}
+.open-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #1d9e75;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.pharmacy-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 5px;
-  flex-wrap: wrap;
-}
-.meta-pill {
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 99px;
-}
-.open-pill {
-  background: #e8f7f2;
-  color: #1d9e75;
-}
-.closed-pill {
-  background: #fee2e2;
-  color: #ef4444;
-}
-.dist-pill {
-  background: #f0f4f2;
-  color: #4b5563;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-.dist-pill .material-symbols-outlined {
-  font-size: 0.72rem;
-}
 
-.medicine-stock-row {
-  margin-top: 7px;
-  background: #f8fffe;
-  border-radius: 10px;
-  padding: 7px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #d1f0e6;
-}
-.stock-info {
-  display: flex;
-  flex-direction: column;
-}
-.med-name-sm {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #2d3748;
-}
-.stock-badge {
-  font-size: 0.67rem;
-  font-weight: 600;
-  margin-top: 2px;
+.card-dist-row {
   display: flex;
   align-items: center;
   gap: 3px;
+  font-size: 0.68rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-top: 3px;
 }
-.in-stock {
-  color: #1d9e75;
-}
-.low-stock {
-  color: #f59e0b;
-}
-.price-tag {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: #1d9e75;
-  text-align: right;
-}
-.per-unit {
-  font-size: 0.63rem;
+.card-dist-row .material-symbols-outlined {
+  font-size: 0.75rem;
   color: #87a199;
-  font-weight: 400;
 }
 
-.card-action-row {
-  display: flex;
-  gap: 8px;
+/* Medicine info box */
+.card-med-box {
   margin-top: 8px;
+  background: #f8fffe;
+  border: 1px solid #d1f0e6;
+  border-radius: 9px;
+  padding: 7px 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex: 1;
+}
+.card-med-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.card-med-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.35;
+}
+.card-stock {
+  font-size: 0.6rem;
+  font-weight: 700;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1.2;
+}
+.card-stock .material-symbols-outlined {
+  font-size: 0.6rem;
+}
+.card-stock.in-stock {
+  color: #1d9e75;
+}
+.card-stock.low-stock {
+  color: #d97706;
+}
+.card-price-wrap {
+  text-align: right;
+  flex-shrink: 0;
+}
+.card-price {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1d9e75;
+  line-height: 1.1;
+}
+.card-per-unit {
+  font-size: 0.6rem;
+  color: #87a199;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* Card action buttons */
+.card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
 }
 .btn-directions {
   flex: 1;
-  background: #1d9e75;
+  background: #ff6a2a;
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 0.76rem;
-  font-weight: 600;
+  border-radius: 99px;
+  padding: 7px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
   font-family: "Plus Jakarta Sans", sans-serif;
   cursor: pointer;
   display: flex;
@@ -386,40 +451,42 @@ body {
   justify-content: center;
   gap: 4px;
   transition: background 0.18s;
+  white-space: nowrap;
 }
 .btn-directions:hover {
-  background: #178a63;
+  background: #eb5c20;
 }
 .btn-directions .material-symbols-outlined {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 .btn-save {
   background: #f0f4f2;
   color: #4b5563;
   border: none;
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 0.76rem;
+  border-radius: 99px;
+  padding: 7px 10px;
+  font-size: 0.7rem;
   font-weight: 600;
   font-family: "Plus Jakarta Sans", sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   transition: background 0.18s;
+  flex-shrink: 0;
 }
 .btn-save:hover {
   background: #e8f7f2;
   color: #1d9e75;
 }
 .btn-save .material-symbols-outlined {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
-/* Floating button — also absolute inside #content */
+/* ── FLOATING BUTTON ── */
 .floating-btns {
   position: absolute;
-  bottom: 330px;
+  bottom: 320px; /* ← match the new sheet height + 10px */
   right: 16px;
   z-index: 550;
 }
@@ -447,28 +514,80 @@ body {
   font-size: 1.25rem;
 }
 
-/* Leaflet popup */
+/* ── LEAFLET POPUP ── */
 .leaflet-popup-content-wrapper {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.14);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  overflow: hidden;
+  border: none;
 }
+.leaflet-popup-content {
+  margin: 0;
+  width: auto !important;
+}
+.leaflet-popup-tip-container {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.08));
+}
+
 .popup-inner {
   font-family: "Plus Jakarta Sans", sans-serif;
+  min-width: 200px;
+  padding: 0;
+}
+.popup-top-bar {
+  background: #2d3748;
+  padding: 10px 14px 8px;
+  border-radius: 16px 16px 0 0;
 }
 .popup-name {
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: #1a202c;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #ffffff;
+  margin-bottom: 2px;
 }
 .popup-avail {
-  font-size: 0.73rem;
-  color: #1d9e75;
+  font-size: 0.7rem;
   font-weight: 600;
-  margin-top: 3px;
+  color: #a0e4c5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.popup-avail::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+}
+.popup-avail.low::before {
+  background: #fbbf24;
+}
+.popup-bottom-bar {
+  background: #fff;
+  padding: 8px 14px 10px;
+  border-radius: 0 0 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.popup-med-name {
+  font-size: 0.72rem;
+  color: #6b7280;
+  font-weight: 500;
 }
 .popup-price {
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 800;
   color: #1d9e75;
-  margin-top: 2px;
+  white-space: nowrap;
+}
+.popup-per {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  font-weight: 400;
 }
