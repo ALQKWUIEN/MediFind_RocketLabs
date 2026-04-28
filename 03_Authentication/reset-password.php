@@ -1,46 +1,50 @@
 <?php
-    session_start();
-    require '../00_Config/config.php';
+session_start();
+require '../00_Config/config.php'; // make sure this returns a PDO instance: $pdo
 
-    // Guard: must have verified the code first
-    if (!isset($_SESSION['reset_code_verified']) || !isset($_SESSION['reset_email'])) {
-        header('Location: forgot-password.php');
+// Guard: must have verified the code first
+if (!isset($_SESSION['reset_code_verified']) || !isset($_SESSION['reset_email'])) {
+    header('Location: forgot-password.php');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $new_password = $_POST['new_password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    if ($new_password !== $confirm_password) {
+        $_SESSION['error'] = "Passwords do not match.";
+        header('Location: reset-password.php');
         exit();
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $new_password = $_POST['new_password'];
-        $confirm_password = $_POST['confirm_password'];
+    $hashed = password_hash($new_password, PASSWORD_DEFAULT);
+    $email = $_SESSION['reset_email'];
 
-        if ($new_password !== $confirm_password) {
-            $_SESSION['error'] = "Passwords do not match.";
-            header('Location: reset-password.php');
-            exit();
-        }
+    try {
+        $stmt = $pdo->prepare("UPDATE 01_user_users SET password_hash = :password, reset_code = NULL WHERE email = :email");
+        
+        $stmt->execute([
+            ':password' => $hashed,
+            ':email' => $email
+        ]);
 
-        $hashed = password_hash($new_password, PASSWORD_DEFAULT);
-        $email = $_SESSION['reset_email'];
+        // Clean up session
+        unset($_SESSION['reset_email']);
+        unset($_SESSION['reset_code_verified']);
+        unset($_SESSION['email']);
 
-        $stmt = $conn->prepare("UPDATE 01_user_users SET password_hash = ?, reset_code = NULL WHERE email = ?");
-        $stmt->bind_param("ss", $hashed, $email);
+        $_SESSION['success'] = "Password updated successfully. Please login.";
+        header('Location: login.php');
+        exit();
 
-        if ($stmt->execute()) {
-            // Clean up session
-            unset($_SESSION['reset_email']);
-            unset($_SESSION['reset_code_verified']);
-            unset($_SESSION['email']);
-
-            $_SESSION['success'] = "Password updated successfully. Please login.";
-            header('Location: login.php');
-            exit();
-        } else {
-            $_SESSION['error'] = "Something went wrong. Please try again.";
-            header('Location: reset-password.php');
-            exit();
-        }
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Something went wrong. Please try again.";
+        header('Location: reset-password.php');
+        exit();
     }
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en" data-swup>
@@ -49,6 +53,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
     <title>Reset Password</title>
+
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">

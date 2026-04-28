@@ -1,112 +1,150 @@
 <?php
 session_start();
-include_once '../00_Config/config.php';
+include_once '../../00_Config/config.php';
+include_once '../../02_Actions/GlobalVariables.php';
 
-// Only process the form if the request method is POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Collect and sanitize inputs
-    $fname = trim($_POST['Fname'] ?? '');
-    $mname = trim($_POST['Mname'] ?? '');
-    $lname = trim($_POST['Lname'] ?? '');
-    $contact = trim($_POST['ContactNo'] ?? '');
-    $gender = trim($_POST['gender'] ?? '');
-    $birth_date = trim($_POST['birth_date'] ?? '');
-    $province = trim($_POST['Province'] ?? '');
-    $city = trim($_POST['City'] ?? '');
-    $barangay = trim($_POST['Barangay'] ?? '');
-    $street = trim($_POST['Street'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirmpass = $_POST['confirmpass'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ../../03_Authentication/signup.php');
+    exit();
+}
 
-    // Validate required fields
-    if (!$fname || !$lname || !$contact || !$gender || !$birth_date || !$province || !$city || !$barangay || !$street || !$email || !$username || !$password || !$confirmpass) {
-        $_SESSION['error'] = 'Please fill in all required fields.';
-        header('Location: signup.php');
-        exit();
+// ─── COLLECT INPUT ────────────────────────────────────────────────
+$fname       = trim($_POST['Fname']      ?? '');
+$mname       = trim($_POST['Mname']      ?? '');
+$lname       = trim($_POST['Lname']      ?? '');
+$contact     = trim($_POST['ContactNo']  ?? '');
+$gender      = trim($_POST['gender']     ?? '');
+$birth_date  = trim($_POST['birth_date'] ?? '');
+$province    = (int) ($_POST['Province'] ?? 0);
+$city        = (int) ($_POST['City']     ?? 0);
+$barangay    = (int) ($_POST['Barangay'] ?? 0);
+$street      = trim($_POST['Street']     ?? '');
+$email       = trim($_POST['email']      ?? '');
+$username    = trim($_POST['username']   ?? '');
+$password    = $_POST['password']        ?? '';
+$confirmpass = $_POST['confirmpass']     ?? '';
+$role_id     = $_SESSION['selected_role_id'] ?? null;
+
+// ─── REDIRECT HELPER ──────────────────────────────────────────────
+function redirectBackWithError($message, $step = 1) {
+    $_SESSION['error']      = $message;
+    $_SESSION['error_step'] = $step;
+    $saved = $_POST;
+    unset($saved['password'], $saved['confirmpass']);
+    $_SESSION['form_data']  = $saved;
+    header('Location: ../../03_Authentication/signup.php');
+    exit();
+}
+
+// ─── VALIDATE ─────────────────────────────────────────────────────
+if (!$fname || !$lname || !$contact || !$gender || !$birth_date ||
+    !$province || !$city || !$barangay || !$street ||
+    !$email || !$username || !$password || !$confirmpass || !$role_id) {
+    redirectBackWithError('Please fill in all required fields.', 1);
+}
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    redirectBackWithError('Invalid email format.', 3);
+}
+
+if (strlen($password) < 8) {
+    redirectBackWithError('Password must be at least 8 characters.', 3);
+}
+
+if ($password !== $confirmpass) {
+    redirectBackWithError('Passwords do not match.', 3);
+}
+
+try {
+    // ─── CHECK DUPLICATES ─────────────────────────────────────────
+    $stmt = $pdo->prepare("SELECT User_ID FROM `01_user_users` WHERE Email = ?");
+    $stmt->execute([$email]);
+    if ($stmt->fetch()) {
+        redirectBackWithError('That email is already registered.', 3);
     }
 
-    // Validate email format
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['error'] = 'Invalid email format.';
-        header('Location: signup.php');
-        exit();
+    $stmt = $pdo->prepare("SELECT User_ID FROM `01_user_users` WHERE Username = ?");
+    $stmt->execute([$username]);
+    if ($stmt->fetch()) {
+        redirectBackWithError('That username is already taken.', 3);
     }
 
-    // Validate password match
-    if ($password !== $confirmpass) {
-        $_SESSION['error'] = 'Passwords do not match.';
-        header('Location: signup.php');
-        exit();
+    // ✅ NEW — check phone before inserting
+    $stmt = $pdo->prepare("SELECT User_ID FROM `01_user_users` WHERE Phone = ?");
+    $stmt->execute([$contact]);
+    if ($stmt->fetch()) {
+        redirectBackWithError('That contact number is already registered.', 1);
     }
 
-    // Check if email already exists
-    $sql_check_email = "SELECT User_ID FROM `01_user_users` WHERE Email = ?";
-    if ($stmt = $conn->prepare($sql_check_email)) {
-        $stmt->bind_param('s', $email);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            $_SESSION['error'] = 'This email is already registered.';
-            $stmt->close();
-            header('Location: signup.php');
-            exit();
-        }
-        $stmt->close();
-    }
+    // ─── BEGIN TRANSACTION ────────────────────────────────────────
+    $pdo->beginTransaction();
 
-    // Check if username already exists
-    $sql_check_username = "SELECT User_ID FROM `01_user_users` WHERE Username = ?";
-    if ($stmt = $conn->prepare($sql_check_username)) {
-        $stmt->bind_param('s', $username);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            $_SESSION['error'] = 'This username is already taken.';
-            $stmt->close();
-            header('Location: signup.php');
-            exit();
-        }
-        $stmt->close();
-    }
+    // ── STEP 1: Insert address ────────────────────────────────────
+    $stmt = $pdo->prepare("
+        INSERT INTO `05_address_user_address` 
+            (User_ID, Province_ID, City_ID, Barangay_ID, Street) 
+        VALUES (NULL, ?, ?, ?, ?)
+    ");
+    $stmt->execute([$province, $city, $barangay, $street]);
+    $address_id = $pdo->lastInsertId();
 
-    // Hash the password
+    // ── STEP 2: Insert user ───────────────────────────────────────
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insert the address into the database
-    $sql_insert_address = "INSERT INTO `05_Address_User_Address` (Barangay, Street) VALUES (?, ?, ?, ?)";
-    if ($stmt = $conn->prepare($sql_insert_address)) {
-        $stmt->bind_param('ssss', $province, $city, $barangay, $street);
-        if ($stmt->execute()) {
-            $address_id = $stmt->insert_id; // Get the inserted address ID
-            $stmt->close();
-        } else {
-            $_SESSION['error'] = 'Failed to save address. Please try again.';
-            header('Location: signup.php');
-            exit();
-        }
+    $stmt = $pdo->prepare("
+        INSERT INTO `01_user_users` 
+            (Username, First_name, Middle_name, Last_name, 
+             Email, Phone, Address_ID, Role_ID, User_Status_ID,
+             Profilepic_url, Password_hash, DateCreated, DateApproved, reset_code)
+        VALUES 
+            (?, ?, ?, ?, ?, ?, ?, ?, 1, NULL, ?, NOW(), NULL, NULL)
+    ");
+    $stmt->execute([
+        $username,
+        $fname,
+        $mname ?: null,     // NULL if empty
+        $lname,
+        $email,
+        $contact,
+        $address_id,
+        $role_id,
+        $hashed_password
+    ]);
+    $user_id = $pdo->lastInsertId();
+
+    // ── STEP 3: Update address with User_ID ───────────────────────
+    $stmt = $pdo->prepare("
+        UPDATE `05_address_user_address` 
+        SET User_ID = ? 
+        WHERE Address_ID = ?
+    ");
+    $stmt->execute([$user_id, $address_id]);
+
+    // ── STEP 4: If pharmacist — create pending pharmacy row ───────
+    if (in_array($role_id, [ROLE_PHARMACIST, ROLE_PHARMACY_OWNER])) {
+        $stmt = $pdo->prepare("
+            INSERT INTO `09_pharmacies` 
+                (User_ID, Address_ID, Approval_ID, DateCreated)
+                 VALUES (?,?, 1, NOW())
+        ");
+        $stmt->execute([$user_id, $address_id]);
     }
 
-    // Insert the user into the database
-    $sql_insert_user = "INSERT INTO `01_user_users` (Username, First_name, Middle_name, Last_name, Email, Phone, Address_ID, Role_ID, User_Status_ID, Profilepic_url, Password_hash, DateCreated, Date_Approved) 
-                        VALUES (?, ?, ?, ?, ?, ?, 2, NULL, NULL, ?, ?, NOW(), NULL)";
-    if ($stmt = $conn->prepare($sql_insert_user)) {
-        $stmt->bind_param('sssssis', $username, $fname, $mname, $lname, $email, $contact, $address_id, $hashed_password);
-        if ($stmt->execute()) {
-            // Account created successfully
-            $_SESSION['success'] = 'Account created successfully! You can now log in.';
-            header('Location: login.php'); // Redirect to login page
-            exit();
-        } else {
-            $_SESSION['error'] = 'Failed to create account. Please try again.';
-            header('Location: signup.php');
-            exit();
-        }
-    } else {
-        $_SESSION['error'] = 'Database error. Please try again.';
-        header('Location: signup.php');
-        exit();
-    }
+    // ─── COMMIT ───────────────────────────────────────────────────
+    $pdo->commit();
+
+    unset(
+        $_SESSION['form_data'],
+        $_SESSION['selected_role_id'],
+        $_SESSION['selected_role_label']
+    );
+
+    $_SESSION['success'] = 'Account created successfully! Please login.';
+    header('Location: ../../03_Authentication/login.php');
+    exit();
+
+} catch (PDOException $e) {
+    $pdo->rollBack();
+    redirectBackWithError('Database error: ' . $e->getMessage(), 1);
 }
 ?>

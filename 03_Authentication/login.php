@@ -1,56 +1,148 @@
 <?php
-    session_start();
-    include_once '../00_Config/config.php';
+include_once '../02_Actions/GlobalVariables.php';
+include_once '../00_Config/config.php';
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    $email    = trim($_POST['email']);
+    $password = trim($_POST['password']);
+
+    try {
+        // ─── 1. Fetch user from view_01_users ─────────────────────────
+        $stmt = $pdo->prepare("
+            SELECT 
+                User_ID,
+                Role_ID,
+                Username, 
+                First_name, 
+                Middle_name, 
+                Last_name, 
+                Email, 
+                Phone,
+                Role, 
+                UserStatus, 
+                Profilepic_url, 
+                Password_hash
+            FROM view_01_users 
+            WHERE Email = ?
+        ");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        // ─── 2. Does user exist? ───────────────────────────────────────
+        if (!$user) {
+            $_SESSION['error'] = "No account found with that email.";
+            header('Location: ../03_Authentication/login.php');
+            exit;
+        }
+
+        // ─── 3. Does password match? ───────────────────────────────────
+        if (!password_verify($password, $user['Password_hash'])) {
+            $_SESSION['error'] = "Incorrect password.";
+            header('Location: ../03_Authentication/login.php');
+            exit;
+        }
+
+        // ─── 4. Is account active? ─────────────────────────────────────
+        if ($user['UserStatus'] !== 'Active') {
+            $_SESSION['error'] = "Your account is " . $user['UserStatus'] . ". Contact admin.";
+            header('Location: ../03_Authentication/login.php');
+            exit;
+        }
+
+        // ─── 5. Security — regenerate session ID ──────────────────────
+        session_regenerate_id(true);
+
+        // ─── 6. Store user info into session ───────────────────────────
+        $_SESSION['user_id']    = $user['User_ID'];
+        $_SESSION['username']   = $user['Username'];
+        $_SESSION['full_name']  = $user['First_name'] . ' ' . $user['Middle_name'] . ' ' . $user['Last_name'];
+        $_SESSION['role_id']    = $user['Role_ID'];
+        $_SESSION['role_label'] = $user['Role'];
+        $_SESSION['profile_pic']= $user['Profilepic_url'];
+        $_SESSION['Email']      = $user['Email'];
+        $_SESSION['Phone']      = $user['Phone'];
+        $_SESSION['UserStatus'] = $user['UserStatus']; 
         
-        if (!empty($_POST['email']) && !empty($_POST['password'])) {
-
         
-            $sql = "SELECT user_id, username, email, password_hash FROM 01_user_users WHERE email = ?";
+        // ─── 7. Fetch and store address ────────────────────────────────
+        $stmtAddr = $pdo->prepare("
+            SELECT Street, Barangay_Name, City_Name, Province_Name, Full_Address
+            FROM view_03_user_address 
+            WHERE User_ID = ?
+        ");
+        $stmtAddr->execute([$user['User_ID']]);
+        $address = $stmtAddr->fetch();
 
-            if ($stmt = $conn->prepare($sql)) {
-                $stmt->bind_param("s", $param_email);
-                $param_email = $_POST['email'];
-                $param_username= $_POST['username'];
+        $_SESSION['Street']        = $address['Street']        ?? null;
+        $_SESSION['Barangay_Name'] = $address['Barangay_Name'] ?? null;
+        $_SESSION['City_Name']     = $address['City_Name']     ?? null;
+        $_SESSION['Province_Name'] = $address['Province_Name'] ?? null;
 
-                if ($stmt->execute()) {
-                    $stmt->store_result(); 
 
-                    if ($stmt->num_rows == 1) {
-                        
-                        $stmt->bind_result($user_id, $username, $email, $hashed_password);
+        // ─── 8. If pharmacist/owner — fetch pharmacy & inventory ───────
+        if (in_array($_SESSION['role_id'], [ROLE_PHARMACIST, ROLE_PHARMACY_OWNER])) {
+            $stmtPharm = $pdo->prepare("
+                SELECT 
+                    p.Pharmacy_ID,
+                    p.Pharmacy_name,
+                    p.Owner_name,
+                    p.Address_ID,
+                    p.Phone,
+                    p.Approval_ID,
+                    p.Logo_URL,
+                    p.Pic_URL,
+                    i.Inventory_ID
+                FROM 09_pharmacies p
+                LEFT JOIN 21_inventory i ON i.Pharmacy_ID = p.Pharmacy_ID
+                WHERE p.User_ID = ?
+                LIMIT 1
+            ");
+            $stmtPharm->execute([$user['User_ID']]);
+            $pharmacy = $stmtPharm->fetch();
 
-                        if ($stmt->fetch()) {
-                            if (password_verify($_POST['password_hash'], $hashed_password)) {
-                                $_SESSION['loggedin'] = true;
-                                $_SESSION['user_id'] = $user_id;
-                                $_SESSION['username'] = $username;
-                                $_SESSION['email'] = $email;
-                                
-                                header('Location: reset-password.php');
-                                exit();
-
-                            } else {
-                                $_SESSION['error'] = "Invalid email or password. Please try again";
-                                header('Location: login.php');
-                                exit();
-                            }
-                        }
-                    } else {
-                        $_SESSION['error'] = "User does not exist. Please try again";
-                        header('Location: login.php');
-                        exit();
-                    }
-                } else {
-                    echo "Oops! Something went wrong.";
-                }
-                $stmt->close();
+            if ($pharmacy) {
+                $_SESSION['pharmacy_id']            = $pharmacy['Pharmacy_ID'];
+                $_SESSION['pharmacy_name']          = $pharmacy['Pharmacy_name'];
+                $_SESSION['inventory_id']           = $pharmacy['Inventory_ID'];
+                $_SESSION['Logo_URL']               = $pharmacy['Logo_URL']; 
+                $_SESSION['Pic_URL']                = $pharmacy['Pic_URL']; 
+                $_SESSION['Pharmacy_Approval']      = $pharmacy['Approval_ID']; 
             }
         }
-        $conn->close();
+
+
+        // ─── 9. Redirect based on role ─────────────────────────────────
+        switch ($_SESSION['role_id']) {
+            case ROLE_PATIENT:
+                header('Location: ../04_User/01_Home.php');
+                break;
+
+            case ROLE_PHARMACIST:
+            case ROLE_PHARMACY_OWNER:
+                // ── Always use the DB value stored in session ─────────────────
+                // $_SESSION['Pharmacy_Approval'] was set from DB during login
+                if (in_array($_SESSION['Pharmacy_Approval'], [1, 3])) {
+                    header('Location: ../05_PharmacyAdmin/01_Dashboard.php');
+                } else {
+                    header('Location: ../05_PharmacyAdmin/01_Dashboard.php');
+                }
+                break;
+                
+            case ROLE_SYSTEM_ADMIN:
+                header('Location: ../06_SystemAdmin/01_Dashboard.php');
+                break;
+            default:
+                header('Location: ../03_Authentication/login.php');
+        }
+        exit;
+
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Something went wrong: " . $e->getMessage();
+        header('Location: ../03_Authentication/login.php');
+        exit;
     }
+}
 ?>
 
 
@@ -101,7 +193,7 @@
 
 
                         <?php if (isset($_SESSION['success'])): ?>
-                            <div class="mt-4 alert alert-success text-center position-absolute start-50 translate-middle-x w-75" role="alert">
+                            <div class="alert alert-success text-center position-absolute start-50 translate-middle-x w-75" role="alert">
                                 <?php echo $_SESSION['success']; ?>
                                 <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -109,7 +201,7 @@
                         <?php endif; ?>
 
                         <?php if (isset($_SESSION['error'])): ?>
-                            <div class="mt-4 alert alert-danger text-center position-absolute top-0 start-50 translate-middle-x w-75" role="alert">
+                            <div class="mt-5 alert alert-danger text-center position-absolute top-0 start-50 translate-middle-x w-75" role="alert">
                                 <?php echo $_SESSION['error']; ?>
                                 <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -164,7 +256,7 @@
 
                         <!-- Signup -->
                         <p class="report-text text-center">
-                            Dont have an account? <a href="signup.php" class="signup-link">Sign Up</a>
+                            Dont have an account? <a href="../03_UserSignup - Role.php" class="signup-link">Sign Up</a>
                         </p>
 
 

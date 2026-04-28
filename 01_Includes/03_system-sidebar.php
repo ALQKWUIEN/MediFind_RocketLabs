@@ -70,7 +70,7 @@
     
     <li>
         <a href="../06_SystemAdmin/05_Settings.php">
-            <span class="material-symbols-outlined">account_circle</span>
+            <span class="material-symbols-outlined">Settings</span>
             <span class="sidebar-label">Settings</span>
         </a>
     </li>

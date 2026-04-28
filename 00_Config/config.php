@@ -1,12 +1,16 @@
 <?php
+// 00_Config/config.php
 
-    $servername = "localhost";
-    $username = "root";
-    $password= "";
-    $dbname = "medifind_rocketlabs_db";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+$host   = "localhost";
+$dbname = "medifind_rocketlabs_v2";
+$user   = "root";
+$pass   = "";
 
-    if($conn->connect_error){
-        die("Connection Failed: " . $conn-> connection_error);
-    }
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die(json_encode(['success' => false, 'message' => 'DB Error: ' . $e->getMessage()]));
+}
 ?>

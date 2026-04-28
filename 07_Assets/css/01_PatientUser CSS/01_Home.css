@@ -65,9 +65,9 @@ body {
 
 .welcome-user {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 600;
-  color: #3f444d;
+  color: #1d9e75;
   line-height: 1.2;
 }
 
@@ -75,10 +75,9 @@ body {
   margin-top: 6px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: #7a8088;
+  gap: 3px;
+  color: #919497;
   font-size: 0.95rem;
-  font-weight: 500;
 }
 
 .user-location .material-symbols-outlined {

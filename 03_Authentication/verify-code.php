@@ -1,58 +1,72 @@
 <?php
-        session_start();
-        require '../00_Config/config.php';
+session_start();
+require '../00_Config/config.php'; // should return $pdo
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            // 1. Check if session exists first
-            if (!isset($_SESSION['email'])) {
-                $_SESSION['error'] = "Session expired. Please try again.";
-                header('Location: forgot-password.php');
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // 1. Check if session exists first
+    if (!isset($_SESSION['email'])) {
+        $_SESSION['error'] = "Session expired. Please try again.";
+        header('Location: forgot-password.php');
+        exit();
+    }
+
+    $enteredCode = $_POST['code'];
+    $email = $_SESSION['email'];
+
+    try {
+        // 2. Prepare PDO statement
+        $stmt = $pdo->prepare("
+            SELECT reset_code 
+            FROM 01_user_users 
+            WHERE email = :email
+        ");
+
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+
+            // 3. Verify the code
+            if (trim((string)$enteredCode) === trim((string)$user['reset_code'])) {
+
+                $_SESSION['reset_email'] = $email;
+                $_SESSION['reset_code_verified'] = true;
+
+                // Optional: clear/reset code in DB after successful verification
+                // $pdo->prepare("UPDATE 01_user_users SET reset_code = NULL WHERE email = :email")
+                //     ->execute([':email' => $email]);
+
+                header('Location: reset-password.php');
                 exit();
-            }
 
-            $enteredCode = $_POST['code'];
-            $email = $_SESSION['email'];
-
-            // 2. Prepare the MySQLi statement
-            $stmt = $conn->prepare("SELECT reset_code FROM 01_user_users WHERE email = ?");
-            $stmt->bind_param("s", $email); // "s" means the parameter is a string
-            $stmt->execute();
-            
-            // 3. Get the result
-            $result = $stmt->get_result();
-            $user = $result->fetch_assoc();
-
-            if ($user) {
-                // 4. Verify the code
-                if (trim((string)$enteredCode) == trim((string)$user['reset_code'])) {
-                    $_SESSION['reset_email'] = $email;
-                    $_SESSION['reset_code_verified'] = true;
-
-                    // Optional: Clear the code from DB or session if needed
-                    header('Location: reset-password.php');
-                    exit();
-                } else {
-                    $_SESSION['error'] = "Invalid Code. Please try again.";
-                    header('Location: verify-code.php'); // Redirect back to show error
-                    exit();
-                }
             } else {
-                $_SESSION['error'] = "No user found with that email.";
-                header('Location: forgot-password.php');
+                $_SESSION['error'] = "Invalid code. Please try again.";
+                header('Location: verify-code.php');
                 exit();
             }
-            
-            $stmt->close();
+
         } else {
-            // Only redirect if there's no active session (direct access)
-            if (!isset($_SESSION['email'])) {
-                header('Location: forgot-password.php');
-                exit();
-            }
-            // If session exists, fall through and show the form normally
-        
+            $_SESSION['error'] = "No user found with that email.";
+            header('Location: forgot-password.php');
+            exit();
         }
+
+    } catch (PDOException $e) {
+        // Optional: log $e->getMessage()
+        $_SESSION['error'] = "Something went wrong. Please try again.";
+        header('Location: verify-code.php');
+        exit();
+    }
+
+} else {
+    // Only redirect if there's no active session (direct access)
+    if (!isset($_SESSION['email'])) {
+        header('Location: forgot-password.php');
+        exit();
+    }
+    // else: allow form to display
+}
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +74,9 @@
   <head data-swup>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BukSU Linked - Login</title>
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+    <title>Verify Code</title>
+
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">

@@ -1,4 +1,3 @@
-// for form stem in signup page
 function validateStep1() {
     const fname = document.getElementById('Fname').value.trim();
     const lname = document.getElementById('Lname').value.trim();
@@ -14,23 +13,27 @@ function validateStep1() {
 }
 
 function validateStep2() {
-    const province = document.getElementById('Province').value;
-    const city = document.getElementById('City').value;
-    const barangay = document.getElementById('Barangay').value;
+    const province = document.getElementById('Province_ID').value;
+    const city = document.getElementById('City_ID').value;
+    const barangay = document.getElementById('Barangay_ID').value;
     const street = document.getElementById('Street').value.trim();
+
+    console.log('province:', province, 'city:', city, 'barangay:', barangay, 'street:', street); 
 
     if (!province || !city || !barangay || !street) {
         alert('Please fill in all required fields in Step 2.');
         return false;
     }
+    
     changeStep(3);
 }
 
-function changeStep(step) {
-    const steps = document.querySelectorAll('.form-step');
-    steps.forEach((stepDiv, index) => {
-        stepDiv.style.display = index + 1 === step ? 'block' : 'none';
+// ← only ONE changeStep, using element IDs
+function changeStep(stepNumber) {
+    document.querySelectorAll('.form-step').forEach(step => {
+        step.style.display = 'none';
     });
+    document.getElementById('step' + stepNumber).style.display = 'block';
 }
 
 function validateForm() {
@@ -52,17 +55,6 @@ function validateForm() {
     return true;
 }
 
-function changeStep(stepNumber) {
-    // Hide all steps
-    document.querySelectorAll('.form-step').forEach(step => {
-        step.style.display = 'none';
-    });
-    // Show the target step
-    document.getElementById('step' + stepNumber).style.display = 'block';
-}
-
-
-//togglePassword
 function togglePassword(fieldId, iconId) {
     const input = document.getElementById(fieldId);
     const icon = document.getElementById(iconId);

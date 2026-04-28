@@ -1,77 +1,93 @@
 <?php
-        ob_start(); // Prevents "Headers already sent" errors
-        session_start();
-        require '../00_Config/config.php';
+ob_start();
+session_start();
+require '../00_Config/config.php';
 
-        use PHPMailer\PHPMailer\PHPMailer;
-        use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-        require '../vendor/autoload.php';
+require '../vendor/autoload.php';
 
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $email = $_POST['email'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
 
-            // 1. Check if user exists
-            $stmt = $conn->prepare("SELECT email, reset_code FROM 01_user_users WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $user = $result->fetch_assoc();
+    try {
+        // 1. Check if user exists
+        $stmt = $pdo->prepare("SELECT Email, reset_code FROM `01_user_users` WHERE Email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if($user){
-                $reset_code = (string)rand(100000, 999999);
+        if ($user) {
+            $reset_code = (string) rand(100000, 999999);
 
-                // 3. Save to DB - Changed to "ss" assuming reset_code might be varchar
-                $update = $conn->prepare("UPDATE 01_user_users SET reset_code = ? WHERE email = ?");
-                $update->bind_param("ss", $reset_code, $email);
-                
-                if($update->execute()){
-                    $mail = new PHPMailer(true);
-                    try {
-                        $mail->isSMTP();
-                        $mail->Host = 'smtp.gmail.com';
-                        $mail->SMTPAuth = true;
-                        $mail->Username = 'alquiencapuyan18@gmail.com';
-                        $mail->Password = 'rkbz bgup ypiq nwrm'; // Ensure this is an App Password!
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 587;
-                        $mail->SMTPDebug  = 0; // CRITICAL: Ensure no debug output breaks headers
+            // 2. Save reset code to DB
+            $update = $pdo->prepare("UPDATE `01_user_users` SET reset_code = ? WHERE Email = ?");
+            
+            if ($update->execute([$reset_code, $email])) {
+                $mail = new PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host       = 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = 'alquiencapuyan18@gmail.com';
+                    $mail->Password   = 'rkbz bgup ypiq nwrm';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = 587;
+                    $mail->SMTPDebug  = 0;
 
-                        $mail->setFrom('alquiencapuyan18@gmail.com', 'BukSU Linked');
-                        $mail->addAddress($email);
+                    $mail->setFrom('alquiencapuyan18@gmail.com', 'BukSU Linked');
+                    $mail->addAddress($email);
 
-                        $mail->isHTML(true);
-                        $mail->Subject = "Password Reset Code";
-                        $mail->Body = "<p>Your reset code is: <b>$reset_code</b></p>";
+                    $mail->isHTML(true);
+                    $mail->Subject = "Password Reset Code";
+                    $mail->Body    = "<p>Your reset code is: <b>$reset_code</b></p>";
 
-                        $mail->send();
 
-                        $_SESSION['email'] = $email;
-                        $_SESSION['reset_email'] = $email; 
-                        $_SESSION['success'] = "Your password Reset Code has been sent to your email.";
-                        header('Location: verify-code.php');
-                        exit();
+                    $mail->SMTPOptions = array(
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    );
 
-                    } catch (Exception $e) {
-                        $_SESSION['error'] = "Mailer Error: " . $mail->ErrorInfo;
-                        header('Location: forgot-password.php');
-                        exit();
-                    }
-                } else {
-                    $_SESSION['error'] = "Database error. Please try again.";
-                    header('Location: forgot-password.php');
+
+
+                    $mail->send();
+
+                    $_SESSION['email']       = $email;
+                    $_SESSION['reset_email'] = $email;
+                    $_SESSION['success']     = "Your password Reset Code has been sent to your email.";
+                    header('Location: ../03_Authentication/verify-code.php');
+                    exit();
+
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Mailer Error: " . $mail->ErrorInfo;
+                    header('Location: ../03_Authentication/forgot-password.php');
                     exit();
                 }
 
             } else {
-                $_SESSION['error'] = "No user found with that email address.";
-                header('Location: forgot-password.php');
+                $_SESSION['error'] = "Database error. Please try again.";
+                header('Location: ../03_Authentication/forgot-password.php');
                 exit();
             }
-        }
-        ob_end_flush();
-?>
 
+        } else {
+            $_SESSION['error'] = "No user found with that email address.";
+            header('Location: ../03_Authentication/forgot-password.php');
+            exit();
+        }
+
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Database error: " . $e->getMessage();
+        header('Location: ../03_Authentication/forgot-password.php');
+        exit();
+    }
+}
+
+ob_end_flush();
+?>
 
 
 <!DOCTYPE html>
@@ -112,30 +128,9 @@
                         <h1 class="welcomeText">Forgot Password</h1>
                         <p class="loginText">Enter your email address</p>
 
-                        <?php if (isset($_SESSION['success'])): ?>
-                            <div class="alert alert-success alert-dismissible fade show text-center position-absolute start-50 translate-middle-x w-75" role="alert" style="margin-top: 100px;">
-                                <?php echo $_SESSION['success']; ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            
-                            </div>
-                            <?php unset($_SESSION['success']); ?>
-                        <?php endif; ?>
+  
 
-                        <?php if (isset($_SESSION['error'])): ?>
-                            <div class="alert alert-danger alert-dismissible fade show text-center position-absolute top-0 start-50 translate-middle-x w-75" role="alert" style="margin-top: 100px;">
-                                <?php echo $_SESSION['error']; ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php unset($_SESSION['error']); ?>
-                        <?php endif; ?>
-
-                        <?php if (isset($_SESSION['error'])): ?>
-                            <div class="alert alert-danger text-center position-absolute top-0 start-50 translate-middle-x w-75" role="alert" style="margin-top: 100px;">
-                                <?php echo $_SESSION['error']; ?>
-                                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <?php unset($_SESSION['error']); ?>
-                        <?php endif; ?>
+                        <?php include '../01_Includes/Error_Message.php'; ?>
 
                         <form action="forgot-password.php" method="POST">
 

@@ -53,18 +53,16 @@
         <!-- set role code is in  02_Actions/01_Authentication-CRUD/set-role.php -->
         <div class="btn-stack">
             <form method="POST" action="02_Actions/01_Authentication-CRUD/set-role.php">
-              
-            <input type="hidden" name="auth_mode" value="login">
-
-                <button type="submit" name="role_id" value="1" class="card-btn card-btn-primary w-100 mb-3">
+            <input type="hidden" name="auth_mode" value="signup">
+                <button type="submit" name="role_id" value="1" class="card-btn card-btn-primary w-100 mb-3 mt-2">
                     Patient
                 </button>
-                <button type="submit" name="role_id" value="2" class="card-btn card-btn-primary w-100 mb-3">
+                <button type="submit" name="role_id" value="2" class="card-btn card-btn-primary w-100">
                     Pharmacy Admin
                 </button>
-                <button type="submit" name="role_id" value="4" class="card-btn card-btn-primary w-100">
+               <!-- <button type="submit" name="role_id" value="4" class="card-btn card-btn-primary w-100">
                     System Admin
-                </button>
+                </button> -->
             </form>
         </div>
 

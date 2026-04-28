@@ -1,3 +1,30 @@
+<?php
+    include_once '../02_Actions/GlobalVariables.php';
+    include_once '../00_Config/config.php';
+
+    // ── Simple guard — just check if logged in ────────────────────────
+    if (!$_SESSION['user_id']) {
+        header('Location: ../03_Authentication/login.php');
+        exit;
+    }
+
+    // ── Re-check approval from DB directly ───────────────────────────
+    // Don't rely on session value alone — always verify from DB
+    $stmt = $pdo->prepare("
+        SELECT Approval_ID FROM 09_pharmacies WHERE User_ID = ? LIMIT 1
+    ");
+    $stmt->execute([$_SESSION['user_id']]);
+    $pharmacy = $stmt->fetch();
+    $approval_id = $pharmacy['Approval_ID'] ?? 1;
+
+    // ── If not approved — send back to request page ───────────────────
+    if ($approval_id != 2) {
+        $_SESSION['Pharmacy_Approval'] = $approval_id;
+        //header('Location: ../05_PharmacyAdmin/00_RequestAccess.php');
+        //exit;
+    }
+?>
+
 <!doctype html>
 <html class="is-animating">
   <head >
@@ -6,8 +33,8 @@
     <title>Dashboard</title>
 
     <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
-    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
 
+    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
     <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
@@ -34,11 +61,13 @@
               <!-- Search Section -->
               <div class="search-section">
                 <div class="welcome-location-block">
-                  <h2 class="welcome-user">Hello, User 👋</h2>
+                  <p class="welcome-user">Hello, <?= htmlspecialchars($_SESSION['full_name']) ?> 👋</p>
 
                   <div class="user-location">
                     <span class="material-symbols-outlined">location_on</span>
-                    <span>Malaybalay, 8700, Bukidnon, Philippines</span>
+                    <span>
+                      <?= htmlspecialchars($_SESSION['City_Name'])?>,
+                      <?= htmlspecialchars($_SESSION['Province_Name'])?>, Philippines</span>
                   </div>
                 </div>
 
