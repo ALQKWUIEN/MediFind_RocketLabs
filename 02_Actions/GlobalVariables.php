@@ -4,6 +4,19 @@
 // Central place for all session variables used across the project
 // Include this in every page that needs to read or write these values
 
+use Dotenv\Dotenv;
+
+// ─── LOAD ENV VARIABLES ───────────────────────────────────────────
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+// ─── RECAPTCHA KEYS ───────────────────────────────────────────────
+define('RECAPTCHA_SITE_KEY',   $_ENV['RECAPTCHA_SITE_KEY']);
+define('RECAPTCHA_SECRET_KEY', $_ENV['RECAPTCHA_SECRET_KEY']);
+
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

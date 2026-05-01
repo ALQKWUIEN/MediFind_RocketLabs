@@ -10,6 +10,17 @@ body {
   overflow: hidden;
 }
 
+/* reCAPTCHA responsive fix */
+.g-recaptcha {
+  transform-origin: left center;
+}
+
+@media (max-width: 400px) {
+  .g-recaptcha {
+    transform: scale(0.85);
+  }
+}
+
 .left-bg {
   background-image: url("../../images/auth-bg3.png");
   background-size: cover;
@@ -47,17 +58,19 @@ body {
 
 .right-panel {
   background: rgba(255, 255, 255, 0.08);
+  overflow-y: auto;     /* ← allow scroll on small screens */
+  padding: 1rem 0;      /* ← breathing room top/bottom */
 }
-
 .card {
   width: 400px;
   border-radius: 20px;
   border: none;
-  padding: 3rem 3.5rem;
+  padding: 2rem 3rem;   /* slightly reduced padding */
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
   background: #ffffff;
-
-  height: 475px;
+  height: auto;         /* ← fix: grows with content */
+  max-height: 90vh;     /* ← won't overflow the screen */
+  overflow-y: auto;     /* ← scroll if needed on small screens */
   margin-top: 25px;
 }
 
