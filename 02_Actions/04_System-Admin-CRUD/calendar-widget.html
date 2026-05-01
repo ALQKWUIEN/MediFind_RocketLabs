@@ -1,0 +1,143 @@
+<!-- Calendar Card -->
+<style>
+    .cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.cal-dow {
+  font-size: 12px;
+  color: #6B7280;
+  padding: 4px 0 10px;
+  font-weight: 500;
+}
+
+.cal-nav-btn {
+  background: none;
+  border: 0.5px solid #d1d5db;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  color: #6B7280;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cal-nav-btn:hover { background: #f3f4f6; }
+
+.cal-select {
+  flex: 1;
+  padding: 6px 8px;
+  border: 0.5px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cal-day {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px auto;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #374151;
+  transition: background .15s;
+}
+
+.cal-day:hover:not(.cal-other):not(.cal-today):not(.cal-selected) {
+  background: #f3f4f6;
+}
+
+.cal-other   { color: #d1d5db; cursor: default; }
+.cal-today   { background: #1d9e75; color: #fff; font-weight: 500; }
+.cal-selected{ background: #2c2c2a; color: #fff; }
+
+</style>
+
+<div class="stat-card-table" style="height: 100%;">
+    <h5 style="margin-bottom: 0;">Calendar</h5>
+  
+    <div id="calendarWidget" style="display:flex; justify-content:center;">
+      <div style="width:100%;">
+        
+        <!-- Nav -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:8px;">
+          <button onclick="changeMonth(-1)" class="cal-nav-btn">&#8249;</button>
+          <select id="monthSel" onchange="onMonthChange()" class="cal-select"></select>
+          <select id="yearSel"  onchange="onYearChange()"  class="cal-select"></select>
+          <button onclick="changeMonth(1)"  class="cal-nav-btn">&#8250;</button>
+        </div>
+  
+        <!-- Day headers -->
+        <div class="cal-grid">
+          <div class="cal-dow">Su</div><div class="cal-dow">Mo</div><div class="cal-dow">Tu</div>
+          <div class="cal-dow">We</div><div class="cal-dow">Th</div><div class="cal-dow">Fr</div>
+          <div class="cal-dow">Sa</div>
+          <div id="calDays" style="display:contents;"></div>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    const _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let _now = new Date(), _cur = new Date(_now.getFullYear(), _now.getMonth(), 1), _sel = null;
+
+const _mSel = document.getElementById('monthSel');
+const _ySel = document.getElementById('yearSel');
+const _days = document.getElementById('calDays');
+
+_months.forEach((m, i) => {
+  let o = document.createElement('option');
+  o.value = i; o.textContent = m; _mSel.appendChild(o);
+});
+for (let y = 2020; y <= 2035; y++) {
+  let o = document.createElement('option');
+  o.value = y; o.textContent = y; _ySel.appendChild(o);
+}
+
+function renderCal() {
+  _mSel.value = _cur.getMonth();
+  _ySel.value = _cur.getFullYear();
+  const firstDay = new Date(_cur.getFullYear(), _cur.getMonth(), 1).getDay();
+  const total    = new Date(_cur.getFullYear(), _cur.getMonth() + 1, 0).getDate();
+  const prevTotal= new Date(_cur.getFullYear(), _cur.getMonth(), 0).getDate();
+  let html = '';
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="cal-day cal-other">${prevTotal - firstDay + 1 + i}</div>`;
+  }
+  for (let d = 1; d <= total; d++) {
+    let cls = 'cal-day';
+    const isToday = d === _now.getDate() && _cur.getMonth() === _now.getMonth() && _cur.getFullYear() === _now.getFullYear();
+    const isSel   = _sel && d === _sel.d && _cur.getMonth() === _sel.m && _cur.getFullYear() === _sel.y;
+    if (isToday) cls += ' cal-today';
+    if (isSel)   cls += ' cal-selected';
+    html += `<div class="${cls}" onclick="selectDay(${d})">${d}</div>`;
+  }
+  const rem = (firstDay + total) % 7;
+  for (let i = 1; i <= (rem ? 7 - rem : 0); i++) html += `<div class="cal-day cal-other">${i}</div>`;
+  _days.innerHTML = html;
+}
+
+function selectDay(d) { _sel = { d, m: _cur.getMonth(), y: _cur.getFullYear() }; renderCal(); }
+function changeMonth(dir) { _cur = new Date(_cur.getFullYear(), _cur.getMonth() + dir, 1); renderCal(); }
+function onMonthChange() { _cur = new Date(_cur.getFullYear(), +_mSel.value, 1); renderCal(); }
+function onYearChange()  { _cur = new Date(+_ySel.value, _cur.getMonth(), 1); renderCal(); }
+
+renderCal();
+  </script>
+
+  

@@ -1,0 +1,229 @@
+body{
+    overflow: auto;
+}
+
+/* ===================================================================================================*/
+/* REPORTS TABLE */
+/* ===================================================================================================*/
+
+.table-head tr th {
+    background: #F9FAFB;
+    color: #6B7280;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #E5E7EB;
+    padding: 0.85rem 1rem;
+}
+
+
+  .inventoryTable {
+    height: calc(100vh - 100px);
+  }
+  
+  .inventoryTable .col-12 {
+    height: 100%;
+  }
+  
+  .stat-card-table {
+    height: 100%;
+    background: #fff;
+    border-radius: 16px;
+    border: 0.5px solid rgba(0,0,0,0.08);
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box; /* padding stays inside the height */
+  }
+  
+  .card.card-table {
+    flex: 1;          /* fills remaining space inside stat-card-table */
+    min-height: 0;    /* critical — allows flex child to shrink */
+    overflow: hidden;
+  }
+  
+  .table-scroll {
+    height: 100%;
+    overflow-y: auto;
+    max-height: none;
+  }
+
+
+
+  .stat-card-table:hover { box-shadow: 0 4px 15px rgba(70, 70, 70, 0.08); }
+  
+
+
+
+
+
+.table tbody tr td {
+    font-size: 14px;
+    color: #374151;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.table tbody tr:hover {
+    background: #F9FAFB;
+}
+
+/* Status Badge */
+
+.badge-status {
+    
+    text-align: center;
+    width: 100%;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-status.completed {
+ 
+    background: #DCFCE7;
+    color: #16A34A;
+}
+
+.badge-status.pending {
+    background: #FEF9C3;
+    color: #CA8A04;
+}
+
+.badge-status.failed {
+    width: 100%;
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+/* Action Buttons */
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #E5E7EB;
+    background: #ffffff;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+}
+
+.btn-action:hover {
+    background: #f3f0f9;
+    color: #397a66;
+    border-color: #397a66;
+}
+
+
+/* Inventory Status Badges */
+.badge-status.available {
+    background: #DCFCE7;
+    color: #16A34A;
+}
+
+.badge-status.low-stock {
+    background: #FEF9C3;
+    color: #CA8A04;
+}
+
+.badge-status.out-of-stock {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #ced4da;
+}
+
+.searchbar-group{
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid #d8d8d8;
+}
+
+.searchbar-group .input-group-text {
+    border: none;
+    background: #ffffff;
+}
+
+.searchbar-group .form-control {
+    border: none;
+    border-left: none !important;
+}
+
+.searchbar{
+    border: none;
+}
+
+.search-icon{
+    border-radius: 100px !important;
+    background-color: white; 
+    width: auto;
+    height: 40px;
+}
+
+.icon{
+    width: 40px;
+    height: 40px;       
+    border-radius: 50%;
+    overflow: hidden;    
+    flex-shrink: 0;    
+
+    border: 1px solid transparent;
+    border-radius: 50%;
+
+    background: 
+        linear-gradient(white, white) padding-box,
+        linear-gradient(135deg, #1d9e75 11%, #1d9e75 100%) border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+/* Searchbar Group Styling */
+.searchbar-group .input-group-text {
+    border-radius: 8px 0 0 8px;
+    background-color: #ffffff;
+}
+
+.searchbar-group .form-control {
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+}
+
+.searchbar-group .form-control:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+}
+
+/* Ensure buttons don't wrap text awkwardly on medium screens */
+.text-nowrap {
+    white-space: nowrap;
+}
+
+/* Form controls height and padding to match design */
+.form-select, .form-control, .btn {
+    height: 44px; 
+    font-size: 14px;
+}
+
+/* Rounding the filters to match the design */
+.form-select {
+    border-radius: 8px;
+}
+
+
+
+/* COLLAPSE STATUS */
+

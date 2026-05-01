@@ -1,81 +1,403 @@
+<?php
+// Global Variable and DB Connection
+include_once '../02_Actions/GlobalVariables.php';
+include_once '../00_Config/config.php';
+
+require '../02_Actions/04_System-Admin-CRUD/select-count.php';
+require '../02_Actions/04_System-Admin-CRUD/display-pharmacy.php';
+
+
+// ── GUARD: Users must log in ────────────────────────
+if (!$_SESSION['user_id']) {
+  header('Location: ../03_Authentication/login.php');
+  exit;
+}
+
+?>
+
 <!doctype html>
 <html class="is-animating">
-  <head >
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
 
-    <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
-    <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
+  <title>Pharmacies</title>
 
-    <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
+  <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Page transition -->
-    <?php include '../01_Includes/page-transition-hardcode.php'?>
-    
-  </head>
-  <body>
+  <!-- jQuery -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 
-  
-    <div class="wrapper d-flex align-items-stretch">
-        <div id="system-sidebar-container"></div>
+  <!-- STYLES -->
+  <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
+  <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/01_dashboard.css">
+  <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/02_ManageInventory.css">
 
-      <div class="main-panel d-flex flex-column flex-grow-1">
-        <div id="topbar-container"></div>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <div id="content">
-          <div class="content-body">
+  <!-- Page transition -->
+  <?php include '../01_Includes/page-transition-hardcode.php' ?>
+
+  <style>
+    body {
+      overflow: auto;
+    }
+
+    /* ── Stats Toggle ─────────────────────────────────── */
+    .hero {
+      overflow: hidden;
+      max-height: 400px;
+      opacity: 1;
+      transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+    }
+
+    .hero.collapsed {
+      max-height: 0 !important;
+      opacity: 0;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .stats-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 13px;
+      color: #6c757d;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      line-height: 1;
+    }
+
+    .stats-toggle-btn:hover {
+      background: #f8f9fa;
+      color: #343a40;
+    }
+
+    .stats-toggle-btn .chevron {
+      display: inline-block;
+      transition: transform 0.35s ease;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .stats-toggle-btn .chevron.rotated {
+      transform: rotate(180deg);
+    }
+
+    .stats-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.25rem 0.25rem 0.25rem 0.25rem;
+      margin-bottom: 2px;
+    }
+
+    /* STATUS BADGE DESIGN */
+
+    .badge-status {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-active {
+      background-color: #d4f5e2;
+      color: #1a7a45;
+    }
+
+    .badge-inactive {
+      background-color: #e8e8e8;
+      color: #5a5a5a;
+    }
+
+    .badge-rejected {
+      background-color: #fde8e8;
+      color: #c0392b;
+    }
+
+    .badge-suspended {
+      background-color: #fde8e8;
+      color:rgb(240, 50, 29);
+    }
+
+    .badge-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    /* ── End Stats Toggle ─────────────────────────────── */
+  </style>
+</head>
+
+<body>
+  <div class="wrapper d-flex align-items-stretch">
+    <div id="system-sidebar-container"></div>
+
+    <div class="main-panel d-flex flex-column flex-grow-1">
+      <div id="topbar-container"></div>
+
+      <div class="content">
+        <div class="content-inventory px-3">
+
+          <!-- ══ STAT CARDS ═════════════════════════════════════ -->
+
+          <div class="hero" id="statsHero">
+            <div style="padding: 1rem 0;">
+              <div class="row g-3">
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                  <div class="stat-card">
+                    <div class="card-header-row">
+                      <div class="card-icon icon-green">
+                        <span class="material-symbols-outlined">admin_meds</span>
+                      </div>
+                      <span class="card-label label-green">Pharmacy Users</span>
+                    </div>
+                    <div class="card-value"><?= $totalPharmacies ?></div>
+                    <div class="card-sub">Below threshold</div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                  <div class="stat-card">
+                    <div class="card-header-row">
+                      <div class="card-icon icon-green">
+
+                        <span class="material-symbols-outlined">supervisor_account</span>
+                      </div>
+                      <span class="card-label label-green">Approved Pharmacies</span>
+                    </div>
+                    <div class="card-value"><?= $approvedPharmacies ?></div>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="badge-up">
+                        <span class="material-symbols-outlined">trending_up</span>16%
+                      </span>
+                      <span class="card-sub">this month</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                  <div class="stat-card">
+                    <div class="card-header-row">
+                      <div class="card-icon icon-green">
+                        <span class="material-symbols-outlined">do_not_disturb_on</span>
+                      </div>
+                      <span class="card-label label-green">Pending Requests</span>
+                    </div>
+                    <div class="card-value"><?= $pendingPharmacies ?></div>
+                    <div class="card-sub">Within 30 days</div>
+                  </div>
+                </div>
+
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                  <div class="stat-card">
+                    <div class="card-header-row">
+                      <div class="card-icon icon-green">
+                        <span class="material-symbols-outlined">do_not_disturb_on</span>
+                      </div>
+                      <span class="card-label label-green">Medicine Inventory</span>
+                    </div>
+                    <div class="card-value"><?= $totalInventory ?></div>
+                    <div class="card-sub">Within 30 days</div>
+                  </div>
+                </div>
+
+
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ END STAT CARDS ══════════════════════════════════ -->
+
+
+          <!-- ══ INVENTORY TABLE ════════════════════════════════ -->
+          <div class="inventoryTable mt-3">
+            <div class="col-12">
+              <div class="stat-card-table ">
+                <h5>Pharmacy Center</h5>
+
+                <div class="toolbars px-2">
+                  <div class="row g-2 align-items-center mb-3">
+
+                    <!-- Search -->
+                    <div class="col-12 col-lg-7">
+                      <div class="input-group searchbar-group">
+                        <span class="input-group-text search-icon bg-white border-end-0">
+                          <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" id="searchPharmacy" class="form-control searchbar border-start-0 ps-0"
+                          placeholder="Search pharmacy...">
+                      </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-6 col-lg-3">
+                      <select id="filterStatus" class="form-select border-secondary-subtle">
+                        <option value="">All Status</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="suspended">Suspended</option>
+                      </select>
+                    </div>
+
+                    <!-- Toggle -->
+                    <div class="col-6 col-lg-2 d-flex justify-content-end">
+                      <button id="statsToggleBtn" onclick="toggleStatsCards()"
+                        class="btn btn-outline-secondary px-3 rounded-3 d-flex align-items-center justify-content-center gap-1 w-100">
+                        <span id="statsChevron" class="material-symbols-outlined"
+                          style="color: #6c757d; font-size: 1.1rem; transition: transform 0.35s ease;">unfold_more</span>
+                        <span id="statsToggleLabel" class="ms-1">Expand</span>
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- End Toolbar -->
+
+                <div class="card card-table border">
+                  <div class="table-responsive rounded table-scroll">
+                    <table class="table table-hover align-middle mb-5">
+                      <thead class="table-head">
+                        <tr>
+                          <th><input type="checkbox" id="selectAll"></th>
+                          <th>ID</th>
+                          <th>PHARMACY</th>
+                          <th>ADMINISTRATOR</th>
+                          <th>EMAIL</th>
+                          <th>CONTACT NO.</th>
+                          <th>LOCATION</th>
+                          <th>STATUS</th>
+                          <th>CREATED</th>
+                          <th>ACTIONS</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <?php if ($stmt && $stmt->rowCount() > 0): ?>
+                          <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                            <?php
+                            $status = trim($row['Approval_Status']);
+                            $badgeClass = match ($status) {
+                              'Approved' => 'badge-active',
+                              'Pending' => 'badge-pending',
+                              'Rejected' => 'badge-rejected',
+                              // 'Suspended' => 'badge-suspended',
+                              default => 'badge-inactive'
+                            };
+                            ?>
+                            <tr>
+                              <td><input type="checkbox" class="form-check-input row-check"></td>
+                              <td><?= htmlspecialchars($row['Pharmacy_ID']) ?></td>
+                              <td class="fw-bold"><?= htmlspecialchars($row['Pharmacy_name']) ?></td>
+                              <td><?= htmlspecialchars($row['Owner_name']) ?></td>
+                              <td><?= htmlspecialchars($row['Owner_Email']) ?></td>
+                              <td><?= htmlspecialchars($row['Phone']) ?></td>
+                              <td><?= htmlspecialchars($row['Full_Address']) ?></td>
+                              <td><span class="badge-status <?= $badgeClass ?>"><?= htmlspecialchars($status) ?></span></td>
+                              <td><?= htmlspecialchars($row['DateCreated']) ?></td>
+                              <td class="text-end pe-4">
+                                <div class="d-flex gap-3 justify-content-end text-muted">
+
+                                  <!-- View -->
+                                  <i class="bi bi-eye cursor-pointer view-btn" title="View"
+                                    data-id="<?= htmlspecialchars($row['Pharmacy_ID']) ?>"
+                                    data-name="<?= htmlspecialchars($row['Pharmacy_name']) ?>"
+                                    data-owner="<?= htmlspecialchars($row['Owner_name']) ?>"
+                                    data-email="<?= htmlspecialchars($row['Owner_Email']) ?>"
+                                    data-phone="<?= htmlspecialchars($row['Phone']) ?>"
+                                    data-address="<?= htmlspecialchars($row['Full_Address']) ?>"
+                                    data-status="<?= htmlspecialchars($status) ?>"
+                                    data-created="<?= htmlspecialchars($row['DateCreated']) ?>"
+                                    data-approved="<?= htmlspecialchars($row['Date_Approved'] ?? 'N/A') ?>">
+                                  </i>
+
+                                  <!-- Edit -->
+                                  <i class="bi bi-pencil cursor-pointer edit-btn" title="Edit"
+                                    data-id="<?= htmlspecialchars($row['Pharmacy_ID']) ?>"
+                                    data-name="<?= htmlspecialchars($row['Pharmacy_name']) ?>"
+                                    data-owner="<?= htmlspecialchars($row['Owner_name']) ?>"
+                                    data-email="<?= htmlspecialchars($row['Owner_Email']) ?>"
+                                    data-phone="<?= htmlspecialchars($row['Phone']) ?>"
+                                    data-address="<?= htmlspecialchars($row['Full_Address']) ?>"
+                                    data-status="<?= htmlspecialchars($status) ?>"
+                                    data-created="<?= htmlspecialchars($row['DateCreated']) ?>"
+                                    data-approved="<?= htmlspecialchars($row['Date_Approved'] ?? 'N/A') ?>">
+                                  </i>
+
+                                  <!-- Delete -->
+                                  <i class="bi bi-trash cursor-pointer delete-btn text-danger" title="Delete"
+                                    data-id="<?= htmlspecialchars($row['Pharmacy_ID']) ?>">
+                                  </i>
+
+                                </div>
+                              </td>
+                            </tr>
+                          <?php endwhile; ?>
+                        <?php else: ?>
+                          <tr>
+                            <td colspan="10" class="text-center text-muted py-4">
+                              <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                              No pharmacies found.
+                            </td>
+                          </tr>
+                        <?php endif; ?>
+                      </tbody>
+
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- ══ END TABLE ═════════════════════════════════════ -->
+
 
         </div>
-
-        </div>
-    </div>
-    
-    <div class="floating-btns">
-      <button class="float-btn" onclick="history.back()">
-        <span class="material-symbols-outlined bot-icon">smart_toy</span>
-      </button>
+      </div>
     </div>
 
-    <script>
-      const categories = document.getElementById("quickCategories");
-      const prevBtn = document.querySelector(".category-nav.prev");
-      const nextBtn = document.querySelector(".category-nav.next");
-      const categoryItems = document.querySelectorAll(".category-item");
-
-      function updateNavVisibility() {
-        const isOverflowing = categories.scrollWidth > categories.clientWidth;
-        prevBtn.style.display = isOverflowing ? "" : "none";
-        nextBtn.style.display = isOverflowing ? "" : "none";
-      }
-
-      if (prevBtn && nextBtn && categories) {
-        prevBtn.addEventListener("click", () => {
-          categories.scrollBy({ left: -220, behavior: "smooth" });
-        });
-
-        nextBtn.addEventListener("click", () => {
-          categories.scrollBy({ left: 220, behavior: "smooth" });
-        });
-
-        // Run on load and whenever the container resizes
-        updateNavVisibility();
-        new ResizeObserver(updateNavVisibility).observe(categories);
-      }
-
-      categoryItems.forEach((item) => {
-        item.addEventListener("click", function () {
-          categoryItems.forEach((el) => el.classList.remove("active"));
-          this.classList.add("active");
-        });
-      });
-    </script>
 
 
-  </body>
+
+
+  </div>
+
+  <!-- ══ MODAL ════════════════════════════════════════════════ -->
+  <?php include '../02_Actions/04_System-Admin-CRUD/pharmacy-modal.php'; ?>
+
+  <!-- ── Stats Toggle Script ─────────────────────────────────── -->
+  <script>
+    function toggleStatsCards() {
+      const hero = document.getElementById('statsHero');
+      const label = document.getElementById('statsToggleLabel');
+      const chevron = document.getElementById('statsChevron');
+      const isVisible = !hero.classList.contains('collapsed');
+
+      hero.classList.toggle('collapsed', isVisible);
+      label.textContent = isVisible ? 'Expand' : 'Collapse';
+      chevron.classList.toggle('rotated', isVisible);
+    }
+  </script>
+  <!-- ── End Stats Toggle Script ────────────────────────────── -->
+
+</body>
+
 </html>

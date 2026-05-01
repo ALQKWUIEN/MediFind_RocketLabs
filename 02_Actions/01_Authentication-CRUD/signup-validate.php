@@ -125,7 +125,7 @@ try {
         $stmt = $pdo->prepare("
             INSERT INTO `09_pharmacies` 
                 (User_ID, Address_ID, Approval_ID, DateCreated)
-                 VALUES (?,?, 1, NOW())
+                 VALUES (?,?, 4, NOW())
         ");
         $stmt->execute([$user_id, $address_id]);
     }

@@ -120,10 +120,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             case ROLE_PHARMACIST:
             case ROLE_PHARMACY_OWNER:
-                // ── Always use the DB value stored in session ─────────────────
-                // $_SESSION['Pharmacy_Approval'] was set from DB during login
-                if (in_array($_SESSION['Pharmacy_Approval'], [1, 3])) {
-                    header('Location: ../05_PharmacyAdmin/01_Dashboard.php');
+                // 1 = Pending, 3 = Rejected, 4 = Not Requested → setup page
+                // 2 = Approved → dashboard
+                if (in_array($_SESSION['Pharmacy_Approval'], [1, 3, 4])) {
+                    header('Location: ../05_PharmacyAdmin/00_RequestAccess.php');
                 } else {
                     header('Location: ../05_PharmacyAdmin/01_Dashboard.php');
                 }

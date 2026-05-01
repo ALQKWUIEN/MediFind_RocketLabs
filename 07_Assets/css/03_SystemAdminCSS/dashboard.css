@@ -1,0 +1,7 @@
+html, body {
+    /* Change 'hidden' to 'visible' or 'auto' */
+    overflow-x: hidden; /* Prevents side-scrolling */
+    overflow-y: auto;   /* Enables vertical scrolling */
+    height: auto !important; 
+    min-height: 100%;
+}

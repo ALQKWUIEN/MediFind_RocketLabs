@@ -1,3 +1,8 @@
+<?php
+    include_once '../02_Actions/GlobalVariables.php';
+    include_once '../00_Config/config.php';
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,12 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Topbar</title>
     <!-- <link rel="icon" href="/07_Assets/images/logo.png" type="image/png"> -->
-    <link href="/07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../07_Assets/bootstrap" rel="stylesheet" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="/07_Assets/css/topbar.css" />
+    <link rel="stylesheet" href="../07_Assets/css/04_Includes CSS/topbar.css" />
   </head>
   <body>
     <!--  Topbar  -->
@@ -116,8 +121,8 @@
 
         <!-- User Info -->
         <div class="topbar-user-info">
-          <p class="topbar-user-name">Hanni</p>
-          <p class="topbar-user-role">User</p>
+          <p class="topbar-user-name" > <?= htmlspecialchars($_SESSION['username'])?></p>
+          <p class="topbar-user-role" > <?= htmlspecialchars($_SESSION['role_label'])?></p>
         </div>
 
         <!-- Avatar with dropdown -->
@@ -150,7 +155,7 @@
       </div>
     </div>
 
-    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <script>
       const sidebar = document.getElementById("sidebar");

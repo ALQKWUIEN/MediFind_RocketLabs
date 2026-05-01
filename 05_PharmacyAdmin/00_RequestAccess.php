@@ -9,7 +9,6 @@
         }
 
         // ── Re-check approval status fresh from DB every load ─────────────
-        // This way if admin approves, next refresh auto-redirects to dashboard
         $stmt = $pdo->prepare("
             SELECT Pharmacy_name, Owner_name, Approval_ID 
             FROM 09_pharmacies 
@@ -19,27 +18,30 @@
         $stmt->execute([$_SESSION['user_id']]);
         $pharmacy = $stmt->fetch();
 
-        $approval_id   = $pharmacy['Approval_ID']   ?? 1;
+        // ── Extract values from DB result ──────────────────────────────────
+        $approval_id   = $pharmacy['Approval_ID'] ?? 4;      // ← THIS WAS MISSING
         $pharmacy_name = $pharmacy['Pharmacy_name'] ?? '';
-        $owner_name    = $pharmacy['Owner_name']    ?? $_SESSION['full_name']; // default to logged in user
-        $is_pending    = ($approval_id == 1);
-        $is_rejected   = ($approval_id == 3);
+        $owner_name    = $pharmacy['Owner_name'] ?? $_SESSION['full_name'];
+        $phone         = trim($_POST['phone'] ?? $_SESSION['Phone'] ?? '');
 
-        // ── If already approved — skip this page entirely ─────────────────
+        // ── Always sync session with DB value ─────────────────────────────
+        $_SESSION['Pharmacy_Approval'] = $approval_id;
+
+        $is_not_requested = ($approval_id == 4);
+        $is_pending       = ($approval_id == 1);
+        $is_rejected      = ($approval_id == 3);
+
         // ── If already approved — update session then redirect ────────────
         if ($approval_id == 2) {
-            // Update session value so the switch in login won't loop
-            $_SESSION['Pharmacy_Approval'] = 2;
-            
-            // Also update pharmacy_name in session in case it changed
             $_SESSION['pharmacy_name'] = $pharmacy['Pharmacy_name'] ?? null;
-            
             header('Location: ../05_PharmacyAdmin/01_Dashboard.php');
             exit;
         }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,12 +53,9 @@
     <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/01_Dashboard.css">
     <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/font-style.css">
 
-    
-
     <?php include '../01_Includes/page-transition-hardcode.php'; ?>
 
     <style>
-        /* ── Dark overlay covering entire screen ────────────────── */
         .approval-overlay {
             position: fixed;
             inset: 0;
@@ -67,7 +66,6 @@
             justify-content: center;
         }
 
-        /* ── White modal card ───────────────────────────────────── */
         .approval-card {
             background: #ffffff;
             border-radius: 20px;
@@ -79,15 +77,19 @@
             z-index: 1050;
         }
 
-        /* ── Brand title ────────────────────────────────────────── */
         .approval-title {
             font-size: 1.8rem;
             font-weight: 700;
-            /* font-family: 'Poppins', sans-serif; */
             margin-bottom: 4px;
         }
-        .approval-title .medi { color: #1d9e75; }
-        .approval-title .find { color: #ff5b27; }
+
+        .approval-title .medi {
+            color: #1d9e75;
+        }
+
+        .approval-title .find {
+            color: #ff5b27;
+        }
 
         .approval-subtitle {
             font-size: 13px;
@@ -95,7 +97,6 @@
             margin-bottom: 1.4rem;
         }
 
-        /* ── Input groups (copied from Auth-style.css) ──────────── */
         .approval-card .input-group-text {
             background: #ffffff;
             border-right: none;
@@ -120,7 +121,6 @@
             border-color: rgb(166, 207, 194);
         }
 
-        /* ── Submit button (copied from Auth-style.css) ─────────── */
         .btn-request {
             display: block;
             width: 100%;
@@ -136,14 +136,17 @@
             transition: opacity 0.2s ease, transform 0.15s ease;
             margin-top: 0.5rem;
         }
-        .btn-request:hover { opacity: 0.88; }
+
+        .btn-request:hover {
+            opacity: 0.88;
+        }
+
         .btn-request:disabled {
             background-color: #ccc;
             cursor: not-allowed;
             opacity: 1;
         }
 
-        /* ── Pending status text ────────────────────────────────── */
         .pending-text {
             font-size: 12px;
             color: #888;
@@ -152,38 +155,41 @@
             margin-bottom: 0;
         }
 
-        /* ── Logout link ────────────────────────────────────────── */
         .logout-text {
             font-size: 11.5px;
             color: #aaa;
             margin-top: 0.8rem;
             margin-bottom: 0;
         }
+
         .logout-link {
             color: #1d9e75;
             font-weight: 600;
             text-decoration: none;
         }
-        .logout-link:hover { text-decoration: underline; }
+
+        .logout-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
 <body>
     <div class="wrapper d-flex align-items-stretch">
 
-        <!-- Sidebar — stays visible behind overlay -->
+        <!-- Sidebar -->
         <div id="pharmacy-sidebar-container">
             <?php include '../01_Includes/pharmacy-sidebar.php'; ?>
         </div>
 
         <div class="main-panel d-flex flex-column flex-grow-1">
 
-            <!-- Topbar — stays visible behind overlay -->
+            <!-- Topbar -->
             <div id="topbar-container">
                 <?php include '../01_Includes/topbar.php'; ?>
             </div>
 
-            <!-- Dashboard content blurred behind overlay -->
+            <!-- Blurred dashboard behind overlay -->
             <div id="content" style="filter: blur(2px); pointer-events: none; user-select: none;">
                 <div class="content-body p-4">
                     <h4 class="text-muted">Dashboard</h4>
@@ -194,7 +200,7 @@
         </div>
     </div>
 
-
+    <!-- ── Overlay ─────────────────────────────────────────────────── -->
     <div class="approval-overlay">
         <div class="approval-card">
 
@@ -221,43 +227,52 @@
             <?php endif; ?>
 
             <!-- Setup form -->
-            <form method="POST"
-                  action="../02_Actions/03_Pharmacy-Admin-CRUD/setup_pharmacy.php">
+            <form method="POST" action="../02_Actions/03_Pharmacy-Admin-CRUD/request_Approval.php">
 
-                <!-- Pharmacy Name -->
-                <div class="input-group mb-3">
-                    <span class="input-group-text">
-                        <i class="bi bi-shop"></i>
-                    </span>
-                    <input type="text"
-                           name="pharmacy_name"
-                           class="form-control"
-                           placeholder="Pharmacy Name"
-                           value="<?= htmlspecialchars($pharmacy_name) ?>"
-                           <?= $is_pending ? : 'required' ?>>
-                </div>
-
-                <!-- Owner Name — editable, defaults to logged in user's full name -->
+                <!-- Owner Name — always disabled, pulled from session -->
                 <div class="input-group mb-3">
                     <span class="input-group-text">
                         <i class="bi bi-person"></i>
                     </span>
-                    <input type="text"
-                           name="owner_name"
-                           class="form-control"
-                           placeholder="Pharmacy Owner"
-                           value="<?= htmlspecialchars($owner_name) ?>"
-                           <?= $is_pending ?  : 'required' ?>>
+                    <input type="text" name="owner_name" class="form-control" placeholder="Pharmacy Owner"
+                        value="<?= htmlspecialchars($owner_name) ?>" disabled>
                 </div>
 
-                <!-- Submit button -->
-                <button type="submit"
-                        class="btn-request"
-                        <?= $is_pending ? : '' ?>>
-                        <?= $is_rejected ? 'Resubmit Application' : 'Request Approval' ?>
+
+                <div class="input-group mb-3" style="display: none;">
+                    <span class="input-group-text">
+                        <i class="bi bi-telephone"></i>
+                    </span>
+                    <input type="text" name="phone" class="form-control" placeholder="Email"
+                        value="<?= htmlspecialchars($_SESSION['Email'] ?? '') ?>"
+                        <?= $is_pending ? 'disabled' : 'disabled' ?>>
+                </div>
+
+                <div class="input-group mb-3" style="display: none;">
+                    <span class="input-group-text">
+                        <i class="bi bi-telephone"></i>
+                    </span>
+                    <input type="text" name="phone" class="form-control" placeholder="Contact Number"
+                        value="<?= htmlspecialchars($_SESSION['Phone'] ?? '') ?>"
+                        <?= $is_pending ? 'disabled' : 'disabled' ?>>
+                </div>
+
+
+                <!-- Pharmacy Name — disabled when pending -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text">
+                        <i class="bi bi-shop"></i>
+                    </span>
+                    <input type="text" name="pharmacy_name" class="form-control" placeholder="Pharmacy Name"
+                        value="<?= htmlspecialchars($pharmacy_name) ?>" <?= $is_pending ? 'disabled' : 'required' ?>>
+                </div>
+
+                <!-- Submit button — disabled when pending -->
+                <button type="submit" class="btn-request" <?= $is_pending ? 'disabled' : '' ?>>
+                    <?= $is_rejected ? 'Resubmit Application' : 'Request Approval' ?>
                 </button>
 
-                <!-- Pending message under button -->
+                <!-- Pending message -->
                 <?php if ($is_pending): ?>
                     <p class="pending-text">
                         <i class="bi bi-clock me-1"></i>
@@ -285,4 +300,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 </body>
+
 </html>
