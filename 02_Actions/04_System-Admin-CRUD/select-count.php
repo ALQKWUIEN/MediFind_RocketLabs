@@ -36,10 +36,12 @@ $approvedPharmacies = $stmt->fetchColumn();
 
 // 5. Suspended Accounts
 $stmt = $pdo->query(
-    "SELECT COUNT(*) FROM view_01_users 
-     WHERE UserStatus COLLATE utf8mb4_unicode_ci = 'Suspended'"
+    "SELECT COUNT(*) FROM view_04_pharmacy
+     WHERE Approval_Status COLLATE utf8mb4_unicode_ci = 'Suspended'"
 );
 $suspendedAccounts = $stmt->fetchColumn();
+
+
 
 // 06. Count Inventory
 $stmt = $pdo->query(

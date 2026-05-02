@@ -9,37 +9,40 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ─── COLLECT INPUT ────────────────────────────────────────────────
-$fname       = trim($_POST['Fname']      ?? '');
-$mname       = trim($_POST['Mname']      ?? '');
-$lname       = trim($_POST['Lname']      ?? '');
-$contact     = trim($_POST['ContactNo']  ?? '');
-$gender      = trim($_POST['gender']     ?? '');
-$birth_date  = trim($_POST['birth_date'] ?? '');
-$province    = (int) ($_POST['Province'] ?? 0);
-$city        = (int) ($_POST['City']     ?? 0);
-$barangay    = (int) ($_POST['Barangay'] ?? 0);
-$street      = trim($_POST['Street']     ?? '');
-$email       = trim($_POST['email']      ?? '');
-$username    = trim($_POST['username']   ?? '');
-$password    = $_POST['password']        ?? '';
-$confirmpass = $_POST['confirmpass']     ?? '';
-$role_id     = $_SESSION['selected_role_id'] ?? null;
+$fname = trim($_POST['Fname'] ?? '');
+$mname = trim($_POST['Mname'] ?? '');
+$lname = trim($_POST['Lname'] ?? '');
+$contact = trim($_POST['ContactNo'] ?? '');
+$gender = trim($_POST['gender'] ?? '');
+$birth_date = trim($_POST['birth_date'] ?? '');
+$province = (int) ($_POST['Province'] ?? 0);
+$city = (int) ($_POST['City'] ?? 0);
+$barangay = (int) ($_POST['Barangay'] ?? 0);
+$street = trim($_POST['Street'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$username = trim($_POST['username'] ?? '');
+$password = $_POST['password'] ?? '';
+$confirmpass = $_POST['confirmpass'] ?? '';
+$role_id = $_SESSION['selected_role_id'] ?? null;
 
 // ─── REDIRECT HELPER ──────────────────────────────────────────────
-function redirectBackWithError($message, $step = 1) {
-    $_SESSION['error']      = $message;
+function redirectBackWithError($message, $step = 1)
+{
+    $_SESSION['error'] = $message;
     $_SESSION['error_step'] = $step;
     $saved = $_POST;
     unset($saved['password'], $saved['confirmpass']);
-    $_SESSION['form_data']  = $saved;
+    $_SESSION['form_data'] = $saved;
     header('Location: ../../03_Authentication/signup.php');
     exit();
 }
 
 // ─── VALIDATE ─────────────────────────────────────────────────────
-if (!$fname || !$lname || !$contact || !$gender || !$birth_date ||
+if (
+    !$fname || !$lname || !$contact || !$gender || !$birth_date ||
     !$province || !$city || !$barangay || !$street ||
-    !$email || !$username || !$password || !$confirmpass || !$role_id) {
+    !$email || !$username || !$password || !$confirmpass || !$role_id
+) {
     redirectBackWithError('Please fill in all required fields.', 1);
 }
 
@@ -92,18 +95,20 @@ try {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     $stmt = $pdo->prepare("
-        INSERT INTO `01_user_users` 
-            (Username, First_name, Middle_name, Last_name, 
-             Email, Phone, Address_ID, Role_ID, User_Status_ID,
-             Profilepic_url, Password_hash, DateCreated, DateApproved, reset_code)
-        VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?, 1, NULL, ?, NOW(), NULL, NULL)
-    ");
+    INSERT INTO `01_user_users` 
+        (Username, First_name, Middle_name, Last_name, Gender, Birthdate, 
+         Email, Phone, Address_ID, Role_ID, User_Status_ID,
+         Profilepic_url, Password_hash, DateCreated, DateApproved, reset_code)
+    VALUES 
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NULL, ?, NOW(), NULL, NULL)
+");
     $stmt->execute([
         $username,
         $fname,
-        $mname ?: null,     // NULL if empty
+        $mname ?: null,
         $lname,
+        $gender === 'Male' ? 'M' : 'F', 
+        $birth_date,
         $email,
         $contact,
         $address_id,

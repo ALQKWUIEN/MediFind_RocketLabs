@@ -4,7 +4,7 @@ include_once '../00_Config/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $email    = trim($_POST['email']);
+    $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
     // ─── 0. Verify reCAPTCHA ──────────────────────────────────────
@@ -18,9 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $verify = file_get_contents(
         'https://www.google.com/recaptcha/api/siteverify?secret='
-            . RECAPTCHA_SECRET_KEY
-            . '&response=' . urlencode($recaptcha_token)
-            . '&remoteip=' . urlencode($_SERVER['REMOTE_ADDR'])
+        . RECAPTCHA_SECRET_KEY
+        . '&response=' . urlencode($recaptcha_token)
+        . '&remoteip=' . urlencode($_SERVER['REMOTE_ADDR'])
     );
 
     $result = json_decode($verify, true);
@@ -78,14 +78,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         session_regenerate_id(true);
 
         // ─── 6. Store user info into session ───────────────────────────
-        $_SESSION['user_id']    = $user['User_ID'];
-        $_SESSION['username']   = $user['Username'];
-        $_SESSION['full_name']  = $user['First_name'] . ' ' . $user['Middle_name'] . ' ' . $user['Last_name'];
-        $_SESSION['role_id']    = $user['Role_ID'];
+        $_SESSION['user_id'] = $user['User_ID'];
+        $_SESSION['username'] = $user['Username'];
+        $_SESSION['fname'] = $user['First_name'];
+        $_SESSION['mname'] = $user['Middle_name'];
+        $_SESSION['lname'] = $user['Last_name'];
+
+        $_SESSION['full_name'] = $user['First_name'] . ' ' . $user['Middle_name'] . ' ' . $user['Last_name'];
+        
+        $_SESSION['role_id'] = $user['Role_ID'];
         $_SESSION['role_label'] = $user['Role'];
         $_SESSION['profile_pic'] = $user['Profilepic_url'];
-        $_SESSION['Email']      = $user['Email'];
-        $_SESSION['Phone']      = $user['Phone'];
+        $_SESSION['Email'] = $user['Email'];
+        $_SESSION['Phone'] = $user['Phone'];
         $_SESSION['UserStatus'] = $user['UserStatus'];
 
 
@@ -98,9 +103,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmtAddr->execute([$user['User_ID']]);
         $address = $stmtAddr->fetch();
 
-        $_SESSION['Street']        = $address['Street']        ?? null;
+        $_SESSION['Street'] = $address['Street'] ?? null;
         $_SESSION['Barangay_Name'] = $address['Barangay_Name'] ?? null;
-        $_SESSION['City_Name']     = $address['City_Name']     ?? null;
+        $_SESSION['City_Name'] = $address['City_Name'] ?? null;
         $_SESSION['Province_Name'] = $address['Province_Name'] ?? null;
 
 
@@ -126,12 +131,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $pharmacy = $stmtPharm->fetch();
 
             if ($pharmacy) {
-                $_SESSION['pharmacy_id']            = $pharmacy['Pharmacy_ID'];
-                $_SESSION['pharmacy_name']          = $pharmacy['Pharmacy_name'];
-                $_SESSION['inventory_id']           = $pharmacy['Inventory_ID'];
-                $_SESSION['Logo_URL']               = $pharmacy['Logo_URL'];
-                $_SESSION['Pic_URL']                = $pharmacy['Pic_URL'];
-                $_SESSION['Pharmacy_Approval']      = $pharmacy['Approval_ID'];
+                $_SESSION['pharmacy_id'] = $pharmacy['Pharmacy_ID'];
+                $_SESSION['pharmacy_name'] = $pharmacy['Pharmacy_name'];
+                $_SESSION['inventory_id'] = $pharmacy['Inventory_ID'];
+                $_SESSION['Logo_URL'] = $pharmacy['Logo_URL'];
+                $_SESSION['Pic_URL'] = $pharmacy['Pic_URL'];
+                $_SESSION['Pharmacy_Approval'] = $pharmacy['Approval_ID'];
             }
         }
 
@@ -143,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
 
             case ROLE_PHARMACIST:
-              case ROLE_PHARMACY_OWNER:
+            case ROLE_PHARMACY_OWNER:
                 // 1 = Pending, 3 = Rejected, 4 = Not Requested → setup page
                 // 2 = Approved → dashboard
                 if (in_array($_SESSION['Pharmacy_Approval'], [1, 3, 4])) {
@@ -154,7 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
 
             case ROLE_SYSTEM_ADMIN:
-                header('Location: ../05_PharmacyAdmin/00_RequestAccess.php');
+                header('Location: ../06_SystemAdmin/01_Dashboard.php');
                 break;
             default:
                 header('Location: ../03_Authentication/login.php');
@@ -170,9 +175,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 <!DOCTYPE html>
-<html lang="en" data-swup>
+<html lang="en">
 
-<head data-swup>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
@@ -186,11 +191,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="../07_Assets/css/04_Includes CSS/navbar.css" rel="stylesheet">
 
     <!-- Transition Includes -->
-    <?php include '../01_Includes/page-transition.php'; ?>
+    <?php include '../01_Includes/page-transition-hardcode.php'; ?>
 
 </head>
 
-<body id="swup" class="transition-fade">
+<body>
 
     <!-- Navbar -->
     <?php include_once '../01_Includes/navbar.php' ?>
@@ -217,17 +222,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                         <?php if (isset($_SESSION['success'])): ?>
-                            <div class="alert alert-success text-center position-absolute start-50 translate-middle-x w-75" role="alert">
+                            <div class="alert alert-success text-center position-absolute start-50 translate-middle-x w-75"
+                                role="alert">
                                 <?php echo $_SESSION['success']; ?>
-                                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                             <?php unset($_SESSION['success']); ?>
                         <?php endif; ?>
 
                         <?php if (isset($_SESSION['error'])): ?>
-                            <div class="mt-5 alert alert-danger text-center position-absolute top-0 start-50 translate-middle-x w-75" role="alert">
+                            <div class="mt-5 alert alert-danger text-center position-absolute top-0 start-50 translate-middle-x w-75"
+                                role="alert">
                                 <?php echo $_SESSION['error']; ?>
-                                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                             <?php unset($_SESSION['error']); ?>
                         <?php endif; ?>
@@ -259,10 +268,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
 
                             <!-- Add widget inside your form, before login button -->
-                            <div class="g-recaptcha mb-3"
-                                data-sitekey="<?= RECAPTCHA_SITE_KEY ?>">
-                            </div>
 
+                            <div id="recaptcha-container" class="mb-3" data-sitekey="<?= RECAPTCHA_SITE_KEY ?>">
+                            </div>
 
 
                             <button type="submit" class="btn-login w-100 mb-3 .rounded-pill">
@@ -277,7 +285,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <!-- Google login -->
                             <!-- ✅ Use anchor tag instead of button -->
-                            <a href="../02_Actions/01_Authentication-CRUD/google-login.php" class="btn-google w-100 mb-3 text-decoration-none d-flex align-items-center justify-content-center">
+                            <a href="../02_Actions/01_Authentication-CRUD/google-login.php"
+                                class="btn-google w-100 mb-3 text-decoration-none d-flex align-items-center justify-content-center">
                                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                                     alt="Google" width="18" class="me-2">
                                 Login with Google
@@ -321,6 +330,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     </script>
+
+    <script>
+        // Called by reCAPTCHA API once the script loads
+        function onRecaptchaLoad() {
+            renderRecaptcha();
+        }
+
+        function renderRecaptcha() {
+            const container = document.getElementById('recaptcha-container');
+            if (!container || typeof grecaptcha === 'undefined') return;
+
+            // Clear the container completely before re-rendering
+            container.innerHTML = '';
+
+            grecaptcha.render(container, {
+                sitekey: '<?= RECAPTCHA_SITE_KEY ?>'
+            });
+        }
+
+        // Re-render after every Swup page transition
+        document.addEventListener('swup:contentReplaced', function () {
+            if (typeof grecaptcha !== 'undefined') {
+                renderRecaptcha();
+            } else {
+                // Script not loaded yet, load it dynamically
+                const existing = document.querySelector('script[src*="recaptcha"]');
+                if (!existing) {
+                    const script = document.createElement('script');
+                    script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+                    script.async = true;
+                    script.defer = true;
+                    document.head.appendChild(script);
+                }
+            }
+        });
+    </script>
+
+    <!-- Load reCAPTCHA in explicit mode so WE control when it renders -->
+    <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
+
+
 
 </body>
 

@@ -48,6 +48,11 @@ $_SESSION['selected_role_label'] = $_SESSION['selected_role_label'] ?? null;
 $_SESSION['user_id']    = $_SESSION['user_id']      ?? null;
 $_SESSION['username']   = $_SESSION['username']     ?? null;
 $_SESSION['full_name']  = $_SESSION['full_name']    ?? null;
+
+$_SESSION['fname']      =   $_SESSION['fname']      ?? null;
+$_SESSION['mname']      =   $_SESSION['mname']      ?? null;
+$_SESSION['lname']      =   $_SESSION['lname']      ?? null;
+
 $_SESSION['role_id']    = $_SESSION['role_id']      ?? null;
 $_SESSION['role_label'] = $_SESSION['role_label']   ?? null;
 $_SESSION['profile_pic']= $_SESSION['profile_pic']  ?? null;

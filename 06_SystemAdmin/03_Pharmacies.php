@@ -130,12 +130,61 @@ if (!$_SESSION['user_id']) {
 
     .badge-suspended {
       background-color: #fde8e8;
-      color:rgb(240, 50, 29);
+      color: rgb(240, 50, 29);
     }
 
     .badge-pending {
       background-color: #fff3cd;
       color: #856404;
+    }
+
+    /* BUTTON STYLE */
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 17px;
+     
+      transition: all 0.2s ease;
+      margin: 0 3px;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action:active {
+      transform: translateY(0);
+    }
+
+ 
+    .btn-view {
+      background-color: #dbeafe;
+      color: #2563eb;
+   
+    }
+
+    .btn-view:hover {
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+
+ 
+    .btn-edit {
+      background-color: #fef3c7;
+      color: #d97706;
+      
+    }
+
+    .btn-edit:hover {
+      background-color: #d97706;
+      color: #ffffff;
     }
 
     /* ── End Stats Toggle ─────────────────────────────── */
@@ -194,7 +243,7 @@ if (!$_SESSION['user_id']) {
                   <div class="stat-card">
                     <div class="card-header-row">
                       <div class="card-icon icon-green">
-                        <span class="material-symbols-outlined">do_not_disturb_on</span>
+                        <span class="material-symbols-outlined">pending</span>
                       </div>
                       <span class="card-label label-green">Pending Requests</span>
                     </div>
@@ -210,9 +259,9 @@ if (!$_SESSION['user_id']) {
                       <div class="card-icon icon-green">
                         <span class="material-symbols-outlined">do_not_disturb_on</span>
                       </div>
-                      <span class="card-label label-green">Medicine Inventory</span>
+                      <span class="card-label label-green">Suspended Pharmacies</span>
                     </div>
-                    <div class="card-value"><?= $totalInventory ?></div>
+                    <div class="card-value"><?= $suspendedAccounts ?></div>
                     <div class="card-sub">Within 30 days</div>
                   </div>
                 </div>
@@ -313,10 +362,11 @@ if (!$_SESSION['user_id']) {
                               <td><span class="badge-status <?= $badgeClass ?>"><?= htmlspecialchars($status) ?></span></td>
                               <td><?= htmlspecialchars($row['DateCreated']) ?></td>
                               <td class="text-end pe-4">
-                                <div class="d-flex gap-3 justify-content-end text-muted">
 
-                                  <!-- View -->
-                                  <i class="bi bi-eye cursor-pointer view-btn" title="View"
+                              <div class="d-flex gap-2 justify-content-start text-muted" style="margin-left: -17px;">
+
+                                  <!-- View Button -->
+                                  <button class="btn-action btn-view view-btn" title="View"
                                     data-id="<?= htmlspecialchars($row['Pharmacy_ID']) ?>"
                                     data-name="<?= htmlspecialchars($row['Pharmacy_name']) ?>"
                                     data-owner="<?= htmlspecialchars($row['Owner_name']) ?>"
@@ -326,10 +376,11 @@ if (!$_SESSION['user_id']) {
                                     data-status="<?= htmlspecialchars($status) ?>"
                                     data-created="<?= htmlspecialchars($row['DateCreated']) ?>"
                                     data-approved="<?= htmlspecialchars($row['Date_Approved'] ?? 'N/A') ?>">
-                                  </i>
+                                    <i class="bi bi-eye"></i>
+                                  </button>
 
-                                  <!-- Edit -->
-                                  <i class="bi bi-pencil cursor-pointer edit-btn" title="Edit"
+                                  <!-- Edit Button -->
+                                  <button class="btn-action btn-edit edit-btn" title="Edit"
                                     data-id="<?= htmlspecialchars($row['Pharmacy_ID']) ?>"
                                     data-name="<?= htmlspecialchars($row['Pharmacy_name']) ?>"
                                     data-owner="<?= htmlspecialchars($row['Owner_name']) ?>"
@@ -339,12 +390,13 @@ if (!$_SESSION['user_id']) {
                                     data-status="<?= htmlspecialchars($status) ?>"
                                     data-created="<?= htmlspecialchars($row['DateCreated']) ?>"
                                     data-approved="<?= htmlspecialchars($row['Date_Approved'] ?? 'N/A') ?>">
-                                  </i>
+                                    <i class="bi bi-pencil"></i>
+                                  </button>
 
                                   <!-- Delete -->
-                                  <i class="bi bi-trash cursor-pointer delete-btn text-danger" title="Delete"
-                                    data-id="<?= htmlspecialchars($row['Pharmacy_ID']) ?>">
-                                  </i>
+                                  <!-- <i class="bi bi-trash cursor-pointer delete-btn text-danger" title="Delete"
+                                    data-id="<--?= htmlspecialchars($row['Pharmacy_ID']) ?>">
+                                  </i> -->
 
                                 </div>
                               </td>

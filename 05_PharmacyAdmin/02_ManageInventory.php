@@ -35,12 +35,14 @@ $stmt->execute([$pharmacyID]);
   <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 
   <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 
   <!-- jQuery -->
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+
 
   <!-- STYLES -->
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
@@ -111,6 +113,82 @@ $stmt->execute([$pharmacyID]);
       padding: 0.25rem 0.25rem 0.25rem 0.25rem;
       margin-bottom: 2px;
     }
+
+     /* STATUS BADGE DESIGN */
+     .badge-status {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-active {
+      background-color: #d4f5e2;
+      color: #1a7a45;
+    }
+
+    .badge-inactive {
+      background-color: #e8e8e8;
+      color: #5a5a5a;
+    }
+
+    .badge-suspended {
+      background-color: #fde8e8;
+      color: #c0392b;
+    }
+
+
+    /* BUTTON ACTIONS */
+       /* BUTTON STYLE */
+       .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 17px;
+     
+      transition: all 0.2s ease;
+      margin: 0 3px;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action:active {
+      transform: translateY(0);
+    }
+
+ 
+    .btn-view {
+      background-color: #dbeafe;
+      color: #2563eb;
+   
+    }
+
+    .btn-view:hover {
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+
+ 
+    .btn-edit {
+      background-color: #fef3c7;
+      color: #d97706;
+      
+    }
+
+    .btn-edit:hover {
+      background-color: #d97706;
+      color: #ffffff;
+    }
+
+
 
     /* ── End Stats Toggle ─────────────────────────────── */
   </style>
@@ -305,43 +383,49 @@ $stmt->execute([$pharmacyID]);
                               </td>
                               <td><?= date('M d, Y', strtotime($row['Last_updated'])) ?></td>
 
-                              <td class="text-end pe-4">
-                                <div class="d-flex gap-3 justify-content-end text-muted">
-
+                              <td class="text-sat pe-4">
+                                <div class="d-flex gap-2 justify-content-start text-muted" style="margin-left: -17px;">
                                   <!-- View -->
-                                  <i class="bi bi-eye cursor-pointer view-btn" title="View"
+                                  <button class="btn-action btn-view view-btn" title="View"
+                                    data-image="<?= htmlspecialchars($row['Med_Image_URL'] ?? '') ?>"
                                     data-id="<?= htmlspecialchars($row['Inventory_ID']) ?>"
                                     data-generic="<?= htmlspecialchars($row['Generic_Name']) ?>"
                                     data-brand="<?= htmlspecialchars($row['Brand_Name']) ?>"
                                     data-category="<?= htmlspecialchars($row['Category_Name']) ?>"
                                     data-dosageform="<?= htmlspecialchars($row['Dosage_Form']) ?>"
+                                    data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value']) ?>"
+                                    data-dosageunit="<?= htmlspecialchars($row['Unit_Name']) ?>"
                                     data-dosage="<?= htmlspecialchars($row['Dosage']) ?>"
                                     data-price="<?= htmlspecialchars($row['Price']) ?>"
                                     data-priceper="<?= htmlspecialchars($row['Price_Per']) ?>"
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>">
-                                  </i>
+                                    <i class="bi bi-eye"></i>
+                                  </button>
 
-                                  <!-- Edit -->
-                                  <i class="bi bi-pencil cursor-pointer edit-btn" title="Edit"
+                                  <button class="btn-action btn-edit edit-btn" title="Edit"
+                                    data-image="<?= htmlspecialchars($row['Med_Image_URL'] ?? '') ?>"
                                     data-id="<?= htmlspecialchars($row['Inventory_ID']) ?>"
                                     data-generic="<?= htmlspecialchars($row['Generic_Name']) ?>"
                                     data-brand="<?= htmlspecialchars($row['Brand_Name']) ?>"
                                     data-category="<?= htmlspecialchars($row['Category_Name']) ?>"
                                     data-dosageform="<?= htmlspecialchars($row['Dosage_Form']) ?>"
+                                    data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value']) ?>"
+                                    data-dosageunit="<?= htmlspecialchars($row['Unit_Name']) ?>"
                                     data-dosage="<?= htmlspecialchars($row['Dosage']) ?>"
                                     data-price="<?= htmlspecialchars($row['Price']) ?>"
                                     data-priceper="<?= htmlspecialchars($row['Price_Per']) ?>"
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>">
-                                  </i>
+                                    <i class="bi bi-pencil"></i>
+                                  </button>
 
                                   <!-- Delete -->
-                                  <i class="bi bi-trash cursor-pointer delete-btn text-danger" title="Delete"
-                                    data-id="<?= htmlspecialchars($row['Inventory_ID']) ?>">
-                                  </i>
+                                  <!-- <i class="bi bi-trash cursor-pointer delete-btn text-danger" title="Delete"
+                                    data-id="<\?= htmlspecialchars($row['Inventory_ID']) ?>">
+                                  </i> -->
 
                                 </div>
                               </td>
@@ -378,7 +462,7 @@ $stmt->execute([$pharmacyID]);
   </div>
 
   <!-- ══ MODAL ════════════════════════════════════════════════ -->
-  <?php include '../02_Actions/03_Pharmacy-Admin-CRUD/model_add-update.php'; ?>
+  <?php include '../02_Actions/03_Pharmacy-Admin-CRUD/modal_add-update.php'; ?>
 
   <!-- ── Stats Toggle Script ─────────────────────────────────── -->
   <script>

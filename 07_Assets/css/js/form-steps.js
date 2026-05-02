@@ -47,11 +47,18 @@ function validateForm() {
         return false;
     }
 
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return false;
+    }
+
     if (password !== confirmPassword) {
         alert('Passwords do not match.');
         return false;
     }
-
+F
     return true;
 }
 

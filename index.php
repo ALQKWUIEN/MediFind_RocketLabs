@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="en" data-swup-theme  >
-  <head data-swup-theme  >
+<html lang="en">
+  <head >
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/07_Assets/images/logo.png" type="image/png" />
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="07_Assets/node_modules/material-symbols/outlined.css" />
 
 
-    <?php include '01_Includes/page-transition.php'; ?>
+    <?php include '01_Includes/page-transition-hardcode.php'; ?>
 
   </head>
   <body id="swup" class="transition-fade">

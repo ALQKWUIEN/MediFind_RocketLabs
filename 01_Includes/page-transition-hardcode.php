@@ -1,58 +1,73 @@
 <!-- filepath: /d:/xampp/htdocs/MediFind_RocketLabs/01_Includes/page-transition-hardcode.php -->
 <style>
-    /* Page starts hidden */
-    html.is-animating body {
+    body {
         opacity: 0;
+        transition: opacity 0.25s ease;
     }
 
-    /* Transition applies to body always */
-    body {
-        transition: opacity 0.2s ease;
+    body.is-visible {
+        opacity: 1;
     }
 </style>
 
 <script>
     (function () {
-        /* Mark as animating immediately — before first paint */
-        document.documentElement.classList.add("is-animating");
 
-        /* Fade in only after everything is fully loaded and painted */
-        window.addEventListener("load", function () {
+    
+        function fadeIn() {
             requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
-                    document.documentElement.classList.remove("is-animating");
+                    document.body.classList.add("is-visible");
                 });
             });
-        });
+        }
 
-        /* Intercept all internal link clicks */
-        document.addEventListener("click", function (event) {
-            var link = event.target.closest("a");
+        if (document.readyState === "complete") {
+            fadeIn();
+        } else {
+            window.addEventListener("load", fadeIn);
+        }
+
+        /* ── Fade out helper ── */
+        function fadeOutThen(callback) {
+            document.body.classList.remove("is-visible");
+            setTimeout(callback, 250); /* match transition duration */
+        }
+
+        /* ── Intercept internal link clicks ── */
+        document.addEventListener("click", function (e) {
+            var link = e.target.closest("a");
             if (!link) return;
 
             var href = link.getAttribute("href");
-            var isInternal =
-                href &&
-                !href.startsWith("#") &&
-                !href.startsWith("mailto:") &&
-                !href.startsWith("tel:") &&
-                !href.startsWith("javascript:") &&
-                !link.target &&
-                !event.ctrlKey &&
-                !event.metaKey &&
-                !event.shiftKey;
+            if (
+                !href ||
+                href.startsWith("#") ||
+                href.startsWith("mailto:") ||
+                href.startsWith("tel:") ||
+                href.startsWith("javascript:") ||
+                link.target ||
+                e.ctrlKey || e.metaKey || e.shiftKey
+            ) return;
 
-            if (isInternal) {
-                event.preventDefault();
-
-                /* Fade out */
-                document.documentElement.classList.add("is-animating");
-
-                /* Navigate after fade completes */
-                setTimeout(function () {
-                    window.location.href = href;
-                }, 200); /* Match the transition duration above */
-            }
+            e.preventDefault();
+            fadeOutThen(function () {
+                window.location.href = href;
+            });
         });
+
+        /* ── Intercept form submits ── */
+        document.addEventListener("submit", function (e) {
+            var form = e.target;
+
+            /* Only intercept GET/POST forms navigating away (not fetch/xhr forms) */
+            if (form.dataset.noTransition) return;
+
+            e.preventDefault();
+            fadeOutThen(function () {
+                form.submit();
+            });
+        });
+
     })();
 </script>

@@ -131,6 +131,57 @@ if (!$_SESSION['user_id']) {
       color: #c0392b;
     }
 
+
+    /* BUTTON ACTIONS */
+       /* BUTTON STYLE */
+       .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 17px;
+     
+      transition: all 0.2s ease;
+      margin: 0 3px;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action:active {
+      transform: translateY(0);
+    }
+
+ 
+    .btn-view {
+      background-color: #dbeafe;
+      color: #2563eb;
+   
+    }
+
+    .btn-view:hover {
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+
+ 
+    .btn-edit {
+      background-color: #fef3c7;
+      color: #d97706;
+      
+    }
+
+    .btn-edit:hover {
+      background-color: #d97706;
+      color: #ffffff;
+    }
+
     /* ── End Stats Toggle ─────────────────────────────── */
   </style>
 </head>
@@ -248,7 +299,7 @@ if (!$_SESSION['user_id']) {
                       <select id="filterRole" class="form-select border-secondary-subtle">
                         <option value="">All Roles</option>
                         <option value="Patient/Client">Patient/Client</option>
-                        <option value="Pharmacy">Pharmacy</option>
+                        <option value="Pharmacy">Pharmacy Admin</option>
                       </select>
                     </div>
 
@@ -329,10 +380,10 @@ if (!$_SESSION['user_id']) {
                               </td>
                               <td><?= htmlspecialchars($row['DateCreated']) ?></td>
                               <td class="text-end pe-4">
-                                <div class="d-flex gap-3 justify-content-end text-muted">
+                              <div class="d-flex gap-2 justify-content-start text-muted" style="margin-left: -17px;">
 
                                   <!-- View -->
-                                  <i class="bi bi-eye cursor-pointer view-btn" title="View"
+                                  <button class="btn-action btn-view view-btn" title="View"
                                     data-id="<?= htmlspecialchars($row['User_ID']) ?>"
                                     data-firstname="<?= htmlspecialchars($row['First_name']) ?>"
                                     data-lastname="<?= htmlspecialchars($row['Last_name']) ?>"
@@ -347,10 +398,11 @@ if (!$_SESSION['user_id']) {
                                     data-gender="<?= htmlspecialchars($row['Gender'] ?? 'N/A') ?>"
                                     data-age="<?= htmlspecialchars($row['Age'] ?? 'N/A') ?>"
                                     data-pic="<?= htmlspecialchars($row['Profile_Pic'] ?? '') ?>">
-                                  </i>
+                                    <i class="bi bi-eye"></i>
+                                  </button>
 
                                   <!-- Edit -->
-                                  <i class="bi bi-pencil cursor-pointer edit-btn" title="Edit"
+                                  <button class="btn-action btn-edit edit-btn" title="Edit"
                                     data-id="<?= htmlspecialchars($row['User_ID']) ?>"
                                     data-firstname="<?= htmlspecialchars($row['First_name']) ?>"
                                     data-lastname="<?= htmlspecialchars($row['Last_name']) ?>"
@@ -365,12 +417,14 @@ if (!$_SESSION['user_id']) {
                                     data-gender="<?= htmlspecialchars($row['Gender'] ?? 'N/A') ?>"
                                     data-age="<?= htmlspecialchars($row['Age'] ?? 'N/A') ?>"
                                     data-pic="<?= htmlspecialchars($row['Profile_Pic'] ?? '') ?>">
-                                  </i>
+                                    <i class="bi bi-pencil"></i>
+                                  </button>
 
                                   <!-- Delete -->
-                                  <i class="bi bi-trash cursor-pointer delete-btn text-danger" title="Delete"
-                                    data-id="<?= htmlspecialchars($row['User_ID']) ?>">
-                                  </i>
+                                  <!-- <i class="bi bi-trash cursor-pointer delete-btn text-danger" title="Delete"
+                                    data-id="<'?= htmlspecialchars($row['User_ID']) ?>">
+                                  </i> -->
+
                                 </div>
                               </td>
                             </tr>

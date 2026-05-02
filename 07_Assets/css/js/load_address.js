@@ -1,8 +1,4 @@
 
-// Saved values from session (populated by PHP after a failed submit)
-const savedProvince = "<?= (int)($fd['Province'] ?? 0) ?>";
-const savedCity     = "<?= (int)($fd['City']     ?? 0) ?>";
-const savedBarangay = "<?= (int)($fd['Barangay'] ?? 0) ?>";
 
 // ─── LOAD PROVINCES on page load, then chain city/barangay if saved ───
 window.addEventListener('DOMContentLoaded', () => {
@@ -19,13 +15,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 sel.appendChild(opt);
             });
 
-            // If a province was previously selected, load its cities
             if (savedProvince) {
                 return fetch(`../02_Actions/01_Authentication-CRUD/get_address.php?type=city&province_id=${savedProvince}`)
                     .then(r => r.json())
                     .then(data => {
                         const citySelect = document.getElementById('City_ID');
-                        brgySelect.innerHTML = '<option value="" disabled selected>City</option>';
+                    
                         data.forEach(c => {
                             const opt = document.createElement('option');
                             opt.value       = c.City_ID;
@@ -33,13 +28,12 @@ window.addEventListener('DOMContentLoaded', () => {
                             if (String(c.City_ID) === savedCity) opt.selected = true;
                             citySelect.appendChild(opt);
                         });
-
-                        // If a city was previously selected, load its barangays
+            
                         if (savedCity) {
                             return fetch(`../02_Actions/01_Authentication-CRUD/get_address.php?type=barangay&city_id=${savedCity}`)
                                 .then(r => r.json())
                                 .then(data => {
-                                    const brgySelect = document.getElementById('Barangay_ID');
+                                    const brgySelect = document.getElementById('Barangay_ID'); // ✅ only declared once
                                     brgySelect.innerHTML = '<option value="" disabled selected>Barangay</option>';
                                     data.forEach(b => {
                                         const opt = document.createElement('option');
