@@ -51,7 +51,7 @@ unset($_SESSION['form_data']);
 
 </head>
 
-<body id="swup" class="transition-fade">
+<body class="auth-page">
 
     <?php include_once '../01_Includes/navbar.php' ?>
 

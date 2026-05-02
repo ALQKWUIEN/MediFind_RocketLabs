@@ -25,11 +25,11 @@
 
     <link rel="stylesheet" href="07_Assets/node_modules/material-symbols/outlined.css" />
 
-    <!-- Transition Includes -->
-    <?php include '01_Includes/page-transition.php'; ?>
+  <!-- Page transition -->
+  <?php include '01_Includes/page-transition-hardcode.php' ?>
 
   </head>
-  <body id="swup" class="transition-fade">
+  <body class="auth-page">
     <!-- START OF NAVBAR -->
     <?php include_once '01_Includes/navbar_landing-role.php' ?>
 

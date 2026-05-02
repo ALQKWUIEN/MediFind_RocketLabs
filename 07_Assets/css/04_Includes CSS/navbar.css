@@ -6,17 +6,37 @@
     "opsz" 24;
 }
 
-/* NAVBAR */
+/* NAVBAR — default (landing pages: sticky + blur on scroll) */
 .navbar {
-  position: absolute; /* Changed from sticky to take it out of document flow */
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
   background: transparent !important;
-
-  margin-bottom: 20px;
+  box-shadow: none;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
 }
+
+.landing-page .navbar.scrolled {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* AUTH PAGES — absolute so it floats over the full-height layout */
+.auth-page .navbar {
+  position: absolute !important;
+  margin-bottom: 0 !important;
+}
+
+.forgot-page .navbar {
+  position: absolute !important;
+  margin-bottom: 0 !important;
+}
+
+
 
 .navbar-logo {
   color: #1d9e75;
@@ -75,11 +95,39 @@
   color: #1d9e75;
   letter-spacing: 0.03em;
   margin-top: -4px;
+  
+  font-family: "Poppins", sans-serif !important;
 }
 
 @media (max-width: 991px) {
-  .navbar-nav {
-    gap: 0.5rem !important;
+  .navbar-collapse {
+    margin-top: 10px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(70, 70, 70, 0.1);
+  }
+  .d-flex.gap-3 {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-login-nav,
+  .btn-signup {
+    width: 100%;
+    text-align: center;
+  }
+  .btn-login-nav {
+    background-color: #ff5b27;
+    border: none;
+    color: white;
+  }
+
+  /* Only apply margin-bottom on landing pages, NOT auth/forgot pages */
+  .landing-page .navbar {
+    margin-bottom: 50px;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
   }
 }
 
@@ -115,33 +163,4 @@
   }
 }
 
-@media (max-width: 991px) {
-  .navbar-collapse {
-    margin-top: 10px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 20px 60px rgba(70, 70, 70, 0.1);
-  }
-  .d-flex.gap-3 {
-    flex-direction: column; /* stack vertically */
-    width: 100%;
-  }
 
-  .btn-login-nav,
-  .btn-signup {
-    width: 100%; /* full width each */
-    text-align: center;
-  }
-  .btn-login-nav {
-    background-color: #ff5b27;
-    border: none;
-    color: white;
-  }
-
-  .navbar {
-    margin-bottom: 50px;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-  }
-}

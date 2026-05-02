@@ -7,22 +7,19 @@ body {
   background-attachment: fixed;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* Hide scrollbar but keep scrolling functional */
-html,
-body {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  overflow-y: scroll; /* keep scroll always active */
+html, body {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE/Edge */
+  /* Remove overflow-y: scroll — let it default */
 }
-
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none; /* Chrome/Safari — this alone hides the scrollbar */
 }
-
 .material-symbols-outlined {
   font-variation-settings:
     "FILL" 0,
@@ -135,7 +132,7 @@ body::-webkit-scrollbar {
   color: #1d9e75;
   margin-bottom: 30px;
   font-weight: 400;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* SEARCH BAR */
@@ -157,7 +154,7 @@ body::-webkit-scrollbar {
   border: none;
   outline: none;
   flex: 1;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.9rem;
   color: #555;
   background: transparent;
@@ -193,6 +190,284 @@ body::-webkit-scrollbar {
 .search-bot-btn:hover {
   background: #1d9e75;
   color: white;
+}
+
+/* ── LANDING CHAT MODAL ── */
+.landing-chat-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.landing-chat-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.landing-chat-modal {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow: hidden;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.landing-chat-overlay.visible .landing-chat-modal {
+  transform: scale(1) translateY(0);
+}
+
+.landing-chat-header {
+  background: #1d9e75;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.landing-bot-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.landing-chat-header-info {
+  flex: 1;
+}
+
+.landing-chat-header-info h6 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.landing-chat-header-info span {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+}
+
+.landing-chat-close-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.landing-chat-close-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.landing-chat-close-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.landing-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: none;
+}
+
+.landing-chat-messages::-webkit-scrollbar {
+  display: none;
+}
+
+.landing-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.landing-msg.user {
+  flex-direction: row-reverse;
+}
+
+.landing-msg-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #e8f6f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-bubble {
+  max-width: 75%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.landing-msg.bot .landing-bubble {
+  background: #f2f2f2;
+  color: #3a3a3a;
+  border-bottom-left-radius: 4px;
+}
+
+.landing-msg.user .landing-bubble {
+  background: #1d9e75;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.landing-msg-time {
+  font-size: 10px;
+  color: #bbb;
+  padding-bottom: 2px;
+}
+
+.landing-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  background: #f2f2f2;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+
+.landing-typing-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #aaa;
+  animation: landingTypingBounce 1.2s infinite;
+}
+
+.landing-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.landing-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes landingTypingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+.landing-chat-suggestions {
+  display: flex;
+  gap: 6px;
+  padding: 4px 16px 12px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.landing-suggest-chip {
+  background: #eef9f4;
+  border: 1px solid #bfe5d6;
+  border-radius: 999px;
+  color: #1d9e75;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.landing-suggest-chip:hover {
+  background: #1d9e75;
+  color: #fff;
+  border-color: #1d9e75;
+}
+
+.landing-chat-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.landing-chat-input {
+  flex: 1;
+  border: 1.5px solid #d6ede5;
+  border-radius: 14px;
+  padding: 10px 15px;
+  font-size: 13.5px;
+  outline: none;
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+
+.landing-chat-input:focus {
+  border-color: #1d9e75;
+}
+
+.landing-chat-input::placeholder {
+  color: #aaa;
+}
+
+.landing-chat-send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1d9e75;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.landing-chat-send-btn:hover {
+  background: #178a64;
+  transform: scale(1.05);
+}
+
+.landing-chat-send-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* SEARCH BAR BOT BUTTON - keep existing styles, no float btn needed */
+@media (max-width: 600px) {
+  .landing-chat-modal {
+    max-height: 90vh;
+    border-radius: 20px;
+  }
 }
 
 /* NEARBY SECTION */
@@ -399,7 +674,7 @@ body::-webkit-scrollbar {
 
 /* ── SHARED SECTION STYLES ── */
 .section-label {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   color: #1d9e75;
@@ -480,7 +755,7 @@ body::-webkit-scrollbar {
 }
 
 .step-card p {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.78rem;
   color: #6b8f82;
   line-height: 1.6;
@@ -529,7 +804,7 @@ body::-webkit-scrollbar {
 }
 
 .stat-label {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.75);
   font-weight: 400;
@@ -566,7 +841,7 @@ body::-webkit-scrollbar {
 }
 
 .features-desc {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.88rem;
   color: #6b8f82;
   line-height: 1.7;
@@ -579,7 +854,7 @@ body::-webkit-scrollbar {
   gap: 8px;
   background: #1d9e75;
   color: white;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.88rem;
   font-weight: 500;
   padding: 12px 24px;
@@ -627,7 +902,7 @@ body::-webkit-scrollbar {
 }
 
 .feature-content p {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.8rem;
   color: #6b8f82;
   line-height: 1.6;
@@ -675,7 +950,7 @@ body::-webkit-scrollbar {
 }
 
 .cta-inner p {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.88rem;
   color: #6b8f82;
   line-height: 1.7;
@@ -692,7 +967,7 @@ body::-webkit-scrollbar {
 .btn-cta-primary {
   background: #1d9e75;
   color: white;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.88rem;
   font-weight: 500;
   padding: 12px 28px;
@@ -709,7 +984,7 @@ body::-webkit-scrollbar {
 .btn-cta-secondary {
   border: 1.5px solid #1d9e75;
   color: #1d9e75;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.88rem;
   font-weight: 500;
   padding: 12px 28px;
@@ -753,4 +1028,3 @@ body::-webkit-scrollbar {
   opacity: 0.9;
   margin: 0;
 }
-
