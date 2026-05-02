@@ -1,0 +1,58 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* Font override — everything uses Inter */
+* {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Material Symbols ─────────────────────────── */
+.material-symbols-outlined,
+.material-symbols-rounded,
+.material-symbols-sharp,
+.material-icons {
+  font-family: 'Material Symbols Outlined', 'Material Icons' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  word-wrap: normal !important;
+  white-space: nowrap;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+}
+
+/* ── Font Awesome ─────────────────────────────── */
+/* FA solid needs font-weight: 900 — keep it separate */
+.fas, [class^="fa-"], [class*=" fa-"] {
+  font-family: 'Font Awesome 6 Free' !important;
+  font-weight: 900 !important;   /* solid icons need 900 */
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+.far {
+  font-family: 'Font Awesome 6 Free' !important;
+  font-weight: 400 !important;   /* regular icons need 400 */
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+.fab {
+  font-family: 'Font Awesome 6 Brands' !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+/* ── Bootstrap Icons ──────────────────────────── */
+.bi {
+  font-family: 'Bootstrap Icons' !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}

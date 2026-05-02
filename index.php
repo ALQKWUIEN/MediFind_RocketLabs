@@ -24,12 +24,11 @@
   <!-- Page transition -->
   <?php include '01_Includes/page-transition-hardcode.php' ?>
 
-</head>
-
-<body class="landing-page scrollable">
-
-  <!-- START OF NAVBAR -->
-  <?php include_once '01_Includes/navbar_landing-role.php' ?>
+  </head>
+  <body>
+    
+    <!-- START OF NAVBAR -->
+    <?php include_once '01_Includes/navbar_landing-role.php' ?>
 
   <!-- HERO -->
   <div class="hero mt-5 mobile-mt">

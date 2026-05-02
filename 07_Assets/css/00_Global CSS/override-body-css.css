@@ -1,0 +1,18 @@
+
+  /* ── Fix layout so only main content scrolls ── */
+  html, body {
+    height: 100%;
+    overflow: hidden !important;
+  }
+
+  .wrapper {
+    height: 100vh;
+    overflow: hidden !important;
+    display: flex;
+  }
+
+  .main-panel {
+    flex: 1;
+    overflow-y: auto !important;  /* 👈 only this panel scrolls */
+    height: 100vh;
+  }

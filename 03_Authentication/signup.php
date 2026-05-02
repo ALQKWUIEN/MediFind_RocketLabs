@@ -8,9 +8,9 @@ unset($_SESSION['form_data']);
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-swup>
+<html lang="en">
 
-<head data-swup>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
@@ -23,7 +23,8 @@ unset($_SESSION['form_data']);
     <link href="../07_Assets/css/00_Global CSS/Auth-style.css" rel="stylesheet">
     <link href="../07_Assets/css/04_Includes CSS/navbar.css" rel="stylesheet">
 
-    <!-- ?php include '../01_Includes/page-transition.php'; ?> -->
+    <!-- Page transition -->
+    <?php include '../01_Includes/page-transition-hardcode.php' ?>
 
     <style>
         .card-signup {
@@ -243,7 +244,7 @@ unset($_SESSION['form_data']);
         <button class="float-btn" onclick="history.back()"><i class="bi bi-arrow-left"></i></button>
     </div>
 
-    
+
     <script>
         const savedProvince = "<?= (int) ($fd['Province'] ?? 0) ?>";
         const savedCity = "<?= (int) ($fd['City'] ?? 0) ?>";

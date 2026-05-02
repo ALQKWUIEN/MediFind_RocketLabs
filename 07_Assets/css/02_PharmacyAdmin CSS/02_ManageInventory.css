@@ -56,12 +56,10 @@ body{
 
 
 
-
-
 .table tbody tr td {
-    font-size: 14px;
-    color: #374151;
-    padding: 0.85rem 1rem;
+    font-size: 13px;
+    color: #494d53;
+    padding: 0.50rem 1rem;
     border-bottom: 1px solid #F3F4F6;
 }
 
@@ -199,7 +197,7 @@ body{
 
 .searchbar-group .form-control {
     border-radius: 0 8px 8px 0;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .searchbar-group .form-control:focus {

@@ -5,6 +5,7 @@ include_once '../00_Config/config.php';
 
 
 require '../02_Actions/04_System-Admin-CRUD/select-count.php';
+require '../02_Actions/04_System-Admin-CRUD/reports.php';
 
 // ── GUARD: Users must log in ────────────────────────
 if (!$_SESSION['user_id']) {
@@ -37,6 +38,9 @@ if (!$_SESSION['user_id']) {
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
   <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/01_dashboard.css">
   <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/02_ManageInventory.css">
+  <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-body-css.css">
+
+  <link rel="stylesheet" href="../07_Assets/css/03_SystemAdminCSS/reports-style.css">
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -142,7 +146,7 @@ if (!$_SESSION['user_id']) {
                     <div class="card-value"><?= $totalUsers ?></div>
                     <div class="d-flex align-items-center gap-2">
                       <span class="badge-up">
-                        <span class="material-symbols-outlined">trending_up</span>16%
+                      <i class="bi bi-arrow-up-short"></i> <?= $newUsersMonth ?> 
                       </span>
                       <span class="card-sub">this month</span>
                     </div>
@@ -183,7 +187,7 @@ if (!$_SESSION['user_id']) {
                       </div>
                       <span class="card-label label-green">Pending Requests</span>
                     </div>
-                    <div class="card-value"><?= $pendingPharmacies ?></div>
+                    <div class="card-value"><?= $pendingPharmaciesDash?></div>
                     <div class="card-sub">Within 30 days</div>
                   </div>
                 </div>
@@ -193,28 +197,35 @@ if (!$_SESSION['user_id']) {
             </div>
           </div>
 
-
-
-
           <div style="padding: 1rem 0;">
             <div class="row g-3">
 
-              <!-- Graph-->
-              <div class="col-12 col-sm-12 col-xl-7">
+          <!-- GRAPHS -->
+          <div style="padding: 1rem 0;">
+            <div class="row g-3">
+
+              <!-- Total Medicines -->
+              <div class="col-12 col-sm-12 col-xl-6">
                 <div class="stat-card">
-                  <h6 class="mb-3" style="color:#1d9e75;">Users Accumulated</h6>
-                  <canvas id="myBarChart"></canvas>
+                  <?php include '../02_Actions/04_System-Admin-CRUD/pie-chart-systemaAd.php'; ?>
+
                 </div>
               </div>
 
 
               <!-- Calendar -->
-              <div class="col-11 col-sm-12 col-xl-5" style="height: 100%;">
+              <div class="col-11 col-sm-12 col-xl-6" style="height: 100%;">
                 <div class="stat-card calendar-widget">
                   <h6 class="mb-3">Calendar</h6>
                   <?php include '../02_Actions/04_System-Admin-CRUD/calendar-widget.html'; ?>
                 </div>
               </div>
+
+
+
+            </div>
+          </div>
+
 
 
             </div>
@@ -229,8 +240,7 @@ if (!$_SESSION['user_id']) {
 
   </div>
 
-  <!-- ══ MODAL ════════════════════════════════════════════════ -->
-  <?php include '../02_Actions/03_Pharmacy-Admin-CRUD/model_add-update.php'; ?>
+
 
   <!-- ── Stats Toggle Script ─────────────────────────────────── -->
   <script>
@@ -274,7 +284,6 @@ if (!$_SESSION['user_id']) {
       }
     });
   </script>
-
 
 </body>
 

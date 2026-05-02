@@ -41,6 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 First_name, 
                 Middle_name, 
                 Last_name, 
+                Gender,
+                Birthdate,
+                Age,
                 Email, 
                 Phone,
                 Role, 
@@ -85,6 +88,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['lname'] = $user['Last_name'];
 
         $_SESSION['full_name'] = $user['First_name'] . ' ' . $user['Middle_name'] . ' ' . $user['Last_name'];
+
+        $_SESSION['Gender']     = $user['Gender'];
+        $_SESSION['Birthdate']  = $user['Birthdate'];
+        $_SESSION['Age']        = $user['Age'];
+
         
         $_SESSION['role_id'] = $user['Role_ID'];
         $_SESSION['role_label'] = $user['Role'];
