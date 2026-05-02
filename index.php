@@ -52,58 +52,58 @@
   </div>
 
   <!-- CHAT MODAL OVERLAY -->
-<div class="landing-chat-overlay" id="landingChatOverlay" onclick="closeLandingChat(event)">
-  <div class="landing-chat-modal" id="landingChatModal">
-    <div class="landing-chat-header">
-      <div class="landing-bot-avatar">
-        <span class="material-symbols-outlined" style="font-size:1.2rem; color:#fff">smart_toy</span>
-      </div>
-      <div class="landing-chat-header-info">
-        <h6>MediFind Assistant</h6>
-        <span>&#9679; Online now</span>
-      </div>
-      <button class="landing-chat-close-btn" onclick="toggleLandingChat()">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    <div class="landing-chat-messages" id="landingChatMessages">
-      <div class="landing-msg bot">
-        <div class="landing-msg-avatar">
-          <span class="material-symbols-outlined" style="font-size:0.95rem; color:#1d9e75">smart_toy</span>
+  <div class="landing-chat-overlay" id="landingChatOverlay" onclick="closeLandingChat(event)">
+    <div class="landing-chat-modal" id="landingChatModal">
+      <div class="landing-chat-header">
+        <div class="landing-bot-avatar">
+          <span class="material-symbols-outlined" style="font-size:1.2rem; color:#fff">smart_toy</span>
         </div>
-        <div>
-          <div class="landing-bubble">Hi! I'm your MediFind assistant. Ask me anything about medicines or nearby pharmacies in Malaybalay 💊</div>
-          <div class="landing-msg-time">Just now</div>
+        <div class="landing-chat-header-info">
+          <h6>MediFind Assistant</h6>
+          <span>&#9679; Online now</span>
+        </div>
+        <button class="landing-chat-close-btn" onclick="toggleLandingChat()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="landing-chat-messages" id="landingChatMessages">
+        <div class="landing-msg bot">
+          <div class="landing-msg-avatar">
+            <span class="material-symbols-outlined" style="font-size:0.95rem; color:#1d9e75">smart_toy</span>
+          </div>
+          <div>
+            <div class="landing-bubble">Hi! I'm your MediFind assistant. Ask me anything about medicines or nearby pharmacies in Malaybalay 💊</div>
+            <div class="landing-msg-time">Just now</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="landing-chat-suggestions" id="landingChatSuggestions">
-      <button class="landing-suggest-chip" onclick="landingSendMessage('What is Paracetamol used for?')">Paracetamol</button>
-      <button class="landing-suggest-chip" onclick="landingSendMessage('Find nearby pharmacies')">Nearby pharmacies</button>
-      <button class="landing-suggest-chip" onclick="landingSendMessage('Amoxicillin dosage')">Amoxicillin</button>
-      <button class="landing-suggest-chip" onclick="landingSendMessage('What medicines treat fever?')">Fever medicines</button>
-    </div>
+      <div class="landing-chat-suggestions" id="landingChatSuggestions">
+        <button class="landing-suggest-chip" onclick="landingSendMessage('What is Paracetamol used for?')">Paracetamol</button>
+        <button class="landing-suggest-chip" onclick="landingSendMessage('Find nearby pharmacies')">Nearby pharmacies</button>
+        <button class="landing-suggest-chip" onclick="landingSendMessage('Amoxicillin dosage')">Amoxicillin</button>
+        <button class="landing-suggest-chip" onclick="landingSendMessage('What medicines treat fever?')">Fever medicines</button>
+      </div>
 
-    <div class="landing-chat-input-row">
-      <input
-        class="landing-chat-input"
-        id="landingChatInput"
-        type="text"
-        placeholder="Ask about a medicine..."
-        onkeydown="if(event.key==='Enter') landingSendMessage()" />
-      <button class="landing-chat-send-btn" onclick="landingSendMessage()">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.269 20.876L5.999 12zm0 0h7.5" />
-        </svg>
-      </button>
+      <div class="landing-chat-input-row">
+        <input
+          class="landing-chat-input"
+          id="landingChatInput"
+          type="text"
+          placeholder="Ask about a medicine..."
+          onkeydown="if(event.key==='Enter') landingSendMessage()" />
+        <button class="landing-chat-send-btn" onclick="landingSendMessage()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.269 20.876L5.999 12zm0 0h7.5" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
   <!-- NEARBY PHARMACIES -->
   <div class="nearby-section">
@@ -117,330 +117,210 @@
     </div>
 
     <div class="pharmacy-cards">
-      <!-- Card 1 -->
+
+      <!-- Card 1: Rose Pharmacy -->
       <div class="pharmacy-card">
-        <img
-          src="07_Assets/images/pharmacies/RosePharmacy.png"
-          alt="Rose Pharmacy" />
+        <img src="07_Assets/images/pharmacies/RosePharmacy.png" alt="Rose Pharmacy" />
         <div class="card-body-custom">
           <div class="pharmacy-name">Rose Pharmacy</div>
-          <!-- <div class="pharmacy-rating">
-              3.0
-              <span class="stars">★★★</span><span class="star-empty">★★</span>
-              (1)
-            </div> -->
-          <div class="pharmacy-type">Faculty of pharmacy</div>
-
-          <!-- <div class="card-tabs">
-              <div class="card-tab active">Overview</div>
-              <div class="card-tab">Reviews</div>
-            </div> -->
-
+          <div class="pharmacy-distance">
+            <span class="material-symbols-outlined">location_on</span>
+            <span>0.5 km away</span>
+          </div>
+          <div class="pharmacy-status">
+            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 10PM</span>
+          </div>
           <div class="card-actions">
-            <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">directions</span>
-              </div>
+            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1548,125.1281','_blank')">
+              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
               Directions
             </div>
-            <!-- <div class="card-action-btn">
-                <div class="card-action-icon">
-                  <i class="fa-regular fa-bookmark"></i>
-                </div>
-                Save
-              </div> -->
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">near_me</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
               Nearby
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">phone_iphone</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
               Send to phone
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">share</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
               Share
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Card 2 -->
+      <!-- Card 2: Generika Drugstore -->
       <div class="pharmacy-card">
-        <img
-          src="07_Assets/images/pharmacies/RosePharmacy.png"
-          alt="Rose Pharmacy" />
+        <img src="07_Assets/images/pharmacies/Generika.png" alt="Generika Drugstore" />
         <div class="card-body-custom">
-          <div class="pharmacy-name">Rose Pharmacy</div>
-          <!-- <div class="pharmacy-rating">
-              3.0
-              <span class="stars">★★★</span><span class="star-empty">★★</span>
-              (1)
-            </div> -->
-          <div class="pharmacy-type">Faculty of pharmacy</div>
-
-          <!-- <div class="card-tabs">
-              <div class="card-tab active">Overview</div>
-              <div class="card-tab">Reviews</div>
-            </div> -->
-
+          <div class="pharmacy-name">Generika Drugstore</div>
+          <div class="pharmacy-distance">
+            <span class="material-symbols-outlined">location_on</span>
+            <span>0.8 km away</span>
+          </div>
+          <div class="pharmacy-status">
+            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 9PM</span>
+          </div>
           <div class="card-actions">
-            <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">directions</span>
-              </div>
+            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1563,125.1285','_blank')">
+              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
               Directions
             </div>
-            <!-- <div class="card-action-btn">
-                <div class="card-action-icon">
-                  <i class="fa-regular fa-bookmark"></i>
-                </div>
-                Save
-              </div> -->
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">near_me</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
               Nearby
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">phone_iphone</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
               Send to phone
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">share</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
               Share
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Card 3 -->
+      <!-- Card 3: Mercury Drug -->
       <div class="pharmacy-card">
-        <img
-          src="07_Assets/images/pharmacies/RosePharmacy.png"
-          alt="Rose Pharmacy" />
+        <img src="07_Assets/images/pharmacies/MercuryDrug.jpg" alt="Mercury Drug" />
         <div class="card-body-custom">
-          <div class="pharmacy-name">Rose Pharmacy</div>
-          <!-- <div class="pharmacy-rating">
-              3.0
-              <span class="stars">★★★</span><span class="star-empty">★★</span>
-              (1)
-            </div> -->
-          <div class="pharmacy-type">Faculty of pharmacy</div>
-
-          <!-- <div class="card-tabs">
-              <div class="card-tab active">Overview</div>
-              <div class="card-tab">Reviews</div>
-            </div> -->
-
+          <div class="pharmacy-name">Mercury Drug</div>
+          <div class="pharmacy-distance">
+            <span class="material-symbols-outlined">location_on</span>
+            <span>1.1 km away</span>
+          </div>
+          <div class="pharmacy-status">
+            <span class="open-text">Open</span><span class="dot">·</span><span>Open 24 Hours</span>
+          </div>
           <div class="card-actions">
-            <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">directions</span>
-              </div>
+            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1547,125.1279','_blank')">
+              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
               Directions
             </div>
-            <!-- <div class="card-action-btn">
-                <div class="card-action-icon">
-                  <i class="fa-regular fa-bookmark"></i>
-                </div>
-                Save
-              </div> -->
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">near_me</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
               Nearby
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">phone_iphone</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
               Send to phone
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">share</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
               Share
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Card 4 -->
+      <!-- Card 4: Watsons -->
       <div class="pharmacy-card">
-        <img
-          src="07_Assets/images/pharmacies/RosePharmacy.png"
-          alt="Rose Pharmacy" />
+        <img src="07_Assets/images/pharmacies/Watsons.png" alt="Watsons Pharmacy" />
         <div class="card-body-custom">
-          <div class="pharmacy-name">Rose Pharmacy</div>
-          <!-- <div class="pharmacy-rating">
-              3.0
-              <span class="stars">★★★</span><span class="star-empty">★★</span>
-              (1)
-            </div> -->
-          <div class="pharmacy-type">Faculty of pharmacy</div>
-
-          <!-- <div class="card-tabs">
-              <div class="card-tab active">Overview</div>
-              <div class="card-tab">Reviews</div>
-            </div> -->
-
+          <div class="pharmacy-name">Watsons Pharmacy</div>
+          <div class="pharmacy-distance">
+            <span class="material-symbols-outlined">location_on</span>
+            <span>1.4 km away</span>
+          </div>
+          <div class="pharmacy-status">
+            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 9PM</span>
+          </div>
           <div class="card-actions">
-            <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">directions</span>
-              </div>
+            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1547,125.1275','_blank')">
+              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
               Directions
             </div>
-            <!-- <div class="card-action-btn">
-                <div class="card-action-icon">
-                  <i class="fa-regular fa-bookmark"></i>
-                </div>
-                Save
-              </div> -->
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">near_me</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
               Nearby
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">phone_iphone</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
               Send to phone
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">share</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
               Share
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Card 5 -->
+      <!-- Card 5: Rojon Pharmacy -->
       <div class="pharmacy-card">
-        <img
-          src="07_Assets/images/pharmacies/RosePharmacy.png"
-          alt="Rose Pharmacy" />
+        <img src="07_Assets/images/pharmacies/RojonPharmacy.png" alt="Rojon Pharmacy" />
         <div class="card-body-custom">
-          <div class="pharmacy-name">Rose Pharmacy</div>
-          <!-- <div class="pharmacy-rating">
-              3.0
-              <span class="stars">★★★</span><span class="star-empty">★★</span>
-              (1)
-            </div> -->
-          <div class="pharmacy-type">Faculty of pharmacy</div>
-
-          <!-- <div class="card-tabs">
-              <div class="card-tab active">Overview</div>
-              <div class="card-tab">Reviews</div>
-            </div> -->
-
+          <div class="pharmacy-name">Rojon Pharmacy</div>
+          <div class="pharmacy-distance">
+            <span class="material-symbols-outlined">location_on</span>
+            <span>1.7 km away</span>
+          </div>
+          <div class="pharmacy-status">
+            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 10PM</span>
+          </div>
           <div class="card-actions">
-            <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">directions</span>
-              </div>
+            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1558,125.1269','_blank')">
+              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
               Directions
             </div>
-            <!-- <div class="card-action-btn">
-                <div class="card-action-icon">
-                  <i class="fa-regular fa-bookmark"></i>
-                </div>
-                Save
-              </div> -->
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">near_me</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
               Nearby
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">phone_iphone</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
               Send to phone
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">share</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
               Share
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Card 6 -->
+      <!-- Card 6: TGP -->
       <div class="pharmacy-card">
-        <img
-          src="07_Assets/images/pharmacies/RosePharmacy.png"
-          alt="Rose Pharmacy" />
+        <img src="07_Assets/images/pharmacies/TGP.png" alt="TGP The Generics Pharmacy" />
         <div class="card-body-custom">
-          <div class="pharmacy-name">Rose Pharmacy</div>
-          <!-- <div class="pharmacy-rating">
-              3.0
-              <span class="stars">★★★</span><span class="star-empty">★★</span>
-              (1)
-            </div> -->
-          <div class="pharmacy-type">Faculty of pharmacy</div>
-
-          <!-- <div class="card-tabs">
-              <div class="card-tab active">Overview</div>
-              <div class="card-tab">Reviews</div>
-            </div> -->
-
+          <div class="pharmacy-name">TGP The Generics Pharmacy</div>
+          <div class="pharmacy-distance">
+            <span class="material-symbols-outlined">location_on</span>
+            <span>2.0 km away</span>
+          </div>
+          <div class="pharmacy-status">
+            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 8PM</span>
+          </div>
           <div class="card-actions">
-            <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">directions</span>
-              </div>
+            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1567,125.1263','_blank')">
+              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
               Directions
             </div>
-            <!-- <div class="card-action-btn">
-                <div class="card-action-icon">
-                  <i class="fa-regular fa-bookmark"></i>
-                </div>
-                Save
-              </div> -->
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">near_me</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
               Nearby
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">phone_iphone</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
               Send to phone
             </div>
             <div class="card-action-btn">
-              <div class="card-action-icon">
-                <span class="material-symbols-outlined">share</span>
-              </div>
+              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
               Share
             </div>
           </div>
         </div>
       </div>
+
     </div>
+
+
+
+
   </div>
 
   <!-- HOW IT WORKS SECTION -->
@@ -593,56 +473,59 @@
   </footer>
 
   <script>
-  let landingChatOpen = false;
-  const landingOverlay = document.getElementById('landingChatOverlay');
-  const landingMsgs = document.getElementById('landingChatMessages');
-  const landingInput = document.getElementById('landingChatInput');
+    let landingChatOpen = false;
+    const landingOverlay = document.getElementById('landingChatOverlay');
+    const landingMsgs = document.getElementById('landingChatMessages');
+    const landingInput = document.getElementById('landingChatInput');
 
-  // Wire up the search bar bot button
-  document.querySelector('.search-bot-btn').addEventListener('click', toggleLandingChat);
+    // Wire up the search bar bot button
+    document.querySelector('.search-bot-btn').addEventListener('click', toggleLandingChat);
 
-  // Close on overlay click (outside modal)
-  function closeLandingChat(e) {
-    if (e.target === landingOverlay) toggleLandingChat();
-  }
+    // Close on overlay click (outside modal)
+    function closeLandingChat(e) {
+      if (e.target === landingOverlay) toggleLandingChat();
+    }
 
-  // Close on Escape key
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && landingChatOpen) toggleLandingChat();
-  });
+    // Close on Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && landingChatOpen) toggleLandingChat();
+    });
 
-  function toggleLandingChat() {
-    landingChatOpen = !landingChatOpen;
-    landingOverlay.classList.toggle('visible', landingChatOpen);
-    if (landingChatOpen) setTimeout(() => landingInput.focus(), 300);
-  }
+    function toggleLandingChat() {
+      landingChatOpen = !landingChatOpen;
+      landingOverlay.classList.toggle('visible', landingChatOpen);
+      if (landingChatOpen) setTimeout(() => landingInput.focus(), 300);
+    }
 
-  function landingGetTime() {
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
+    function landingGetTime() {
+      return new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
 
-  function landingScrollBottom() {
-    landingMsgs.scrollTop = landingMsgs.scrollHeight;
-  }
+    function landingScrollBottom() {
+      landingMsgs.scrollTop = landingMsgs.scrollHeight;
+    }
 
-  function landingAddMessage(text, type) {
-    const div = document.createElement('div');
-    div.className = 'landing-msg ' + type;
-    div.innerHTML = type === 'bot'
-      ? `<div class="landing-msg-avatar">
+    function landingAddMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = 'landing-msg ' + type;
+      div.innerHTML = type === 'bot' ?
+        `<div class="landing-msg-avatar">
            <span class="material-symbols-outlined" style="font-size:0.95rem; color:#1d9e75">smart_toy</span>
          </div>
-         <div><div class="landing-bubble">${text}</div><div class="landing-msg-time">${landingGetTime()}</div></div>`
-      : `<div><div class="landing-bubble">${text}</div><div class="landing-msg-time" style="text-align:right">${landingGetTime()}</div></div>`;
-    landingMsgs.appendChild(div);
-    landingScrollBottom();
-  }
+         <div><div class="landing-bubble">${text}</div><div class="landing-msg-time">${landingGetTime()}</div></div>` :
+        `<div><div class="landing-bubble">${text}</div><div class="landing-msg-time" style="text-align:right">${landingGetTime()}</div></div>`;
+      landingMsgs.appendChild(div);
+      landingScrollBottom();
+    }
 
-  function landingShowTyping() {
-    const t = document.createElement('div');
-    t.className = 'landing-msg bot';
-    t.id = 'landingTyping';
-    t.innerHTML = `<div class="landing-msg-avatar">
+    function landingShowTyping() {
+      const t = document.createElement('div');
+      t.className = 'landing-msg bot';
+      t.id = 'landingTyping';
+      t.innerHTML = `<div class="landing-msg-avatar">
         <span class="material-symbols-outlined" style="font-size:0.95rem; color:#1d9e75">smart_toy</span>
       </div>
       <div class="landing-typing-indicator">
@@ -650,29 +533,29 @@
         <div class="landing-typing-dot"></div>
         <div class="landing-typing-dot"></div>
       </div>`;
-    landingMsgs.appendChild(t);
-    landingScrollBottom();
-  }
+      landingMsgs.appendChild(t);
+      landingScrollBottom();
+    }
 
-  function landingRemoveTyping() {
-    const t = document.getElementById('landingTyping');
-    if (t) t.remove();
-  }
+    function landingRemoveTyping() {
+      const t = document.getElementById('landingTyping');
+      if (t) t.remove();
+    }
 
-  function landingSendMessage(prefill) {
-    const text = prefill || landingInput.value.trim();
-    if (!text) return;
-    landingAddMessage(text, 'user');
-    landingInput.value = '';
-    document.getElementById('landingChatSuggestions').style.display = 'none';
-    landingShowTyping();
-    setTimeout(() => {
-      landingRemoveTyping();
-      // TODO: replace with real API call
-      landingAddMessage('I received your message. This is a placeholder response.', 'bot');
-    }, 1100);
-  }
-</script>
+    function landingSendMessage(prefill) {
+      const text = prefill || landingInput.value.trim();
+      if (!text) return;
+      landingAddMessage(text, 'user');
+      landingInput.value = '';
+      document.getElementById('landingChatSuggestions').style.display = 'none';
+      landingShowTyping();
+      setTimeout(() => {
+        landingRemoveTyping();
+        // TODO: replace with real API call
+        landingAddMessage('I received your message. This is a placeholder response.', 'bot');
+      }, 1100);
+    }
+  </script>
 
   <script>
     // Tab switching
@@ -686,15 +569,15 @@
   </script>
 
   <script>
-  window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 10) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  });
-</script>
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 10) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
 
 </body>
 

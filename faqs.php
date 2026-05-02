@@ -98,7 +98,9 @@
     }
 
     @media (max-width: 768px) {
-      .faq-search-wrapper { width: 85vw; }
+      .faq-search-wrapper {
+        width: 85vw;
+      }
     }
 
     /* ── CATEGORY TABS ── */
@@ -334,11 +336,35 @@
     }
 
     /* ── HIDDEN STATES ── */
-    .faq-item.hidden { display: none; }
-    .faq-group.hidden { display: none; }
+    .faq-item.hidden {
+      display: none;
+    }
+
+    .faq-group.hidden {
+      display: none;
+    }
+
+    /* ── BACKGROUND FIX ── */
+    body.landing-page {
+      background-image: none !important;
+      background-color: #f7fdf9 !important;
+    }
+
+    /* ── SECTION CONTINUITY ── */
+    .faq-section {
+      background: #f7fdf9;
+    }
+
+    .contact-strip {
+      margin-top: 0;
+    }
+
+    footer.site-footer {
+      margin-top: 0 !important;
+    }
   </style>
 
-    <!-- Page transition -->
+  <!-- Page transition -->
   <?php include '01_Includes/page-transition-hardcode.php' ?>
 </head>
 
@@ -636,13 +662,13 @@
     });
 
     // ── Live search ──
-    document.getElementById('faqSearch').addEventListener('input', function () {
+    document.getElementById('faqSearch').addEventListener('input', function() {
       const q = this.value.toLowerCase().trim();
       document.querySelectorAll('.faq-cat-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('[data-cat="all"]').classList.add('active');
       document.querySelectorAll('.faq-item').forEach(item => {
-        const text = item.querySelector('.q-text').textContent.toLowerCase()
-          + ' ' + item.querySelector('.faq-answer p').textContent.toLowerCase();
+        const text = item.querySelector('.q-text').textContent.toLowerCase() +
+          ' ' + item.querySelector('.faq-answer p').textContent.toLowerCase();
         const match = !q || text.includes(q);
         item.classList.toggle('hidden', !match);
         if (!match) item.classList.remove('open');
@@ -665,15 +691,16 @@
   </script>
 
   <script>
-  window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 10) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  });
-</script>
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 10) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
 
 </body>
+
 </html>

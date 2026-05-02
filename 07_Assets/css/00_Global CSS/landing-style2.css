@@ -610,6 +610,57 @@ body::-webkit-scrollbar {
   margin-bottom: 10px;
 }
 
+.pharmacy-distance {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #9a9a9a;
+  font-size: 0.78rem;
+  margin-bottom: 4px;
+}
+.pharmacy-distance .material-symbols-outlined {
+  font-size: 1rem;
+}
+.pharmacy-status {
+  font-size: 0.78rem;
+  margin-bottom: 10px;
+  color: #8f8f8f;
+  font-weight: 500;
+}
+.pharmacy-status .open-text {
+  color: #11a36a;
+  font-weight: 600;
+}
+.pharmacy-status .dot {
+  margin: 0 4px;
+}
+
+.pharmacy-distance {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #9a9a9a;
+  font-size: 0.78rem;
+  margin-bottom: 4px;
+}
+.pharmacy-distance .material-symbols-outlined {
+  font-size: 1rem;
+  color: #1d9e75;
+}
+.pharmacy-status {
+  font-size: 0.78rem;
+  margin-bottom: 10px;
+  color: #8f8f8f;
+  font-weight: 500;
+}
+.pharmacy-status .open-text {
+  color: #11a36a;
+  font-weight: 600;
+}
+.pharmacy-status .dot {
+  margin: 0 4px;
+}
+
 .card-tabs {
   display: flex;
   border-top: 1px solid #f0f0f0;
@@ -1027,4 +1078,19 @@ body::-webkit-scrollbar {
   font-size: 0.75rem;
   opacity: 0.9;
   margin: 0;
+}
+
+/* ── BACKGROUND FIX ── */
+body.landing-page {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+/* ── SECTION CONTINUITY ── */
+.cta-section {
+  margin-bottom: 0;
+}
+
+.site-footer {
+  margin-top: 0 !important;
 }
