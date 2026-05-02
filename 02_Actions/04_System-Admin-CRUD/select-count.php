@@ -25,7 +25,7 @@ $stmt = $pdo->query(
     "SELECT COUNT(*) FROM view_04_pharmacy 
      WHERE Approval_Status COLLATE utf8mb4_unicode_ci = 'Pending'"
 );
-$pendingPharmacies = $stmt->fetchColumn();
+$pendingPharmaciesDash = $stmt->fetchColumn();
 
 // 4. Approved Pharmacies
 $stmt = $pdo->query(

@@ -33,11 +33,16 @@ if (!$_SESSION['user_id']) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- In the <head> of every content page -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <!-- jQuery -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 
   <!-- STYLES -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-fonts.css" />
+
+
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
   <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/01_dashboard.css">
   <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/02_ManageInventory.css">
@@ -133,8 +138,8 @@ if (!$_SESSION['user_id']) {
 
 
     /* BUTTON ACTIONS */
-       /* BUTTON STYLE */
-       .btn-action {
+    /* BUTTON STYLE */
+    .btn-action {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -144,7 +149,7 @@ if (!$_SESSION['user_id']) {
       border-radius: 8px;
       cursor: pointer;
       font-size: 17px;
-     
+
       transition: all 0.2s ease;
       margin: 0 3px;
     }
@@ -158,11 +163,11 @@ if (!$_SESSION['user_id']) {
       transform: translateY(0);
     }
 
- 
+
     .btn-view {
       background-color: #dbeafe;
       color: #2563eb;
-   
+
     }
 
     .btn-view:hover {
@@ -170,11 +175,11 @@ if (!$_SESSION['user_id']) {
       color: #ffffff;
     }
 
- 
+
     .btn-edit {
       background-color: #fef3c7;
       color: #d97706;
-      
+
     }
 
     .btn-edit:hover {
@@ -198,7 +203,7 @@ if (!$_SESSION['user_id']) {
 
           <!-- ══ STAT CARDS ═════════════════════════════════════ -->
 
-          <div class="hero" id="statsHero">
+          <div class="hero collapsed" id="statsHero">
             <div style="padding: 1rem 0;">
               <div class="row g-3">
 
@@ -255,7 +260,7 @@ if (!$_SESSION['user_id']) {
                       </div>
                       <span class="card-label label-green">Pending Requests</span>
                     </div>
-                    <div class="card-value"><?= $pendingPharmacies ?></div>
+                    <div class="card-value"><?= $pendingPharmaciesDash ?></div>
                     <div class="card-sub">Within 30 days</div>
                   </div>
                 </div>
@@ -284,7 +289,7 @@ if (!$_SESSION['user_id']) {
                   <div class="row g-2 align-items-center mb-3">
 
                     <!-- Search -->
-                    <div class="col-12 col-lg-5">
+                    <div class="col-12 col-lg-4">
                       <div class="input-group searchbar-group">
                         <span class="input-group-text search-icon bg-white border-end-0">
                           <i class="bi bi-search text-muted"></i>
@@ -296,7 +301,7 @@ if (!$_SESSION['user_id']) {
 
                     <!-- Role -->
                     <div class="col-6 col-lg-2">
-                      <select id="filterRole" class="form-select border-secondary-subtle">
+                      <select id="filterRole" class="form-select border-secondary-subtle w-100">
                         <option value="">All Roles</option>
                         <option value="Patient/Client">Patient/Client</option>
                         <option value="Pharmacy">Pharmacy Admin</option>
@@ -304,21 +309,20 @@ if (!$_SESSION['user_id']) {
                     </div>
 
                     <!-- Status -->
-                    <div class="col-6 col-lg-2">
-                      <select id="filterStatus" class="form-select border-secondary-subtle">
+                    <div class="col-6 col-lg-3">
+                      <select id="filterStatus" class="form-select border-secondary-subtle w-100">
                         <option value="">All Status</option>
                         <option value="Active">Active</option>
                         <option value="Suspended">Suspended</option>
                         <option value="Inactive">Inactive</option>
-                        <!-- <option value="Pending">Pending</option> -->
                       </select>
                     </div>
 
                     <!-- View Pharmacies + Toggle -->
-                    <div class="col-6 col-lg-3 d-flex gap-2 justify-content-end">
-                      <a href="../06_SystemAdmin/03_Pharmacies.php" style="text-decoration: none;">
+                    <div class="col-12 col-lg-3 d-flex gap-2 justify-content-end">
+                      <a href="../06_SystemAdmin/03_Pharmacies.php" style="text-decoration: none;" class="flex-grow-1">
                         <button id="addBTN"
-                          class="btn btn-success px-3 rounded-3 d-flex align-items-center justify-content-center gap-1"
+                          class="btn btn-success px-3 rounded-3 d-flex align-items-center justify-content-center gap-1 w-100"
                           style="background-color:#1d9e75 !important; border-color:#1d9e75 !important;">
                           <span class="material-symbols-outlined" style="font-size:1.1rem;">local_hospital</span>
                           <span class="text-nowrap small">View Pharmacies</span>
@@ -335,6 +339,8 @@ if (!$_SESSION['user_id']) {
 
                   </div>
                 </div>
+
+
                 <!-- End Toolbar -->
 
                 <div class="card card-table border">
@@ -365,7 +371,7 @@ if (!$_SESSION['user_id']) {
                               <td><?= htmlspecialchars($row['Email']) ?></td>
                               <td><?= htmlspecialchars($row['Phone']) ?></td>
                               <td><?= htmlspecialchars($row['Role']) ?></td>
-                              <td><?= htmlspecialchars($row['Full_Address']) ?></td>
+                              <td><?= htmlspecialchars($row['Barangay_Name']) ?></td>
                               <td>
                                 <?php
                                 $status = trim($row['UserStatus']);
@@ -380,7 +386,7 @@ if (!$_SESSION['user_id']) {
                               </td>
                               <td><?= htmlspecialchars($row['DateCreated']) ?></td>
                               <td class="text-end pe-4">
-                              <div class="d-flex gap-2 justify-content-start text-muted" style="margin-left: -17px;">
+                                <div class="d-flex gap-2 justify-content-start text-muted" style="margin-left: -17px;">
 
                                   <!-- View -->
                                   <button class="btn-action btn-view view-btn" title="View"

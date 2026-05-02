@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profile</title>
 
+  <!-- STYLES -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-fonts.css" />
+
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
   <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
 

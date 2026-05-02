@@ -53,6 +53,12 @@ $_SESSION['fname']      =   $_SESSION['fname']      ?? null;
 $_SESSION['mname']      =   $_SESSION['mname']      ?? null;
 $_SESSION['lname']      =   $_SESSION['lname']      ?? null;
 
+
+$_SESSION['Gender']     = $_SESSION['Gender']        ?? null;
+$_SESSION['Birthdate']  = $_SESSION['Birthdate']     ?? null;
+$_SESSION['Age']        = $_SESSION['Age']           ?? null;
+
+
 $_SESSION['role_id']    = $_SESSION['role_id']      ?? null;
 $_SESSION['role_label'] = $_SESSION['role_label']   ?? null;
 $_SESSION['profile_pic']= $_SESSION['profile_pic']  ?? null;
@@ -60,6 +66,7 @@ $_SESSION['profile_pic']= $_SESSION['profile_pic']  ?? null;
 $_SESSION['Email']      = $_SESSION['Email']        ?? null;
 $_SESSION['Phone']      = $_SESSION['Phone']        ?? null;
 $_SESSION['UserStatus'] = $_SESSION['UserStatus']   ?? null;
+
 
 $_SESSION['Street']             = $_SESSION['Street']               ?? null;
 $_SESSION['Barangay_Name']      = $_SESSION['Barangay_Name']        ?? null;

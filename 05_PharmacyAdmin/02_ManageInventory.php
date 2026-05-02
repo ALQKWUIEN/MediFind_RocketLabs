@@ -43,11 +43,16 @@ $stmt->execute([$pharmacyID]);
 
   <!-- jQuery -->
 
-
+  <!-- STYLES -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-fonts.css" />
+  
   <!-- STYLES -->
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
   <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/01_dashboard.css">
   <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/02_ManageInventory.css">
+  <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-body-css.css">
+
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
