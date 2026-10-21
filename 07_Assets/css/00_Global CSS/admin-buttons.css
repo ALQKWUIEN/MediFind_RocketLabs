@@ -1,0 +1,221 @@
+/**
+ * ==============================================================================
+ * MediFind Design System - Admin Shared Button Stylesheet
+ * File: 07_Assets/css/00_Global CSS/admin-buttons.css
+ * Reference Standard: Pharmacy Admin (Scan & Direct Update / Add Stock / Collapse)
+ * ==============================================================================
+ */
+
+:root {
+  --mf-btn-radius:         8px;
+  --mf-btn-height:         44px;
+  --mf-btn-padding-x:      16px;
+  --mf-btn-font-size:      14px;
+  --mf-btn-font-weight:    600;
+  --mf-btn-gap:            6px;
+  --mf-focus-ring:         0 0 0 3px rgba(29, 158, 117, 0.22);
+}
+
+/* ── Standard Button Geometry for Admin Areas ────────────────────────────── */
+.main-panel .btn:not(.btn-action):not(.page-num-btn):not(.btn-close):not(.dropdown-toggle):not(.btn-close-chip),
+.btn-admin,
+.btn-style,
+.scanner-btn-orange,
+.btn-recommend-trigger,
+.btn-pos-clear,
+.btn-checkout,
+.btn-clear-filters,
+.btn-toolbar-action {
+  border-radius: var(--mf-btn-radius, 8px) !important;
+  height: var(--mf-btn-height, 44px);
+  min-height: var(--mf-btn-height, 44px);
+  padding: 0 var(--mf-btn-padding-x, 16px) !important;
+  font-size: var(--mf-btn-font-size, 14px) !important;
+  font-weight: var(--mf-btn-font-weight, 600) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--mf-btn-gap, 6px) !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  transition: all 0.18s ease !important;
+}
+
+/* Ensure icons inside standard admin buttons align cleanly */
+.main-panel .btn .material-symbols-outlined,
+.main-panel .btn i,
+.btn-admin .material-symbols-outlined,
+.btn-admin i {
+  font-size: 1.15rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Universal Brand Focus Ring (No default black outline) ───────────────── */
+.main-panel .btn:focus,
+.main-panel .btn:focus-visible,
+.btn-admin:focus,
+.btn-admin:focus-visible,
+button:focus-visible,
+.scanner-btn-orange:focus,
+.btn-recommend-trigger:focus {
+  outline: none !important;
+  border-color: #1d9e75 !important;
+  box-shadow: var(--mf-focus-ring) !important;
+}
+
+/* ── Primary Green Button Variant ────────────────────────────────────────── */
+.btn-admin-primary,
+.main-panel .btn-success,
+#addBTN {
+  background-color: #1d9e75 !important;
+  border-color: #1d9e75 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(29, 158, 117, 0.20) !important;
+}
+
+.btn-admin-primary:hover,
+.main-panel .btn-success:hover,
+#addBTN:hover {
+  background-color: #178a63 !important;
+  border-color: #178a63 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(29, 158, 117, 0.32) !important;
+  transform: translateY(-1px);
+}
+
+.btn-admin-primary:active,
+.main-panel .btn-success:active,
+#addBTN:active {
+  background-color: #146f50 !important;
+  border-color: #146f50 !important;
+  transform: translateY(0);
+}
+
+/* ── Warm Orange CTA Button Variant (Scan & Direct Update, Download PDF) ─── */
+.btn-admin-cta,
+.scanner-btn-orange {
+  background-color: #d97706 !important;
+  border-color: #d97706 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25) !important;
+}
+
+.btn-admin-cta:hover,
+.scanner-btn-orange:hover {
+  background-color: #b45309 !important;
+  border-color: #b45309 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.btn-admin-cta:active,
+.scanner-btn-orange:active {
+  background-color: #92400e !important;
+  border-color: #92400e !important;
+  transform: translateY(0);
+}
+
+/* ── Outline / Secondary Button Variant (Collapse, Expand, POS Counter) ─── */
+.btn-admin-outline,
+.main-panel .btn-outline-secondary,
+#statsToggleBtn {
+  border: 1.5px solid #d1ded8 !important;
+  background-color: #ffffff !important;
+  color: #4b5563 !important;
+}
+
+.btn-admin-outline:hover,
+.main-panel .btn-outline-secondary:hover,
+#statsToggleBtn:hover {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+  border-color: #9ca3af !important;
+  transform: translateY(-1px);
+}
+
+.btn-admin-outline:active,
+.main-panel .btn-outline-secondary:active,
+#statsToggleBtn:active {
+  background-color: #e5e7eb !important;
+  transform: translateY(0);
+}
+
+/* ── Clear Filters & Secondary Action Buttons ────────────────────────────── */
+.btn-clear-filters {
+  border: 1px solid #fecaca !important;
+  background-color: #fff5f5 !important;
+  color: #dc2626 !important;
+}
+
+.btn-clear-filters:hover {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
+/* ── Checkout Button (POS) ───────────────────────────────────────────────── */
+.btn-checkout {
+  background-color: #1d9e75 !important;
+  border-color: #1d9e75 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(29, 158, 117, 0.25) !important;
+}
+
+.btn-checkout:hover:not(:disabled) {
+  background-color: #178a63 !important;
+  border-color: #178a63 !important;
+  box-shadow: 0 4px 14px rgba(29, 158, 117, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.btn-checkout:disabled {
+  background-color: #9ca3af !important;
+  border-color: #9ca3af !important;
+  color: #ffffff !important;
+  cursor: not-allowed !important;
+  opacity: 0.75 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ── Small Form Action Buttons In Toolbars ───────────────────────────────── */
+.main-panel .btn-sm.rounded-3,
+.main-panel .btn-outline-success.rounded-3,
+.main-panel .btn-outline-danger.rounded-3 {
+  border-radius: var(--mf-btn-radius, 8px) !important;
+  height: var(--mf-btn-height, 44px) !important;
+  min-height: var(--mf-btn-height, 44px) !important;
+  font-size: var(--mf-btn-font-size, 14px) !important;
+  padding: 0 var(--mf-btn-padding-x, 16px) !important;
+}
+
+/* ── DO NOT TOUCH: Table Action Icon Buttons (.btn-action) ────────────────── */
+.table .btn-action,
+.btn-action {
+  width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
+/* ── DO NOT TOUCH: Badges, Pills, Filter Chips ───────────────────────────── */
+.badge-status,
+.filter-chip,
+.summary-chip,
+.pos-filter-pill,
+.notif-pill,
+.role-pill,
+.badge-incomplete,
+.badge-up {
+  height: auto !important;
+  min-height: auto !important;
+}

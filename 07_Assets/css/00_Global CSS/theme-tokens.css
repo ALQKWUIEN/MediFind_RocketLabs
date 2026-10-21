@@ -1,0 +1,129 @@
+/**
+ * ==============================================================================
+ * MediFind Design System - Theme Tokens
+ * Extracted directly from User-side CSS (Source of Truth)
+ * ==============================================================================
+ * Reference Sources:
+ * - 07_Assets/css/01_PatientUser CSS/01_Home.css
+ * - 07_Assets/css/01_PatientUser CSS/medicines.css
+ * - 07_Assets/css/01_PatientUser CSS/medicinedetails.css
+ * - 07_Assets/css/01_PatientUser CSS/pharmacies.css
+ * - 07_Assets/css/01_PatientUser CSS/scanrx.css
+ * - 07_Assets/css/01_PatientUser CSS/scannedrx.css
+ * - 07_Assets/css/01_PatientUser CSS/profile.css
+ * - 07_Assets/css/04_Includes CSS/sidebar.css
+ * - 07_Assets/css/04_Includes CSS/topbar.css
+ * - 07_Assets/css/00_Global CSS/override-fonts.css
+ * ==============================================================================
+ */
+
+:root {
+  /* ── 1. Brand & Primary Green ─────────────────────────────────── */
+  --mf-green:              #1d9e75;  /* 01_Home.css:96, sidebar.css:97,162, medicines.css:81 */
+  --mf-green-dark:         #178a63;  /* Hover: sidebar.css:151,176, scanrx.css:180,269 */
+  --mf-green-deep:         #146f50;  /* Active: topbar.css:65, 01_Home.css:826 */
+  --mf-green-alt:          #20a16b;  /* profile.css:87,140,172,329 */
+  --mf-green-tint:         #f0f9f5;  /* Selected/hover tint: sidebar.css:150, profile.css:324 */
+  --mf-green-tint-soft:    #eef9f4;  /* 01_Home.css:277,824 */
+  --mf-green-tint-mint:    #f8fffe;  /* Header tint: 01_Home.css:969 */
+  --mf-green-badge-bg:     #eafaf1;  /* medicines.css:452, medicinedetails.css:143 */
+
+  /* ── 2. Call-To-Action (CTA) Orange ───────────────────────────── */
+  --mf-orange:             #ff6a2a;  /* CTA buttons: 01_Home.css:398, medicines.css:465, pharmacies.css:242, scanrx.css:184,273 */
+  --mf-orange-dark:        #eb5c20;  /* CTA hover: 01_Home.css:412, medicines.css:477, pharmacies.css:256 */
+  --mf-orange-tint:        #fff1ec;  /* Soft peach badge/icon background */
+  --mf-orange-brand:       #ff5b27;  /* Logo brand span: sidebar.css:104, profile.css:144 */
+
+  /* ── 3. Backgrounds ───────────────────────────────────────────── */
+  --mf-bg:                 #f5f6f8;  /* Page background: profile.css:6 */
+  --mf-bg-alt:             #f8faf9;  /* Soft off-white page background */
+  --mf-card-bg:            #ffffff;  /* Card background: 01_Home.css:230, profile.css:65 */
+
+  /* ── 4. Borders ───────────────────────────────────────────────── */
+  --mf-border:             #e2ede8;  /* Soft sage card border: medicinedetails.css:86,303 */
+  --mf-border-light:       #dce9e3;  /* 01_Home.css:298,811, medicinedetails.css:62 */
+  --mf-border-card:        #e7eeeb;  /* 01_Home.css:231 */
+  --mf-border-neutral:     #e2e6ea;  /* profile.css:66,190 */
+  --mf-border-input:       #8db8aa;  /* Search & input border: 01_Home.css:129, medicines.css:99 */
+
+  /* ── 5. Border Radii ──────────────────────────────────────────── */
+  --mf-radius-card:        18px;     /* Standard card: 01_Home.css:229, medicines.css:363, medicinedetails.css:304 */
+  --mf-radius-card-lg:     24px;     /* Large card: profile.css:67, 01_Home.css:352 */
+  --mf-radius-input:       15px;     /* Search bar: 01_Home.css:130, medicines.css:100 */
+  --mf-radius-control:     10px;     /* Tab/control: topbar.css:15, profile.css:162,313 */
+  --mf-radius-btn:         999px;    /* Full pill CTA button: 01_Home.css:400, medicines.css:467, scanrx.css:251 */
+
+  /* ── 6. Shadows ───────────────────────────────────────────────── */
+  --mf-shadow:             0 2px 12px rgba(0, 0, 0, 0.06);           /* 01_Home.css:133 */
+  --mf-shadow-hover:       0 4px 16px rgba(29, 158, 117, 0.10);      /* medicinedetails.css:318 */
+  --mf-shadow-cta:         0 4px 14px rgba(255, 106, 42, 0.28);      /* CTA button elevation */
+
+  /* ── 7. Typography & Text Colors ──────────────────────────────── */
+  --mf-text-heading:       #23423a;  /* Primary heading: 01_Home.css:188,860, medicines.css:338 */
+  --mf-text-dark:          #1f2937;  /* Topbar/card title: topbar.css:48,106 */
+  --mf-text-title:         #4a4a4a;  /* Card title: 01_Home.css:364,883, scannedrx.css:105 */
+  --mf-text-body:          #555555;  /* Body text: 01_Home.css:143,896, medicines.css:112 */
+  --mf-text-muted:         #87a199;  /* Soft sage muted: 01_Home.css:148, sidebar.css:92, topbar.css:80 */
+  --mf-text-muted-gray:    #9ca3af;  /* Cool gray: 01_Home.css:1049, topbar.css:55 */
+  --mf-font:               'Inter', sans-serif;                 /* override-fonts.css:6 */
+  --mf-font-brand:         "Plus Jakarta Sans", sans-serif;     /* sidebar.css:100, scanrx.css:225 */
+
+  /* ── 8. Semantic Status Colors (Preserved Meanings) ───────────── */
+  --mf-status-available-bg:   #d4f5e2;
+  --mf-status-available-text: #1a7a45;
+  --mf-status-low-bg:         #fef3c7;
+  --mf-status-low-text:       #b45309;
+  --mf-status-out-bg:         #fde8e8;
+  --mf-status-out-text:       #c0392b;
+  --mf-status-expired-bg:     #fee2e2;
+  --mf-status-expired-text:   #991b1b;
+  --mf-rx-bg:                 #fdecec;
+  --mf-rx-text:               #d9534f;
+  --mf-rx-border:             #fecaca;
+
+  /* ── 9. Admin Design System Tokens (Pharmacy & System Admin) ───── */
+  --mf-btn-radius:            8px;
+  --mf-btn-height:            44px;
+  --mf-btn-padding-x:         16px;
+  --mf-btn-font-size:         14px;
+  --mf-btn-font-weight:       600;
+  --mf-btn-gap:               6px;
+
+  /* Admin Table Header Row (Reference Standard: 02_ManageInventory.css) */
+  --mf-th-bg:                 #F9FAFB;
+  --mf-th-color:              #6B7280;
+  --mf-th-font-size:          11px;
+  --mf-th-font-weight:        600;
+  --mf-th-letter-spacing:     0.5px;
+  --mf-th-border:             2px solid #E5E7EB;
+  --mf-th-padding:            0.85rem 1rem;
+}
+
+/* ── Admin Page Headings (Matching User Dashboard Greeting .welcome-user: #1d9e75) ── */
+.dash-page-title,
+.admin-page-title,
+.page-header-title,
+.users-card-title,
+.pharmacy-title-area h5,
+.toolbar-title-group h4 {
+  color: var(--mf-green) !important;
+  font-weight: 700 !important;
+}
+
+/* ── "See All" & Action Links (Orange CTA) ── */
+.dash-see-all-link,
+a.dash-see-all-link {
+  color: var(--mf-orange) !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+
+.dash-see-all-link:hover,
+a.dash-see-all-link:hover {
+  color: var(--mf-orange-dark) !important;
+  text-decoration: underline !important;
+}
+
+.dash-see-all-link .material-symbols-outlined {
+  color: var(--mf-orange) !important;
+}

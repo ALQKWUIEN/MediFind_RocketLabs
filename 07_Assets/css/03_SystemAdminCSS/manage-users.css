@@ -1,0 +1,523 @@
+/**
+ * ==============================================================================
+ * MediFind - Manage Users Stylesheet (User-Side Design System)
+ * Styled using Theme Tokens from theme-tokens.css
+ * ==============================================================================
+ */
+
+/* ── Container & Layout ─────────────────────────────────────────── */
+.manage-users-container {
+  padding: 1.5rem 2rem 3.5rem 1.5rem;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ── Stat Cards Hero ────────────────────────────────────────────── */
+.hero {
+  overflow: hidden;
+  max-height: 420px;
+  opacity: 1;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+.hero.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.stat-card {
+  background: var(--mf-card-bg, #ffffff);
+  border: 1px solid var(--mf-border-card, #e7eeeb);
+  border-radius: var(--mf-radius-card-lg, 20px);
+  box-shadow: var(--mf-shadow, 0 3px 14px rgba(0, 0, 0, 0.05));
+  padding: 1.35rem 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mf-shadow-hover, 0 8px 24px rgba(29, 158, 117, 0.12));
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon.icon-green {
+  background: var(--mf-green-tint, #f0f9f5);
+  color: var(--mf-green, #1d9e75);
+}
+
+.card-icon .material-symbols-outlined {
+  font-size: 24px;
+}
+
+.card-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--mf-text-body, #555555);
+}
+
+.card-value {
+  font-family: var(--mf-font-brand, "Plus Jakarta Sans", sans-serif);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--mf-text-heading, #23423a);
+  line-height: 1.15;
+  margin-bottom: 0.25rem;
+}
+
+.card-sub {
+  font-size: 0.82rem;
+  color: var(--mf-text-muted, #87a199);
+}
+
+.badge-up {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #d4f5e2;
+  color: #1a7a45;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--mf-radius-btn, 999px);
+}
+
+.badge-up .material-symbols-outlined {
+  font-size: 14px;
+}
+
+/* ── Main Users Card Container ──────────────────────────────────── */
+.stat-card-table {
+  background: var(--mf-card-bg, #ffffff);
+  border: 1px solid var(--mf-border-card, #e7eeeb);
+  border-radius: var(--mf-radius-card-lg, 20px);
+  box-shadow: var(--mf-shadow, 0 3px 14px rgba(0, 0, 0, 0.05));
+  padding: 1.6rem 1.75rem;
+}
+
+.users-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+
+.users-card-title {
+  font-family: var(--mf-font-brand, "Plus Jakarta Sans", sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--mf-green, #1d9e75) !important;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.users-card-subtitle {
+  font-size: 0.88rem;
+  color: var(--mf-text-muted, #87a199);
+  margin-top: 2px;
+}
+
+/* ── Filter Toolbar ─────────────────────────────────────────────── */
+.users-filter-box {
+  background: #fbfdfc;
+  border: 1px solid #e5eee9;
+  border-radius: 14px;
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.searchbar-group {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.search-icon {
+  background: #ffffff !important;
+  border: 1px solid #d1ded8 !important;
+  border-right: none !important;
+  color: var(--mf-text-muted, #87a199) !important;
+  padding-left: 12px;
+}
+
+.searchbar {
+  border: 1px solid #d1ded8 !important;
+  border-left: none !important;
+  font-size: 0.88rem;
+  padding: 9px 12px 9px 4px;
+}
+
+.searchbar:focus {
+  box-shadow: none !important;
+}
+
+.searchbar-group:focus-within {
+  box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.15);
+}
+
+.searchbar-group:focus-within .search-icon,
+.searchbar-group:focus-within .searchbar {
+  border-color: var(--mf-green, #1d9e75) !important;
+}
+
+.form-select-user {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--mf-text-body, #555555);
+  border: 1px solid #d1ded8 !important;
+  border-radius: 10px !important;
+  padding: 9px 12px;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.form-select-user:focus {
+  border-color: var(--mf-green, #1d9e75) !important;
+  box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.15) !important;
+}
+
+.form-select-user:disabled {
+  background-color: #f1f5f3 !important;
+  color: #94a3b8 !important;
+  border-color: #e2e8f0 !important;
+  cursor: not-allowed;
+}
+
+/* ── Result Counter & Active Chips Bar ──────────────────────────── */
+.filter-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #e5eee9;
+  margin-top: 0.85rem;
+}
+
+.user-result-counter {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--mf-text-body, #555555);
+}
+
+.user-result-counter strong {
+  color: var(--mf-text-heading, #23423a);
+  font-weight: 700;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--mf-green-tint, #f0f9f5);
+  color: var(--mf-green-dark, #178a63);
+  border: 1px solid #cce8dc;
+  border-radius: var(--mf-radius-btn, 999px);
+  padding: 4px 10px 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.filter-chip strong {
+  color: #12583f;
+}
+
+.btn-close-chip {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--mf-green-dark, #178a63);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.btn-close-chip:hover {
+  background: rgba(23, 138, 99, 0.2);
+  color: #0d4431;
+}
+
+.btn-clear-filters {
+  border-radius: var(--mf-btn-radius, 8px) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  color: #dc2626 !important;
+  border-color: #fecaca !important;
+  background-color: #fff5f5 !important;
+  padding: 4px 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-clear-filters:hover {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
+/* ── Table Styling (User-Side Theme) ────────────────────────────── */
+.card-table {
+  background: var(--mf-card-bg, #ffffff);
+  border: 1px solid var(--mf-border-card, #e7eeeb) !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.table-responsive {
+  border-radius: 14px;
+}
+
+.table {
+  margin-bottom: 0 !important;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-head th {
+  background: #F9FAFB !important;
+  color: #6B7280 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 0.85rem 1rem !important;
+  border-bottom: 2px solid #E5E7EB !important;
+  vertical-align: middle;
+}
+
+.table tbody td {
+  padding: 13px 16px !important;
+  font-size: 0.88rem !important;
+  color: var(--mf-text-body, #555555) !important;
+  border-bottom: 1px solid #f1f5f3 !important;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.table tbody tr:hover td {
+  background: var(--mf-green-tint, #f0f9f5) !important;
+}
+
+.user-fullname {
+  font-weight: 700;
+  color: var(--mf-text-heading, #23423a);
+}
+
+.user-address-text {
+  color: var(--mf-text-body, #555555);
+  font-weight: 500;
+}
+
+/* ── Status & Role Badges ───────────────────────────────────────── */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--mf-radius-btn, 999px);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.badge-active {
+  background-color: #d4f5e2;
+  color: #1a7a45;
+}
+
+.badge-inactive {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.badge-suspended {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--mf-radius-btn, 999px);
+}
+
+.role-pill-patient {
+  background-color: #ecfdf5;
+  color: #047857;
+}
+
+.role-pill-pharmacy {
+  background-color: #fff7ed;
+  color: #c2410c;
+}
+
+.role-pill-admin {
+  background-color: #f5f3ff;
+  color: #6d28d9;
+}
+
+/* ── Action Buttons ─────────────────────────────────────────────── */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  margin: 0 2px;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.btn-view {
+  background-color: #eff6ff;
+  border-color: #dbeafe;
+  color: #2563eb;
+}
+
+.btn-view:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.btn-edit {
+  background-color: #fff7ed;
+  border-color: #ffedd5;
+  color: #ea580c;
+}
+
+.btn-edit:hover {
+  background-color: #ea580c;
+  color: #ffffff;
+}
+
+/* ── Responsive Refinements ─────────────────────────────────────── */
+@media (max-width: 991px) {
+  .manage-users-container {
+    padding: 1rem 0.75rem 2.5rem;
+  }
+}
+
+/* ── Fixed layout for Desktop (>= 992px): Only the users table body scrolls ── */
+@media (min-width: 992px) {
+  body[data-active="02"] .wrapper {
+    height: 100vh;
+    min-height: 0;
+  }
+
+  body[data-active="02"] .main-panel {
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden !important;
+  }
+
+  body[data-active="02"] .main-panel > .content {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  body[data-active="02"] .manage-users-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-bottom: 1.5rem;
+  }
+
+  body[data-active="02"] .hero {
+    flex: 0 0 auto;
+  }
+
+  body[data-active="02"] .stat-card-table {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  body[data-active="02"] .stat-card-table > * {
+    flex: 0 0 auto;
+  }
+
+  /* The only scrolling region inside the card */
+  body[data-active="02"] #usersScrollArea {
+    flex: 1 1 auto !important;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding-right: 2px;
+  }
+
+  /* Let #usersScrollArea own scrolling so sticky thead works */
+  body[data-active="02"] #usersScrollArea .table-responsive {
+    overflow: visible;
+  }
+
+  body[data-active="02"] #usersScrollArea .card-table {
+    overflow: visible;
+  }
+
+  body[data-active="02"] #usersScrollArea .table-head {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    box-shadow: 0 1px 0 #d1ded8;
+  }
+}

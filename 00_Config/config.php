@@ -1,10 +1,10 @@
 <?php
 // 00_Config/config.php
 
-$host   = "localhost";
-$dbname = "medifind_rocketlabs_v2_1-3";
-$user   = "root";
-$pass   = "";
+$host = "localhost";
+$dbname = "medifind";
+$user = "root";
+$pass = "";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);

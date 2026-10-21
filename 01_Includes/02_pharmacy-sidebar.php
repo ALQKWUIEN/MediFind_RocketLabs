@@ -11,6 +11,7 @@ if (isset($_POST['logout'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,12 +19,15 @@ if (isset($_POST['logout'])) {
 
     <!-- Fonts and Icons -->
     <link rel="stylesheet" href="../07_Assets/node_modules/material-symbols/outlined.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Bootstrap and Custom CSS -->
     <!-- <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../07_Assets/css/04_Includes CSS/sidebar.css">
 
     <!-- Favicon -->
@@ -35,7 +39,8 @@ if (isset($_POST['logout'])) {
     <nav id="sidebar">
         <!-- Close Button (Visible on Mobile) -->
         <div class="close-btn">
-            <a href="#" class="btn btn-sm" id="closeSidebar" onclick="document.getElementById('sidebar').classList.toggle('hidden')">
+            <a href="#" class="btn btn-sm" id="closeSidebar"
+                onclick="document.getElementById('sidebar').classList.toggle('hidden')">
                 <span class="material-symbols-outlined">close</span>
             </a>
         </div>
@@ -52,25 +57,25 @@ if (isset($_POST['logout'])) {
         <!-- Main Navigation -->
         <ul class="list-unstyled sidebar-nav">
             <li>
-                <a href="../05_PharmacyAdmin/01_Dashboard.php">
+                <a href="../05_PharmacyAdmin/dashboard.php">
                     <span class="material-symbols-outlined">dashboard</span>
                     <span class="sidebar-label">Dashboard</span>
                 </a>
             </li>
             <li>
-                <a href="../05_PharmacyAdmin/02_ManageInventory.php">
+                <a href="../05_PharmacyAdmin/manage_inventory.php">
                     <span class="material-symbols-outlined">table_view</span>
                     <span class="sidebar-label">Manage Inventory</span>
                 </a>
             </li>
             <li>
-                <a href="../05_PharmacyAdmin/06_Reports.php">
+                <a href="../05_PharmacyAdmin/reports.php">
                     <span class="material-symbols-outlined">article</span>
                     <span class="sidebar-label">Reports</span>
                 </a>
             </li>
             <li>
-                <a href="../05_PharmacyAdmin/07_Profile.php">
+                <a href="../05_PharmacyAdmin/profile.php">
                     <span class="material-symbols-outlined">person</span>
                     <span class="sidebar-label">Profile</span>
                 </a>
@@ -131,4 +136,5 @@ if (isset($_POST['logout'])) {
         });
     </script>
 </body>
+
 </html>

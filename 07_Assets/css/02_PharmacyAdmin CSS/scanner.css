@@ -1,0 +1,175 @@
+/* ================================================================
+   MediFind Scanner & Direct Stock Update Stylesheet
+   ================================================================ */
+
+.scanner-modal-content {
+  border-radius: 16px;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.scanner-modal-header {
+  background: #1d9e75;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  border: none;
+}
+
+.scanner-nav-tabs {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 1.25rem;
+}
+
+.scanner-nav-tab {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  font-size: 0.88rem;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.scanner-nav-tab.active {
+  background: #ffffff;
+  color: #1d9e75;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+/* Camera Viewfinder */
+.scanner-viewport-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 280px;
+  margin: 0 auto 1.25rem;
+  background: #111827;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#scannerVideoFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanner-guide-box {
+  position: absolute;
+  width: 220px;
+  height: 140px;
+  border: 2px dashed rgba(29, 158, 117, 0.85);
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+}
+
+.scanner-laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: laserScan 2s infinite ease-in-out;
+}
+
+@keyframes laserScan {
+  0% { top: 0%; opacity: 0.8; }
+  50% { top: 98%; opacity: 1; }
+  100% { top: 0%; opacity: 0.8; }
+}
+
+/* Receipt / OCR Text Box */
+.ocr-input-wrap {
+  background: #f9fafb;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.ocr-textarea {
+  width: 100%;
+  height: 110px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.65rem;
+  font-family: monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+  outline: none;
+  background: #ffffff;
+}
+
+.ocr-textarea:focus {
+  border-color: #1d9e75;
+}
+
+/* Scanned Result Card */
+.scanned-result-box {
+  background: #f8faf9;
+  border: 1.5px solid #d1ded8;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.scanned-result-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scanned-qty-editor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.scanned-qty-input {
+  width: 90px;
+  padding: 0.4rem 0.65rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1.5px solid #d1ded8;
+  border-radius: 8px;
+}
+
+.scanned-status-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.scanned-status-pill.matched {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.scanned-status-pill.unmatched {
+  background: #fee2e2;
+  color: #991b1b;
+}

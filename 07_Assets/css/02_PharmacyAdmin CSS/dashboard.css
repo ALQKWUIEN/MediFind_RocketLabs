@@ -1,0 +1,511 @@
+/* ================================================================
+   MediFind Pharmacy Admin Dashboard Stylesheet
+   Design System: Restyled using Theme Tokens from theme-tokens.css
+   Source of Truth: Patient/User side design tokens
+   ================================================================ */
+
+/* ── Full Page Scrolling & Background ──────────────────────── */
+html,
+body[data-active="dashboard"] {
+  height: 100% !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background-color: var(--mf-bg);
+  color: var(--mf-text-body);
+  font-family: var(--mf-font);
+}
+
+body[data-active="dashboard"] .wrapper {
+  min-height: 100vh !important;
+  height: auto !important;
+  display: flex !important;
+  overflow: visible !important;
+}
+
+body[data-active="dashboard"] .main-panel {
+  flex: 1 !important;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+body[data-active="dashboard"] #content,
+body[data-active="dashboard"] .dashboard-content,
+body[data-active="dashboard"] .dashboard-container {
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+  min-height: auto !important;
+  height: auto !important;
+  flex: 1 0 auto !important;
+}
+
+/* ── Dashboard Layout Container ────────────────────────────── */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0.25rem 3rem;
+}
+
+/* ── Page Title & Section Headings ─────────────────────────── */
+.dash-page-title {
+  color: var(--mf-green);
+  font-weight: 700;
+  font-size: 1.45rem;
+  letter-spacing: -0.015em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Quick Action Bar & Buttons ────────────────────────────── */
+.quick-action-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--mf-card-bg);
+  border: 1.5px solid var(--mf-border);
+  border-radius: var(--mf-radius-btn);
+  padding: 0.6rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--mf-text-heading);
+  text-decoration: none;
+  box-shadow: var(--mf-shadow);
+  transition: all 0.2s ease;
+  font-family: var(--mf-font);
+}
+
+.quick-action-btn .material-symbols-outlined {
+  font-size: 1.25rem;
+  color: var(--mf-green);
+  transition: transform 0.2s ease;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mf-shadow-hover);
+  border-color: var(--mf-green);
+  background: var(--mf-green-tint);
+  color: var(--mf-green-dark);
+}
+
+.quick-action-btn:hover .material-symbols-outlined {
+  transform: scale(1.08);
+}
+
+/* Brand Primary Button (Green) */
+.quick-action-btn.btn-primary-action {
+  background: var(--mf-green);
+  color: var(--mf-card-bg);
+  border-color: var(--mf-green);
+  box-shadow: 0 4px 12px rgba(29, 158, 117, 0.25);
+}
+
+.quick-action-btn.btn-primary-action .material-symbols-outlined {
+  color: var(--mf-card-bg);
+}
+
+.quick-action-btn.btn-primary-action:hover {
+  background: var(--mf-green-dark);
+  border-color: var(--mf-green-dark);
+  color: var(--mf-card-bg);
+  box-shadow: var(--mf-shadow-hover);
+}
+
+/* Main Call-to-Action Button (Orange Accent) */
+.quick-action-btn.btn-orange-action {
+  background: var(--mf-orange);
+  color: var(--mf-card-bg);
+  border-color: var(--mf-orange);
+  box-shadow: var(--mf-shadow-cta);
+}
+
+.quick-action-btn.btn-orange-action .material-symbols-outlined {
+  color: var(--mf-card-bg);
+}
+
+.quick-action-btn.btn-orange-action:hover {
+  background: var(--mf-orange-dark);
+  border-color: var(--mf-orange-dark);
+  color: var(--mf-card-bg);
+  box-shadow: 0 6px 16px rgba(255, 106, 42, 0.36);
+}
+
+/* ── 5 KPI Metrics Cards Grid ──────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.15rem;
+}
+
+.kpi-card {
+  background: var(--mf-card-bg);
+  border-radius: var(--mf-radius-card);
+  border: 1px solid var(--mf-border);
+  padding: 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.85rem;
+  box-shadow: var(--mf-shadow);
+  transition: all 0.25s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mf-shadow-hover);
+  border-color: var(--mf-border-light);
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--mf-text-muted);
+  letter-spacing: 0.01em;
+}
+
+.kpi-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--mf-radius-control);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.kpi-card:hover .kpi-icon-wrap {
+  transform: scale(1.06);
+}
+
+.kpi-icon-wrap .material-symbols-outlined {
+  font-size: 1.35rem;
+}
+
+/* KPI Icon Tokens */
+.icon-sales  { background: var(--mf-green-tint); color: var(--mf-green); }
+.icon-trans  { background: var(--mf-orange-tint); color: var(--mf-orange); }
+.icon-low    { background: var(--mf-status-low-bg); color: var(--mf-status-low-text); }
+.icon-expiry { background: var(--mf-status-expired-bg); color: var(--mf-status-expired-text); }
+.icon-out    { background: var(--mf-status-out-bg); color: var(--mf-status-out-text); }
+
+.kpi-value {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--mf-text-heading);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.kpi-sub {
+  font-size: 0.78rem;
+  color: var(--mf-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.kpi-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--mf-radius-btn);
+  display: inline-flex;
+  align-items: center;
+}
+
+.kpi-badge.up {
+  background: var(--mf-green-badge-bg);
+  color: var(--mf-status-available-text);
+  border: 1px solid var(--mf-border);
+}
+
+.kpi-badge.warning {
+  background: var(--mf-status-low-bg);
+  color: var(--mf-status-low-text);
+}
+
+.kpi-badge.danger {
+  background: var(--mf-status-expired-bg);
+  color: var(--mf-status-expired-text);
+}
+
+/* ── Chart Panels ──────────────────────────────────────────── */
+.chart-panel {
+  background: var(--mf-card-bg);
+  border-radius: var(--mf-radius-card);
+  border: 1px solid var(--mf-border);
+  padding: 1.35rem 1.5rem;
+  box-shadow: var(--mf-shadow);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.25s ease;
+}
+
+.chart-panel:hover {
+  box-shadow: var(--mf-shadow-hover);
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.chart-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--mf-text-heading);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.chart-title .material-symbols-outlined {
+  color: var(--mf-green);
+  font-size: 1.3rem;
+}
+
+/* ── Time Toggle Pills (Daily / Weekly / Monthly) ───────────── */
+.time-toggle-group {
+  display: inline-flex;
+  background: var(--mf-bg);
+  border: 1px solid var(--mf-border);
+  border-radius: var(--mf-radius-btn);
+  padding: 3px;
+  gap: 3px;
+}
+
+.time-toggle-btn {
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 4px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--mf-text-muted);
+  border-radius: var(--mf-radius-btn);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: var(--mf-font);
+}
+
+.time-toggle-btn:hover {
+  color: var(--mf-green);
+  background: var(--mf-green-tint-soft);
+}
+
+.time-toggle-btn.active {
+  background: var(--mf-green-tint);
+  color: var(--mf-green);
+  border-color: var(--mf-green);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(29, 158, 117, 0.12);
+}
+
+.chart-body-wrap {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 240px;
+}
+
+/* ── Table Panels & Dash Table ─────────────────────────────── */
+.table-panel {
+  background: var(--mf-card-bg);
+  border-radius: var(--mf-radius-card);
+  border: 1px solid var(--mf-border);
+  padding: 1.35rem 1.5rem;
+  box-shadow: var(--mf-shadow);
+  transition: box-shadow 0.25s ease;
+}
+
+.table-panel:hover {
+  box-shadow: var(--mf-shadow-hover);
+}
+
+.dash-table {
+  border-color: var(--mf-border);
+}
+
+.dash-table th {
+  background: var(--mf-green-tint-mint);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mf-text-muted);
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--mf-border);
+}
+
+.dash-table td {
+  font-size: 0.85rem;
+  color: var(--mf-text-dark);
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--mf-border);
+  vertical-align: middle;
+}
+
+.dash-table tbody tr:hover td {
+  background-color: var(--mf-green-tint-mint);
+}
+
+/* Links & "See All" Actions */
+/* Links & "See All" Actions - User-side Orange CTA */
+.dash-see-all-link,
+a.dash-see-all-link {
+  color: var(--mf-orange) !important;
+  text-decoration: none !important;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.dash-see-all-link:hover,
+a.dash-see-all-link:hover {
+  color: var(--mf-orange-dark) !important;
+  text-decoration: underline !important;
+  transform: translateX(2px);
+}
+
+.dash-see-all-link .material-symbols-outlined {
+  color: var(--mf-orange) !important;
+  transition: transform 0.2s ease;
+}
+
+.dash-see-all-link:hover .material-symbols-outlined {
+  color: var(--mf-orange-dark) !important;
+  transform: translateX(3px);
+}
+
+/* Restock Button - User-side Orange Pill CTA */
+.btn-restock {
+  background: var(--mf-orange-tint);
+  color: var(--mf-orange);
+  border: 1px solid var(--mf-orange);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 13px;
+  border-radius: var(--mf-radius-btn);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.18s ease;
+  font-family: var(--mf-font);
+}
+
+.btn-restock:hover {
+  background: var(--mf-orange);
+  color: var(--mf-card-bg);
+  border-color: var(--mf-orange);
+  box-shadow: var(--mf-shadow-cta);
+  transform: translateY(-1px);
+}
+
+/* Badges & Pill Chips */
+.dash-pill-badge {
+  border-radius: var(--mf-radius-btn);
+  font-weight: 600;
+  font-size: 0.73rem;
+  padding: 0.28rem 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dash-pill-badge-mint {
+  background: var(--mf-green-badge-bg);
+  color: var(--mf-green);
+  border: 1px solid var(--mf-border);
+}
+
+.dash-pill-badge-neutral {
+  background: var(--mf-bg);
+  color: var(--mf-text-muted);
+  border: 1px solid var(--mf-border);
+}
+
+/* ── Loading Skeletons ─────────────────────────────────────── */
+.skeleton-box {
+  background: linear-gradient(90deg, var(--mf-bg) 25%, var(--mf-green-tint) 50%, var(--mf-bg) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.5s infinite ease-in-out;
+  border-radius: var(--mf-radius-control);
+}
+
+@keyframes skeletonPulse {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+  height: 14px;
+  width: 60%;
+  margin-bottom: 6px;
+}
+
+.skeleton-value {
+  height: 32px;
+  width: 80%;
+  margin: 8px 0;
+}
+
+.skeleton-chart {
+  height: 220px;
+  width: 100%;
+}
+
+/* ── Empty States ──────────────────────────────────────────── */
+.dash-empty-state {
+  text-align: center;
+  padding: 2.75rem 1rem;
+  color: var(--mf-text-muted);
+}
+
+.dash-empty-state .material-symbols-outlined {
+  font-size: 2.6rem;
+  color: var(--mf-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.dash-empty-state h6 {
+  font-weight: 700;
+  color: var(--mf-text-heading);
+  margin-bottom: 0.3rem;
+}
+
+.dash-empty-state p {
+  font-size: 0.84rem;
+  color: var(--mf-text-body);
+  margin: 0;
+}
