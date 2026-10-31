@@ -94,9 +94,13 @@ try {
             a.Barangay_Name,
             a.City_Name,
             a.Province_Name,
-            a.Full_Address
+            a.Full_Address,
+            COALESCE(ua.Province_ID, 0) AS Province_ID,
+            COALESCE(ua.City_ID, 0) AS City_ID,
+            COALESCE(ua.Barangay_ID, 0) AS Barangay_ID
         FROM view_01_users u
         LEFT JOIN view_02_address a ON u.User_ID = a.User_ID
+        LEFT JOIN 05_address_user_address ua ON a.Address_ID = ua.Address_ID
         ORDER BY u.DateCreated DESC"
     );
 } catch (PDOException $e) {

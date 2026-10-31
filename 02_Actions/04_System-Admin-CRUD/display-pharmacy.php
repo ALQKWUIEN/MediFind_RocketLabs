@@ -99,6 +99,18 @@ try {
         FROM view_04_pharmacy
         ORDER BY DateCreated DESC"
     );
+
+    // Summary Statistics for LGU Overview
+    $totalPharmaciesCount = (int) $pdo->query("SELECT COUNT(*) FROM view_04_pharmacy")->fetchColumn();
+    $approvedCount = (int) $pdo->query("SELECT COUNT(*) FROM view_04_pharmacy WHERE Approval_Status = 'Approved'")->fetchColumn();
+    $pendingCount = (int) $pdo->query("SELECT COUNT(*) FROM view_04_pharmacy WHERE Approval_Status = 'Pending'")->fetchColumn();
+    $rejectedCount = (int) $pdo->query("SELECT COUNT(*) FROM view_04_pharmacy WHERE Approval_Status = 'Rejected'")->fetchColumn();
+    $barangaysCoveredCount = (int) $pdo->query("SELECT COUNT(DISTINCT NULLIF(Barangay_Name, '')) FROM view_04_pharmacy WHERE Approval_Status = 'Approved'")->fetchColumn();
+
+    // Distinct Barangays for filter dropdown
+    $stmtBrgy = $pdo->query("SELECT DISTINCT Barangay_Name FROM view_04_pharmacy WHERE Barangay_Name IS NOT NULL AND TRIM(Barangay_Name) != '' ORDER BY Barangay_Name ASC");
+    $allBarangaysList = $stmtBrgy ? $stmtBrgy->fetchAll(PDO::FETCH_COLUMN) : [];
+
 } catch (PDOException $e) {
     die("Query failed: " . $e->getMessage());
 }

@@ -2,10 +2,10 @@
 session_start();
 
 if (isset($_POST['logout'])) {
-    $_SESSION['user_id'] = null;
-    session_destroy();
-    header('Location: ../index.php');
-    exit;
+  $_SESSION['user_id'] = null;
+  session_destroy();
+  header('Location: ../index.php');
+  exit;
 }
 ?>
 

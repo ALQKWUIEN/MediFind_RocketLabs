@@ -1,5 +1,6 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (session_status() === PHP_SESSION_NONE)
+    session_start();
 include_once __DIR__ . '/../../00_Config/config.php';
 
 // ── Fetch: User counts by role ─────────────────────────────────────
@@ -10,11 +11,11 @@ $stmtRoles = $pdo->query("
 ");
 $roleCounts = $stmtRoles->fetchAll(PDO::FETCH_KEY_PAIR);
 
-$totalUsers      = array_sum($roleCounts);
-$totalPatients   = $roleCounts['Patient/Client'] ?? 0;
+$totalUsers = array_sum($roleCounts);
+$totalPatients = $roleCounts['Patient/Client'] ?? 0;
 $totalPharmacist = $roleCounts['Pharmacy Admin'] ?? 0;
-$totalOwner      = $roleCounts['Pharmacy Owner'] ?? 0;
-$totalAdmin      = $roleCounts['System Admin'] ?? 0;
+$totalOwner = $roleCounts['Pharmacy Owner'] ?? 0;
+$totalAdmin = $roleCounts['System Admin'] ?? 0;
 
 // ── Fetch: Pharmacy counts by approval status ──────────────────────
 $stmtPharm = $pdo->query("
@@ -22,9 +23,9 @@ $stmtPharm = $pdo->query("
     FROM view_04_pharmacy
     GROUP BY Approval_Status COLLATE utf8mb4_unicode_ci
 ");
-$pharmCounts   = $stmtPharm->fetchAll(PDO::FETCH_KEY_PAIR);
-$totalActive   = $pharmCounts['Approved'] ?? 0;
-$totalPending  = $pharmCounts['Pending'] ?? 0;
+$pharmCounts = $stmtPharm->fetchAll(PDO::FETCH_KEY_PAIR);
+$totalActive = $pharmCounts['Approved'] ?? 0;
+$totalPending = $pharmCounts['Pending'] ?? 0;
 
 // ── Fetch: Expired stock count ─────────────────────────────────────
 $stmtExp = $pdo->query("
@@ -94,13 +95,23 @@ $allUsersAddr = $pdo->query("
     WHERE a.Full_Address IS NOT NULL
 ")->fetchAll();
 
-$stmtInv = $pdo->prepare("
-    SELECT Generic_Name, Brand_Name, Category_Name, Dosage_Form,
-           Dosage_Value, Unit_Name, Dosage, Quantity, Price, Price_Per,
-           Expiry_date, Last_updated, Availability_Status
-    FROM view_06_inventory_stocks
-    WHERE Pharmacy_ID = ?
-");
-$stmtInv->execute([$_SESSION['pharmacy_id']]);
-$allInventory = $stmtInv->fetchAll();
+$pharmacyID = (int) ($_SESSION['pharmacy_id'] ?? 0);
+if ($pharmacyID > 0) {
+    $stmtInv = $pdo->prepare("
+        SELECT Generic_Name, Brand_Name, Category_Name, Dosage_Form,
+               Dosage_Value, Unit_Name, Dosage, Quantity, Price, Price_Per,
+               Expiry_date, Last_updated, Availability_Status
+        FROM view_06_inventory_stocks
+        WHERE Pharmacy_ID = ?
+    ");
+    $stmtInv->execute([$pharmacyID]);
+    $allInventory = $stmtInv->fetchAll();
+} else {
+    $allInventory = $pdo->query("
+        SELECT Generic_Name, Brand_Name, Category_Name, Dosage_Form,
+               Dosage_Value, Unit_Name, Dosage, Quantity, Price, Price_Per,
+               Expiry_date, Last_updated, Availability_Status
+        FROM view_06_inventory_stocks
+    ")->fetchAll();
+}
 ?>

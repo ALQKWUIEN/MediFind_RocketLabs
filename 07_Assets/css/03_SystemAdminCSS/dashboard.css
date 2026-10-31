@@ -1,7 +1,541 @@
-html, body {
-    /* Change 'hidden' to 'visible' or 'auto' */
-    overflow-x: hidden; /* Prevents side-scrolling */
-    overflow-y: auto;   /* Enables vertical scrolling */
-    height: auto !important; 
-    min-height: 100%;
+/**
+ * ==============================================================================
+ * MediFind - System Admin (LGU Overview Dashboard) Stylesheet
+ * Fully aligned with User-Side Design System & Theme Tokens
+ * ==============================================================================
+ */
+
+/* ── Base Container, Scrollability & Layout Override ─────────── */
+html,
+body,
+body[data-active="01"],
+body.lgu-dashboard-page {
+  height: 100%;
+  min-height: 100%;
+  background-color: var(--mf-bg, #f5f6f8) !important;
+  color: var(--mf-text-body, #555555);
+  font-family: var(--mf-font, 'Inter', sans-serif);
+}
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+}
+
+.main-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+}
+
+.content,
+#content,
+.lgu-dashboard-wrapper {
+  min-height: auto;
+  flex: 1 0 auto;
+}
+
+/* Page 01 (Dashboard) desktop scrolling */
+body[data-active="01"] .main-panel {
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Mobile & Tablet (< 992px): normal fluid document scrolling */
+@media (max-width: 991px) {
+  html,
+  body,
+  body.lgu-dashboard-page {
+    overflow-y: auto !important;
+  }
+  .wrapper {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+  .main-panel {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+  }
+  .content {
+    overflow-y: visible !important;
+  }
+}
+
+.lgu-dashboard-wrapper {
+  padding: 1.5rem 2rem 3.5rem 1.5rem;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ── LGU Hero Banner ───────────────────────────────────────────── */
+.lgu-hero-banner {
+  background: linear-gradient(135deg, #1d9e75 0%, #178a63 55%, #146f50 100%);
+  border-radius: var(--mf-radius-card-lg, 24px);
+  padding: 1.8rem 2.2rem;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(29, 158, 117, 0.20);
+  margin-bottom: 1.5rem;
+}
+
+.lgu-hero-banner::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -5%;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.lgu-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 5px 14px;
+  border-radius: var(--mf-radius-btn, 999px);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.lgu-hero-title {
+  font-family: var(--mf-font-brand, "Plus Jakarta Sans", sans-serif);
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.lgu-hero-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Section Headings ─────────────────────────────────────────── */
+.lgu-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.75rem 0 1.15rem;
+}
+
+.lgu-section-title {
+  font-family: var(--mf-font-brand, "Plus Jakarta Sans", sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--mf-text-heading, #23423a);
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lgu-section-subtitle {
+  font-size: 0.88rem;
+  color: var(--mf-text-muted, #87a199);
+  margin-top: 3px;
+}
+
+/* ── LGU Stat Cards (Not Flat, Larger Size) ───────────────────── */
+.lgu-card {
+  background: var(--mf-card-bg, #ffffff);
+  border: 1px solid var(--mf-border-card, #e7eeeb);
+  border-radius: var(--mf-radius-card-lg, 20px);
+  box-shadow: var(--mf-shadow, 0 3px 14px rgba(0, 0, 0, 0.05));
+  padding: 1.6rem 1.65rem;
+  min-height: 195px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+.lgu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--mf-shadow-hover, 0 8px 24px rgba(29, 158, 117, 0.14));
+  border-color: var(--mf-border, #e2ede8);
+  color: inherit;
+}
+
+.lgu-card.clickable-card {
+  cursor: pointer;
+}
+
+.lgu-card.card-alert-shortage {
+  border-color: #fecaca;
+  background: #fffcfb;
+}
+
+.lgu-card.card-alert-shortage:hover {
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.15);
+  border-color: #f87171;
+}
+
+/* Card Header & Icon */
+.lgu-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.lgu-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.lgu-card-icon .material-symbols-outlined {
+  font-size: 28px !important;
+}
+
+.icon-emerald {
+  background: var(--mf-green-tint, #f0f9f5);
+  color: var(--mf-green, #1d9e75);
+}
+
+.icon-orange {
+  background: var(--mf-orange-tint, #fff1ec);
+  color: var(--mf-orange, #ff6a2a);
+}
+
+.icon-blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.icon-amber {
+  background: #fefce8;
+  color: #ca8a04;
+}
+
+.icon-rose {
+  background: #fef2f2;
+  color: #e11d48;
+}
+
+.icon-purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.icon-cyan {
+  background: #ecfeff;
+  color: #0891b2;
+}
+
+.lgu-card-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--mf-text-body, #555555);
+  letter-spacing: -0.01em;
+}
+
+.lgu-card-value {
+  font-family: var(--mf-font-brand, "Plus Jakarta Sans", sans-serif);
+  font-size: 2.35rem;
+  font-weight: 800;
+  color: var(--mf-text-heading, #23423a);
+  line-height: 1.15;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.02em;
+}
+
+.lgu-card-sub {
+  font-size: 0.88rem;
+  color: var(--mf-text-muted, #87a199);
+  line-height: 1.4;
+}
+
+/* Trend Badges */
+.badge-pill-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--mf-radius-btn, 999px);
+}
+
+.badge-pill-green {
+  background: #d4f5e2;
+  color: #1a7a45;
+}
+
+.badge-pill-orange {
+  background: #ffe8dd;
+  color: #c94a12;
+}
+
+.badge-pill-red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-pill-muted {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+/* ── Quick Actions Row ────────────────────────────────────────── */
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 44px;
+  border-radius: var(--mf-btn-radius, 8px);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.btn-cta-orange {
+  background: var(--mf-orange, #ff6a2a);
+  color: #ffffff !important;
+  box-shadow: var(--mf-shadow-cta, 0 4px 14px rgba(255, 106, 42, 0.28));
+}
+
+.btn-cta-orange:hover {
+  background: var(--mf-orange-dark, #eb5c20);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 106, 42, 0.35);
+}
+
+.btn-cta-green {
+  background: var(--mf-green, #1d9e75);
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(29, 158, 117, 0.25);
+}
+
+.btn-cta-green:hover {
+  background: var(--mf-green-dark, #178a63);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(29, 158, 117, 0.32);
+}
+
+.btn-cta-outline {
+  background: #ffffff;
+  color: var(--mf-text-heading, #23423a) !important;
+  border: 1px solid var(--mf-border-card, #e7eeeb);
+}
+
+.btn-cta-outline:hover {
+  background: var(--mf-green-tint, #f0f9f5);
+  border-color: var(--mf-green, #1d9e75);
+  color: var(--mf-green, #1d9e75) !important;
+}
+
+/* ── Chart Container Cards (Deep & Rich) ──────────────────────── */
+.lgu-chart-card {
+  background: var(--mf-card-bg, #ffffff);
+  border: 1px solid var(--mf-border-card, #e7eeeb);
+  border-radius: var(--mf-radius-card-lg, 20px);
+  box-shadow: var(--mf-shadow, 0 3px 14px rgba(0, 0, 0, 0.05));
+  padding: 1.6rem 1.65rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.lgu-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+
+.lgu-chart-title {
+  font-family: var(--mf-font-brand, "Plus Jakarta Sans", sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--mf-text-heading, #23423a);
+  margin-bottom: 0;
+}
+
+.lgu-chart-meta {
+  font-size: 0.84rem;
+  color: var(--mf-text-muted, #87a199);
+}
+
+.chart-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  flex-grow: 1;
+  min-height: 260px;
+}
+
+/* ── Activity Mini-Tables ─────────────────────────────────────── */
+.lgu-table-card {
+  background: var(--mf-card-bg, #ffffff);
+  border: 1px solid var(--mf-border-card, #e7eeeb);
+  border-radius: var(--mf-radius-card-lg, 20px);
+  box-shadow: var(--mf-shadow, 0 3px 14px rgba(0, 0, 0, 0.05));
+  overflow: hidden;
+  height: 100%;
+}
+
+.lgu-table-header {
+  padding: 1.25rem 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--mf-border-card, #e7eeeb);
+  background: #ffffff;
+}
+
+.lgu-table {
+  width: 100%;
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.lgu-table thead th {
+  background: #fafbfb;
+  color: var(--mf-text-muted, #87a199);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--mf-border-card, #e7eeeb);
+}
+
+.lgu-table tbody td {
+  padding: 13px 18px;
+  font-size: 0.88rem;
+  color: var(--mf-text-body, #555555);
+  border-bottom: 1px solid #f1f5f3;
+  vertical-align: middle;
+}
+
+.lgu-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.lgu-table tbody tr:hover td {
+  background: var(--mf-green-tint, #f0f9f5);
+}
+
+/* ── Empty States & Skeleton Loaders ──────────────────────────── */
+.empty-state-box {
+  text-align: center;
+  padding: 2.2rem 1.5rem;
+  color: var(--mf-text-muted, #87a199);
+}
+
+.empty-state-icon {
+  font-size: 2.4rem;
+  color: #cbd5e1;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-text {
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* Skeleton Loading Animation */
+.skeleton-box {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  overflow: hidden;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeleton-box::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.3) 20%,
+    rgba(255, 255, 255, 0.6) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.lgu-chart-card .stat-card-table {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* ── Responsive Adaptations ──────────────────────────────────── */
+@media (max-width: 991px) {
+  .lgu-hero-banner {
+    padding: 1.25rem 1.5rem;
+  }
+  .lgu-hero-title {
+    font-size: 1.35rem;
+  }
+  .lgu-dashboard-wrapper {
+    padding: 1rem 0.75rem 2rem;
+  }
+  .chart-canvas-wrapper {
+    min-height: 210px;
+  }
+}
+
+@media (max-width: 576px) {
+  .lgu-card-value {
+    font-size: 1.5rem;
+  }
+  .quick-action-btn {
+    width: 100%;
+  }
 }
