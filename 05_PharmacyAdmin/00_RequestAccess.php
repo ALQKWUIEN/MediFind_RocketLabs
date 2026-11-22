@@ -34,7 +34,7 @@ $is_rejected      = ($approval_id == 3);
 // ── If already approved — update session then redirect ────────────
 if ($approval_id == 2) {
     $_SESSION['pharmacy_name'] = $pharmacy['Pharmacy_name'] ?? null;
-    header('Location: ../05_PharmacyAdmin/01_Dashboard.php');
+    header('Location: ../05_PharmacyAdmin/dashboard.php');
     exit;
 }
 ?>

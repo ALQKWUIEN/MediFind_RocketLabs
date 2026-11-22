@@ -162,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (in_array($_SESSION['Pharmacy_Approval'], [1, 3, 4])) {
                     header('Location: ../05_PharmacyAdmin/00_RequestAccess.php');
                 } else {
-                    header('Location: ../05_PharmacyAdmin/01_Dashboard.php');
+                    header('Location: ../05_PharmacyAdmin/dashboard.php');
                 }
                 break;
 
