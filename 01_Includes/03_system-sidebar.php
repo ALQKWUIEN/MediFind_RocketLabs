@@ -140,7 +140,9 @@ if (isset($_POST['logout'])) {
                 </div>
                 <div class="modal-footer justify-content-center" style="border: none">
                     <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../index.php" class="btn px-4 text-white" style="background: #1d9e75;">Yes, Log Out</a>
+                    <form method="POST" action="../index.php" data-no-transition="true" class="d-inline">
+                        <button type="submit" name="logout" class="btn px-4 text-white" style="background: #1d9e75;">Yes, Log Out</button>
+                    </form>
                 </div>
             </div>
         </div>

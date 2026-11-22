@@ -11,6 +11,12 @@ function applySidebarHTML(elementId, data) {
     elementId === "pharmacy-sidebar-container" ||
     elementId === "system-sidebar-container"
   ) {
+    // Move #logoutModal to document.body so it is never trapped behind backdrop inside sidebar-container
+    const injectedModal = el.querySelector("#logoutModal");
+    if (injectedModal) {
+      document.querySelectorAll("body > #logoutModal").forEach((m) => m.remove());
+      document.body.appendChild(injectedModal);
+    }
     highlightActiveMenu();
     if (window.bootstrap) {
       document
