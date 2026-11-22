@@ -121,7 +121,7 @@ if (isset($_POST['logout'])) {
                 </div>
                 <div class="modal-footer justify-content-center" style="border: none">
                     <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../index.php" class="btn px-4 text-white" style="background: #1d9e75;">Yes, Log Out</a>
+                    <a href="../03_Authentication/logout.php" class="btn px-4 text-white" style="background: #1d9e75;">Yes, Log Out</a>
                 </div>
             </div>
         </div>
