@@ -117,13 +117,9 @@ if (isset($_POST['logout'])) {
           <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
             Cancel
           </button>
-
-          <form method="POST" action="../index.php">
-            <button type="submit" name="logout" class="btn px-4 text-white" style="background: #1d9e75;">
-              Yes, Log Out
-            </button>
-          </form>
-
+          <a href="../03_Authentication/logout.php" class="btn px-4 text-white" style="background: #1d9e75;">
+            Yes, Log Out
+          </a>
         </div>
       </div>
     </div>
