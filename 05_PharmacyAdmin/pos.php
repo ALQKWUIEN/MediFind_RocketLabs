@@ -190,7 +190,7 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <!-- RIGHT COLUMN: Search & Item Selection & Quick Pills -->
-            <div class="pos-card">
+            <div class="pos-card pos-catalog-card">
               <div class="pos-card-title">
                 <span class="material-symbols-outlined">manage_search</span>
                 Medicine Search &amp; Quick Selection

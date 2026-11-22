@@ -497,12 +497,12 @@ foreach ($inventoryRows as $r) {
     }
 
     .btn-view {
-      background-color: #fef3c7;
-      color: #d97706;
+      background-color: #dbeafe;
+      color: #2563eb;
     }
 
     .btn-view:hover {
-      background-color: #d97706;
+      background-color: #2563eb;
       color: #ffffff;
     }
 
@@ -527,6 +527,40 @@ foreach ($inventoryRows as $r) {
     .scanner-btn-orange:hover {
       background: #b45309 !important;
       border-color: #b45309 !important;
+    }
+
+    /* Inventory Pagination */
+    #inventoryPaginationWrap {
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+    .pagination .page-link {
+      color: #374151;
+      border: 1px solid #d1ded8;
+      border-radius: 6px !important;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .pagination .page-link:hover {
+      background-color: #f0f9f5;
+      color: #1d9e75;
+      border-color: #1d9e75;
+    }
+    .pagination .page-item.active .page-link {
+      background-color: #1d9e75;
+      border-color: #1d9e75;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(29, 158, 117, 0.25);
+    }
+    .pagination .page-item.disabled .page-link {
+      color: #9ca3af;
+      background-color: #f9fafb;
+      border-color: #e5e7eb;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -613,7 +647,7 @@ foreach ($inventoryRows as $r) {
               <div class="stat-card-table">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <h5 class="fw-bold mb-0 text-dark">Inventory Masterlist</h5>
-                  <span class="badge bg-light text-secondary border"><?= count($inventoryRows) ?> items listed</span>
+                  <span id="inventoryItemsBadge" class="badge bg-light text-secondary border"><?= count($inventoryRows) ?> items listed</span>
                 </div>
 
                 <!-- Toolbar -->
@@ -862,6 +896,28 @@ foreach ($inventoryRows as $r) {
                       </tbody>
 
                     </table>
+                  </div>
+
+                  <!-- Pagination Bar -->
+                  <div class="card-footer bg-white border-top py-2.5 px-3 d-flex flex-wrap justify-content-between align-items-center gap-2" id="inventoryPaginationWrap">
+                    <div class="d-flex align-items-center gap-2 text-muted small">
+                      <span>Show</span>
+                      <select id="itemsPerPageSelect" class="form-select form-select-sm" style="width: 75px; font-size: 0.85rem;">
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                      </select>
+                      <span>entries</span>
+                      <span class="text-secondary mx-2">•</span>
+                      <span id="paginationInfo" class="fw-semibold text-dark">Showing 1 to 10 of <?= count($inventoryRows) ?> entries</span>
+                    </div>
+
+                    <nav aria-label="Inventory pagination">
+                      <ul class="pagination pagination-sm mb-0 gap-1" id="paginationControls">
+                        <!-- Rendered dynamically by JS -->
+                      </ul>
+                    </nav>
                   </div>
                 </div>
 
@@ -1176,19 +1232,28 @@ Paracetamol x 30"></textarea>
       if (chevron) chevron.classList.toggle('rotated', isVisible);
     }
 
-    // Client-side search and filters for table
+    // Client-side search, filters, and pagination for table
     document.addEventListener('DOMContentLoaded', function () {
       const searchInput = document.getElementById('inventorySearchInput');
       const filterCategory = document.getElementById('filterCategory');
       const filterStatus = document.getElementById('filterStatus');
-      const rows = document.querySelectorAll('.inv-row');
+      const itemsPerPageSelect = document.getElementById('itemsPerPageSelect');
+      const paginationInfo = document.getElementById('paginationInfo');
+      const paginationControls = document.getElementById('paginationControls');
+      const itemsBadge = document.getElementById('inventoryItemsBadge');
+      const rows = Array.from(document.querySelectorAll('.inv-row'));
 
-      function filterTable() {
-        const query = searchInput.value.toLowerCase().trim();
-        const cat = filterCategory.value.toLowerCase().trim();
-        const stat = filterStatus.value.toLowerCase().trim();
+      let currentPage = 1;
+      let itemsPerPage = parseInt(itemsPerPageSelect ? itemsPerPageSelect.value : 10) || 10;
+      let filteredRows = [...rows];
 
-        rows.forEach(r => {
+      function updateTableDisplay() {
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const cat = filterCategory ? filterCategory.value.toLowerCase().trim() : '';
+        const stat = filterStatus ? filterStatus.value.toLowerCase().trim() : '';
+
+        // Filter rows based on search and category/status
+        filteredRows = rows.filter(r => {
           const rSearch = r.getAttribute('data-search') || '';
           const rCat = r.getAttribute('data-category') || '';
           const rStat = r.getAttribute('data-status') || '';
@@ -1197,17 +1262,146 @@ Paracetamol x 30"></textarea>
           const matchCat = !cat || rCat === cat;
           const matchStat = !stat || rStat === stat;
 
-          if (matchQuery && matchCat && matchStat) {
-            r.style.display = '';
+          return matchQuery && matchCat && matchStat;
+        });
+
+        const totalItems = filteredRows.length;
+        if (itemsBadge) {
+          itemsBadge.textContent = `${totalItems} items listed`;
+        }
+
+        const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+
+        if (currentPage > totalPages) {
+          currentPage = totalPages;
+        }
+
+        // Hide all rows first
+        rows.forEach(r => r.style.display = 'none');
+
+        // Check if no items match
+        let noMatchRow = document.getElementById('noMatchRow');
+        if (totalItems === 0) {
+          if (!noMatchRow) {
+            noMatchRow = document.createElement('tr');
+            noMatchRow.id = 'noMatchRow';
+            noMatchRow.innerHTML = `
+              <td colspan="11" class="text-center text-muted py-5">
+                <i class="bi bi-search fs-2 d-block mb-2 text-muted"></i>
+                No matching medicines found for the selected filter or search term.
+              </td>
+            `;
+            const tbody = document.querySelector('#mainInventoryTable tbody');
+            if (tbody) tbody.appendChild(noMatchRow);
           } else {
-            r.style.display = 'none';
+            noMatchRow.style.display = '';
           }
+        } else {
+          if (noMatchRow) noMatchRow.style.display = 'none';
+
+          // Slice and display current page rows
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+
+          for (let i = startIndex; i < endIndex; i++) {
+            filteredRows[i].style.display = '';
+          }
+        }
+
+        renderPagination(totalItems, totalPages);
+      }
+
+      function renderPagination(totalItems, totalPages) {
+        if (!paginationInfo || !paginationControls) return;
+
+        if (totalItems === 0) {
+          paginationInfo.textContent = 'Showing 0 to 0 of 0 entries';
+          paginationControls.innerHTML = '';
+          return;
+        }
+
+        const start = (currentPage - 1) * itemsPerPage + 1;
+        const end = Math.min(currentPage * itemsPerPage, totalItems);
+        paginationInfo.textContent = `Showing ${start} to ${end} of ${totalItems} entries`;
+
+        let html = '';
+
+        // Previous button
+        html += `
+          <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <button type="button" class="page-link" data-page="${currentPage - 1}" aria-label="Previous">
+              <i class="bi bi-chevron-left" style="font-size: 11px;"></i>
+            </button>
+          </li>
+        `;
+
+        // Page numbers calculation
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+
+        if (startPage > 1) {
+          html += `<li class="page-item"><button type="button" class="page-link" data-page="1">1</button></li>`;
+          if (startPage > 2) {
+            html += `<li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted">...</span></li>`;
+          }
+        }
+
+        for (let p = startPage; p <= endPage; p++) {
+          html += `
+            <li class="page-item ${p === currentPage ? 'active' : ''}">
+              <button type="button" class="page-link" data-page="${p}">${p}</button>
+            </li>
+          `;
+        }
+
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            html += `<li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted">...</span></li>`;
+          }
+          html += `<li class="page-item"><button type="button" class="page-link" data-page="${totalPages}">${totalPages}</button></li>`;
+        }
+
+        // Next button
+        html += `
+          <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <button type="button" class="page-link" data-page="${currentPage + 1}" aria-label="Next">
+              <i class="bi bi-chevron-right" style="font-size: 11px;"></i>
+            </button>
+          </li>
+        `;
+
+        paginationControls.innerHTML = html;
+
+        // Attach click handlers
+        paginationControls.querySelectorAll('.page-link[data-page]').forEach(btn => {
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetPage = parseInt(this.getAttribute('data-page'));
+            if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages && targetPage !== currentPage) {
+              currentPage = targetPage;
+              updateTableDisplay();
+              const tableCard = document.querySelector('.card-table');
+              if (tableCard) {
+                tableCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
+            }
+          });
         });
       }
 
-      if (searchInput) searchInput.addEventListener('input', filterTable);
-      if (filterCategory) filterCategory.addEventListener('change', filterTable);
-      if (filterStatus) filterStatus.addEventListener('change', filterTable);
+      if (searchInput) searchInput.addEventListener('input', () => { currentPage = 1; updateTableDisplay(); });
+      if (filterCategory) filterCategory.addEventListener('change', () => { currentPage = 1; updateTableDisplay(); });
+      if (filterStatus) filterStatus.addEventListener('change', () => { currentPage = 1; updateTableDisplay(); });
+      if (itemsPerPageSelect) {
+        itemsPerPageSelect.addEventListener('change', function () {
+          itemsPerPage = parseInt(this.value) || 10;
+          currentPage = 1;
+          updateTableDisplay();
+        });
+      }
+
+      // Initial render of pagination and items
+      updateTableDisplay();
 
       // Check if URL has ?openScan=1
       const urlParams = new URLSearchParams(window.location.search);

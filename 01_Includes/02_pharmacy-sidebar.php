@@ -64,7 +64,7 @@ if (isset($_POST['logout'])) {
             </li>
             <li>
                 <a href="../05_PharmacyAdmin/pos.php">
-                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="material-symbols-outlined">point_of_sale</span>
                     <span class="sidebar-label">POS</span>
                 </a>
             </li>
