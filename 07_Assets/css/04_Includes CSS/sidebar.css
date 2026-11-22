@@ -149,9 +149,7 @@
 .sidebar-nav li a:hover {
   background-color: #f0f9f5;
   color: #178a63;
-  border-radius: 0 12px 12px 0;
-  margin-left: -1rem;
-  padding-left: calc(14px + 1rem);
+  border-radius: 10px;
 }
 
 .sidebar-nav li a:hover .material-symbols-outlined {
@@ -161,9 +159,7 @@
 .sidebar-nav li.active > a {
   background-color: #1d9e75;
   color: #ffffff !important;
-  border-radius: 0 12px 12px 0;
-  margin-left: -1rem;
-  padding-left: calc(14px + 1rem);
+  border-radius: 10px;
   box-shadow: none;
 }
 
@@ -422,11 +418,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  border-radius: 0 10px 10px 0;
+  border-radius: 10px;
   text-decoration: none;
   transition: background-color 0.2s ease, color 0.2s ease;
-  margin-left: -1rem;
-  padding-left: calc(14px + 1rem);
 }
 
 .sidebar-submenu li a .material-symbols-outlined {
