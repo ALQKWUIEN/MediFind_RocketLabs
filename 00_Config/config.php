@@ -4,7 +4,7 @@
 $host = "localhost";
 $dbname = "medifind";
 $user = "root";
-$pass = "123";
+$pass = "";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
