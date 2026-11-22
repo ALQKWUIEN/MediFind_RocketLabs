@@ -48,7 +48,7 @@ if (!$_SESSION['user_id']) {
 
 <body data-active="03">
   <div class="wrapper d-flex align-items-stretch">
-    <div id="sidebar-container"></div>
+    <div id="sidebar-container"><?php include '../01_Includes/users-sidebar-fixed.php'; ?></div>
 
     <div class="main-panel d-flex flex-column flex-grow-1">
       <div id="topbar-container"></div>

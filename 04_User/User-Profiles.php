@@ -21,7 +21,7 @@
     <?php unset($_SESSION['error']); ?>
   <?php endif; ?>
 
-  <!-- Profile Header Card -->
+  <!-- Profile Header Card (Desktop) -->
   <div class="profile-header-card">
     <div class="profile-header-left">
       <div class="profile-avatar">
@@ -33,15 +33,63 @@
         <p><?= htmlspecialchars($_SESSION['Phone'] ?? '') ?></p>
       </div>
     </div>
+  </div>
 
-    <div class="profile-header-divider"></div>
-
-    <div class="profile-header-center">
-      <img src="../07_Assets/images/logo.png" alt="MediFind Logo" class="medifind-logo" />
-      <div class="brand-text">
-        <h1>Medi<span>Find</span></h1>
-        <small>Malaybalay Medicine Availability Checker</small>
+  <!-- Mobile Profile Hub (<= 767.98px) -->
+  <div class="mf-mobile-profile-hub" id="mfMobileProfileHub">
+    <div class="mf-mobile-profile-hero"></div>
+    <div class="mf-mobile-profile-sheet">
+      <div class="mf-mobile-avatar-wrap">
+        <img src="../07_Assets/images/person.jpg" alt="Profile Picture" class="mf-mobile-profile-avatar" />
+        <button type="button" class="mf-mobile-avatar-edit" data-mobile-tab="edit" aria-label="Edit Profile">
+          <span class="material-symbols-outlined">edit</span>
+        </button>
       </div>
+      <h2 class="mf-mobile-profile-name"><?= htmlspecialchars($_SESSION['full_name'] ?? 'User') ?></h2>
+      <p class="mf-mobile-profile-sub"><?= htmlspecialchars($_SESSION['Email'] ?? '') ?></p>
+
+      <div class="mf-profile-menu-card">
+        <div class="mf-profile-acc-item">
+          <button type="button" class="mf-profile-menu-item" data-mobile-tab="edit" aria-expanded="false">
+            <span class="material-symbols-outlined">edit_square</span>
+            <span>Edit Profile</span>
+            <span class="material-symbols-outlined mf-menu-chevron">chevron_right</span>
+          </button>
+          <div class="mf-profile-dropdown" id="mfDrop-edit"></div>
+        </div>
+
+        <div class="mf-profile-acc-item">
+          <button type="button" class="mf-profile-menu-item" data-mobile-tab="settings" aria-expanded="false">
+            <span class="material-symbols-outlined">settings</span>
+            <span>Settings</span>
+            <span class="material-symbols-outlined mf-menu-chevron">chevron_right</span>
+          </button>
+          <div class="mf-profile-dropdown" id="mfDrop-settings"></div>
+        </div>
+
+        <div class="mf-profile-acc-item">
+          <button type="button" class="mf-profile-menu-item" data-mobile-tab="help" aria-expanded="false">
+            <span class="material-symbols-outlined">help</span>
+            <span>Help &amp; Support</span>
+            <span class="material-symbols-outlined mf-menu-chevron">chevron_right</span>
+          </button>
+          <div class="mf-profile-dropdown" id="mfDrop-help"></div>
+        </div>
+
+        <div class="mf-profile-acc-item">
+          <button type="button" class="mf-profile-menu-item" data-mobile-tab="about" aria-expanded="false">
+            <span class="material-symbols-outlined">info</span>
+            <span>About</span>
+            <span class="material-symbols-outlined mf-menu-chevron">chevron_right</span>
+          </button>
+          <div class="mf-profile-dropdown" id="mfDrop-about"></div>
+        </div>
+      </div>
+
+      <button type="button" class="mf-profile-logout-card" data-bs-toggle="modal" data-bs-target="#logoutModal">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Log out</span>
+      </button>
     </div>
   </div>
 

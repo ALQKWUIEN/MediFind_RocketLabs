@@ -15,6 +15,10 @@ if (!$_SESSION['user_id']) {
     header('Location: ../03_Authentication/login.php');
     exit;
 }
+
+$medicinesJsonPath = __DIR__ . '/../database/medicines_db.json';
+$medicinesData = file_exists($medicinesJsonPath) ? json_decode(file_get_contents($medicinesJsonPath), true) : ['medicines' => []];
+$medicinesList = $medicinesData['medicines'] ?? [];
 ?>
 
 <!doctype html>
@@ -37,11 +41,342 @@ if (!$_SESSION['user_id']) {
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <?php include '../01_Includes/page-transition-hardcode.php' ?>
+
+  <style>
+    @keyframes mfPinBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .mf-pin-bounce {
+      animation: mfPinBounce 1.35s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .mf-mobile-avatar,
+    .mf-mobile-notif-btn {
+      display: none;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      padding: 6px 8px 6px 14px !important;
+    }
+
+    .mf-inline-search-btn {
+      border: none;
+      background: #1d9e75;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.16s ease;
+    }
+
+    .mf-inline-search-btn:hover {
+      background: #178764;
+    }
+
+    .mf-home-search-suggest {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e5ece9;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: max-height 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.2s ease,
+                  transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 600;
+    }
+
+    .mf-home-search-suggest.is-open {
+      max-height: 260px;
+      opacity: 1;
+      overflow-y: auto;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .mf-home-suggest-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border: none;
+      border-bottom: 1px solid #f1f5f9;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .mf-home-suggest-item:last-child {
+      border-bottom: none;
+    }
+
+    .mf-home-suggest-item:hover {
+      background: #f0fdf9;
+    }
+
+    .mf-home-suggest-item img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 767.98px) {
+      #home-view-list {
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+
+      .mf-home-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #178a65 0%, #1d9e75 100%);
+        padding: 18px 16px 34px;
+      }
+
+      .mf-home-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("../07_Assets/images/backgrounds/malaybalay-hero-bg.jpg") center / cover no-repeat;
+        opacity: 0.22;
+        mix-blend-mode: luminosity;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .mf-home-hero > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .mf-mobile-hero-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .mf-mobile-user-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .mf-mobile-avatar {
+        display: block;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        flex-shrink: 0;
+      }
+
+      .mf-mobile-notif-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.22);
+        color: #ffffff;
+        border: none;
+        position: relative;
+        flex-shrink: 0;
+        text-decoration: none;
+        transition: background 0.18s ease, transform 0.14s ease;
+      }
+
+      .mf-mobile-notif-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.03);
+      }
+
+      .mf-mobile-notif-dot {
+        position: absolute;
+        top: 9px;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff3b30;
+        border: 1.5px solid #1d9e75;
+      }
+
+      .mf-home-hero .welcome-location-block {
+        margin-bottom: 0 !important;
+      }
+
+      .mf-home-hero .welcome-user {
+        color: rgba(255, 255, 255, 0.92) !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+      }
+
+      .mf-home-hero .user-location {
+        color: #ffffff !important;
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        margin-top: 2px !important;
+      }
+
+      .mf-home-hero .user-location .material-symbols-outlined {
+        color: #ffffff !important;
+        font-size: 1.15rem !important;
+      }
+
+      .mf-home-hero .search-row {
+        margin-top: 16px !important;
+      }
+
+      .mf-home-hero .search-wrapper {
+        background: #ffffff !important;
+        border: none !important;
+        border-radius: 14px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      .mf-home-hero .search-filter-btn {
+        background: #ffffff !important;
+        color: #1d9e75 !important;
+        border: none !important;
+        border-radius: 14px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      .mf-home-sheet {
+        background: #ffffff;
+        border-top-left-radius: 26px;
+        border-top-right-radius: 26px;
+        margin-top: -18px;
+        padding: 22px 16px 90px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .mf-home-sheet .nearby-section {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+      }
+
+      .category-nav {
+        display: none !important;
+      }
+
+      .quick-categories {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 14px !important;
+        scrollbar-width: none;
+      }
+
+      .quick-categories::-webkit-scrollbar {
+        display: none;
+      }
+
+      .pharmacy-list {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 12px !important;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }
+
+      .pharmacy-list::-webkit-scrollbar {
+        display: none;
+      }
+
+      .pharmacy-card {
+        min-width: 215px !important;
+        max-width: 225px !important;
+        flex: 0 0 auto !important;
+        padding: 10px !important;
+        border-radius: 14px !important;
+        border: 1px solid #e5ece9 !important;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03) !important;
+      }
+
+      .pharmacy-card-img {
+        width: 100% !important;
+        height: 98px !important;
+        object-fit: cover !important;
+        border-radius: 10px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .pharmacy-card-body {
+        padding: 0 2px 2px !important;
+        text-align: left !important;
+      }
+
+      .pharmacy-card-body h6 {
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        margin: 0 0 3px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .pharmacy-card .pharmacy-distance,
+      .pharmacy-card .pharmacy-status {
+        font-size: 0.76rem !important;
+        margin-bottom: 3px !important;
+        line-height: 1.3 !important;
+      }
+
+      .pharmacy-card .direction-btn {
+        background: #ff5b27 !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 999px !important;
+        font-weight: 600 !important;
+        font-size: 0.76rem !important;
+        padding: 6px 14px !important;
+        margin-top: 6px !important;
+        width: auto !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+      }
+
+      .pharmacy-card .direction-btn .material-symbols-outlined {
+        font-size: 0.9rem !important;
+      }
+    }
+  </style>
 </head>
 
 <body data-active="01">
   <div class="wrapper d-flex align-items-stretch">
-    <div id="sidebar-container"></div>
+    <div id="sidebar-container"><?php include '../01_Includes/users-sidebar-fixed.php'; ?></div>
 
     <div class="main-panel d-flex flex-column flex-grow-1">
       <div id="topbar-container"></div>
@@ -53,102 +388,35 @@ if (!$_SESSION['user_id']) {
             <!-- DEFAULT VIEW: full list -->
             <div id="home-view-list">
               <div class="search-section">
-                <div class="welcome-location-block">
-                  <h2 class="welcome-user">Hello, User 👋</h2>
-                  <div class="user-location">
-                    <span class="material-symbols-outlined">location_on</span>
-                    <span>Malaybalay, 8700, Bukidnon, Philippines</span>
-                  </div>
-                </div>
-
-                <div class="search-row">
-                  <div class="search-wrapper">
-                    <span class="material-symbols-outlined" style="color: #87a199; font-size: 1.2rem">search</span>
-                    <input type="text" placeholder="Search medicine by name..." />
-                  </div>
-                  <button class="search-filter-btn">
-                    <span class="material-symbols-outlined">discover_tune</span>
-                  </button>
-                </div>
-
-                <!-- Quick Categories -->
-                <div class="quick-categories-section">
-                  <div class="section-header">
-                    <h5>Quick Categories</h5>
-                    <a href="#">See all</a>
-                  </div>
-                  <div class="quick-categories-wrapper">
-                    <button class="category-nav prev" aria-label="Scroll left">
-                      <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <div class="quick-categories" id="quickCategories">
-                      <a href="#" class="category-item active">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">pulmonology</span>
+                <div class="mf-home-hero">
+                  <div class="mf-mobile-hero-row">
+                    <div class="mf-mobile-user-left">
+                      <img src="../07_Assets/images/person.jpg" alt="Profile" class="mf-mobile-avatar" />
+                      <div class="welcome-location-block">
+                        <h2 class="welcome-user">Hello, <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?></h2>
+                        <div class="user-location">
+                          <span class="material-symbols-outlined">location_on</span>
+                          <span>Malaybalay, Bukidnon</span>
                         </div>
-                        <span class="category-label">Cough & Cold</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">sick</span>
-                        </div>
-                        <span class="category-label">Pain Relief</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">medication</span>
-                        </div>
-                        <span class="category-label">Antibiotics</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">ecg_heart</span>
-                        </div>
-                        <span class="category-label">Heart Care</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">water_drop</span>
-                        </div>
-                        <span class="category-label">Diabetes</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">allergy</span>
-                        </div>
-                        <span class="category-label">Allergy</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">vaccines</span>
-                        </div>
-                        <span class="category-label">Vitamins</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">healing</span>
-                        </div>
-                        <span class="category-label">First Aid</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">gastroenterology</span>
-                        </div>
-                        <span class="category-label">Digestive Care</span>
-                      </a>
-                      <a href="#" class="category-item">
-                        <div class="category-icon-circle">
-                          <span class="material-symbols-outlined">bedtime</span>
-                        </div>
-                        <span class="category-label">Sleep Care</span>
-                      </a>
+                      </div>
                     </div>
-                    <button class="category-nav next" aria-label="Scroll right">
-                      <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
+                    <a href="05_Profile.php" class="mf-mobile-notif-btn" aria-label="Notifications">
+                      <span class="material-symbols-outlined">notifications</span>
+                      <span class="mf-mobile-notif-dot"></span>
+                    </a>
+                  </div>
+
+                  <div class="search-row">
+                    <div class="search-wrapper" id="homeSearchWrapper">
+                      <span class="material-symbols-outlined" style="color: #87a199; font-size: 1.2rem">search</span>
+                      <input type="text" id="homeMedicineSearch" placeholder="Search medicine by name..." autocomplete="off" />
+                      <button type="button" class="mf-inline-search-btn" id="homeSearchBtn">Search</button>
+                      <div class="mf-home-search-suggest" id="homeSearchSuggest"></div>
+                    </div>
                   </div>
                 </div>
 
+                <div class="mf-home-sheet">
                 <!-- Nearby Pharmacies -->
                 <div class="nearby-section">
                   <div class="section-header">
@@ -404,6 +672,7 @@ if (!$_SESSION['user_id']) {
                   </div>
                 </div>
 
+                </div><!-- /.mf-home-sheet -->
               </div>
             </div>
 
@@ -619,39 +888,6 @@ if (!$_SESSION['user_id']) {
     }
   </script>
 
-  <!-- CATEGORIES SCRIPT -->
-  <script>
-    const categories = document.getElementById('quickCategories');
-    const prevBtn = document.querySelector('.category-nav.prev');
-    const nextBtn = document.querySelector('.category-nav.next');
-    const categoryItems = document.querySelectorAll('.category-item');
-
-    function updateNavVisibility() {
-      const isOverflowing = categories.scrollWidth > categories.clientWidth;
-      prevBtn.style.display = isOverflowing ? '' : 'none';
-      nextBtn.style.display = isOverflowing ? '' : 'none';
-    }
-
-    prevBtn.addEventListener('click', () => categories.scrollBy({
-      left: -220,
-      behavior: 'smooth'
-    }));
-    nextBtn.addEventListener('click', () => categories.scrollBy({
-      left: 220,
-      behavior: 'smooth'
-    }));
-
-    updateNavVisibility();
-    new ResizeObserver(updateNavVisibility).observe(categories);
-
-    categoryItems.forEach(item => {
-      item.addEventListener('click', function() {
-        categoryItems.forEach(el => el.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-  </script>
-
   <!-- MAP / PHARMACY DETAIL SCRIPT -->
   <script>
     let homeLeafletMap = null;
@@ -718,10 +954,10 @@ if (!$_SESSION['user_id']) {
       setTimeout(() => {
         const icon = L.divIcon({
           className: '',
-          html: `<div style="background:#1d9e75;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);"></div>`,
-          iconSize: [30, 30],
-          iconAnchor: [15, 30],
-          popupAnchor: [0, -32]
+          html: `<div class="mf-pin-bounce"><div style="background:#1d9e75;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.28);display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="transform:rotate(45deg);color:#fff;font-size:15px;">local_pharmacy</span></div></div>`,
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -34]
         });
 
         if (!homeLeafletMap) {
@@ -762,15 +998,108 @@ if (!$_SESSION['user_id']) {
       document.getElementById('home-map-panel').style.display = 'none';
     });
 
+    function goToPharmacyMap(card) {
+      if (!card) return;
+      const name = card.dataset.name || '';
+      window.location.href = `04_Pharmacies.php?pharmacy=${encodeURIComponent(name)}`;
+    }
+
     document.querySelectorAll('.nearby-section .direction-btn').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
-        openHomeDirections(btn.closest('.pharmacy-card'));
+        goToPharmacyMap(btn.closest('.pharmacy-card'));
       });
     });
 
     document.querySelectorAll('.nearby-section .pharmacy-card').forEach(card => {
-      card.addEventListener('click', () => openHomeDirections(card));
+      card.addEventListener('click', () => goToPharmacyMap(card));
+    });
+
+    // Functional Medicine Search + Autosuggest
+    const HOME_MEDICINES = <?= json_encode($medicinesList, JSON_UNESCAPED_SLASHES) ?>;
+    const homeSearchWrapper = document.getElementById('homeSearchWrapper');
+    const homeSearchInput = document.getElementById('homeMedicineSearch');
+    const homeSearchSuggest = document.getElementById('homeSearchSuggest');
+
+    function goToMedicineMap(query) {
+      const q = (query || '').trim();
+      if (!q) return;
+      window.location.href = `02.3_MedicineMap.php?q=${encodeURIComponent(q)}`;
+    }
+
+    function renderHomeSuggestions(query) {
+      if (!homeSearchSuggest) return;
+      const q = (query || '').trim().toLowerCase();
+      if (!q) {
+        homeSearchSuggest.classList.remove('is-open');
+        return;
+      }
+      const matches = HOME_MEDICINES.filter(m =>
+        (m.brand_name || '').toLowerCase().includes(q) ||
+        (m.generic_name || '').toLowerCase().includes(q) ||
+        (m.category || '').toLowerCase().includes(q)
+      ).slice(0, 6);
+
+      if (!matches.length) {
+        homeSearchSuggest.innerHTML = `<div class="px-3 py-2 small text-muted">No matching medicine. Press Enter to search map.</div>`;
+      } else {
+        homeSearchSuggest.innerHTML = '';
+        matches.forEach(m => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'mf-home-suggest-item';
+          btn.innerHTML = `
+            <img src="../${m.image}" alt="${m.brand_name}" />
+            <div style="min-width:0;flex:1;">
+              <div style="font-size:0.86rem;font-weight:600;color:#1f2937;">${m.brand_name} (${m.generic_name})</div>
+              <div style="font-size:0.74rem;color:#6b7280;">${m.dosage} · ${m.dosage_form} · ${m.requires_prescription ? 'Requires Rx' : 'Over-the-Counter'}</div>
+            </div>
+          `;
+          btn.addEventListener('click', () => goToMedicineMap(m.brand_name));
+          homeSearchSuggest.appendChild(btn);
+        });
+      }
+      homeSearchSuggest.classList.add('is-open');
+    }
+
+    if (homeSearchInput && homeSearchSuggest) {
+      homeSearchInput.addEventListener('input', () => renderHomeSuggestions(homeSearchInput.value));
+      homeSearchInput.addEventListener('focus', () => {
+        if (homeSearchInput.value.trim()) renderHomeSuggestions(homeSearchInput.value);
+      });
+      homeSearchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          goToMedicineMap(homeSearchInput.value);
+        } else if (e.key === 'Escape') {
+          homeSearchSuggest.classList.remove('is-open');
+        }
+      });
+    }
+
+    const homeSearchBtn = document.getElementById('homeSearchBtn');
+    if (homeSearchBtn && homeSearchInput) {
+      homeSearchBtn.addEventListener('click', () => {
+        if (homeSearchInput.value.trim()) {
+          goToMedicineMap(homeSearchInput.value);
+        } else {
+          homeSearchInput.focus();
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (homeSearchWrapper && homeSearchSuggest && !homeSearchWrapper.contains(e.target)) {
+        homeSearchSuggest.classList.remove('is-open');
+      }
+    });
+
+    document.querySelectorAll('.most-searched-section .medicine-rank-card').forEach(card => {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', () => {
+        const title = (card.querySelector('h6')?.textContent || '').replace(/\s+\d+\s*mg$/i, '').trim();
+        if (title) goToMedicineMap(title);
+      });
     });
   </script>
 

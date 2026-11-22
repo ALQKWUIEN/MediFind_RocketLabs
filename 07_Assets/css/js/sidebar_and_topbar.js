@@ -2,26 +2,40 @@
    HTML INCLUDES
    ════════════════════════════════════════════════════════════ */
 
+function applySidebarHTML(elementId, data) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  el.innerHTML = data;
+  if (
+    elementId === "sidebar-container" ||
+    elementId === "pharmacy-sidebar-container" ||
+    elementId === "system-sidebar-container"
+  ) {
+    highlightActiveMenu();
+    if (window.bootstrap) {
+      document
+        .querySelectorAll('[data-bs-toggle="collapse"]')
+        .forEach((colEl) => {
+          new bootstrap.Collapse(colEl.getAttribute("data-bs-target"), {
+            toggle: false,
+          });
+        });
+    }
+  }
+}
+
 function loadHTML(filePath, elementId) {
+  const cacheKey = "mf_html_" + filePath;
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    applySidebarHTML(elementId, cached);
+    return Promise.resolve();
+  }
   return fetch(filePath)
     .then((response) => response.text())
     .then((data) => {
-      document.getElementById(elementId).innerHTML = data;
-      if (
-        elementId === "sidebar-container" ||
-        elementId === "pharmacy-sidebar-container" ||
-        elementId === "system-sidebar-container"
-      ) {
-        highlightActiveMenu();
-
-        document
-          .querySelectorAll('[data-bs-toggle="collapse"]')
-          .forEach((el) => {
-            new bootstrap.Collapse(el.getAttribute("data-bs-target"), {
-              toggle: false,
-            });
-          });
-      }
+      sessionStorage.setItem(cacheKey, data);
+      applySidebarHTML(elementId, data);
     })
     .catch((error) => console.log(error));
 }
@@ -160,10 +174,13 @@ function initSidebar() {
    PAGE INIT
    ════════════════════════════════════════════════════════════ */
 
-window.onload = function () {
-  // Pick the right sidebar for this page
+function initPortalChrome() {
+  // Pick the right sidebar for this page (skip fetch if already server-rendered)
   let sidebarLoad;
-  if (document.getElementById("sidebar-container")) {
+  if (document.getElementById("sidebar")) {
+    highlightActiveMenu();
+    sidebarLoad = Promise.resolve();
+  } else if (document.getElementById("sidebar-container")) {
     sidebarLoad = loadHTML(
       "../01_Includes/01_users-sidebar.php",
       "sidebar-container",
@@ -189,11 +206,19 @@ window.onload = function () {
     initTopbar();
     initSidebar(); // ✅ Now both #sidebar and #sidebarToggle exist in DOM
 
-    document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((el) => {
-      new bootstrap.Dropdown(el);
-    });
+    if (window.bootstrap) {
+      document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((el) => {
+        new bootstrap.Dropdown(el);
+      });
+    }
   });
-};
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initPortalChrome);
+} else {
+  initPortalChrome();
+}
 
 /* ════════════════════════════════════════════════════════════
    TOPBAR
@@ -307,8 +332,8 @@ function initTopbar() {
 
     list.innerHTML = notifications.length
       ? notifications
-          .map(
-            (n) => `
+        .map(
+          (n) => `
                 <div class="notif-item ${n.unread ? "unread" : ""}"
                      onclick="readNotif(${n.id}); event.stopPropagation();">
                     <div class="notif-avatar" style="background:${n.color};">
@@ -320,8 +345,8 @@ function initTopbar() {
                     </div>
                     ${n.unread ? '<div class="notif-unread-dot"></div>' : ""}
                 </div>`,
-          )
-          .join("")
+        )
+        .join("")
       : `<div class="notif-empty"><i class="fas fa-bell-slash"></i>No notifications</div>`;
   }
 
@@ -336,8 +361,8 @@ function initTopbar() {
 
     list.innerHTML = messages.length
       ? messages
-          .map(
-            (m) => `
+        .map(
+          (m) => `
                 <div class="notif-item ${m.unread ? "unread" : ""}"
                      onclick="readMsg(${m.id}); event.stopPropagation();">
                     <div class="notif-avatar"
@@ -351,8 +376,8 @@ function initTopbar() {
                     </div>
                     ${m.unread ? '<div class="notif-unread-dot"></div>' : ""}
                 </div>`,
-          )
-          .join("")
+        )
+        .join("")
       : `<div class="notif-empty"><i class="fas fa-comment-slash"></i>No messages</div>`;
   }
 
