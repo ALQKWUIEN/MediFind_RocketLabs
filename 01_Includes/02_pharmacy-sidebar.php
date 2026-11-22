@@ -131,15 +131,26 @@ if (isset($_POST['logout'])) {
     <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         // Highlight the active page in the sidebar
-        const currentPage = window.location.pathname;
-        document.querySelectorAll("#sidebar ul li").forEach((li) => {
-            const link = li.querySelector("a");
-            if (link && link.getAttribute("href") === currentPage) {
-                li.classList.add("active");
-            } else {
-                li.classList.remove("active");
-            }
-        });
+        (function() {
+            const currentFile = window.location.pathname.split("/").pop().replace(".php", "").toLowerCase();
+            const activeKey = (document.body.getAttribute("data-active") || "").toLowerCase().trim();
+            document.querySelectorAll("#sidebar ul li").forEach((li) => {
+                const link = li.querySelector("a");
+                if (!link) return;
+                const href = link.getAttribute("href") || "";
+                const linkFile = href.split("/").pop().replace(".php", "").toLowerCase();
+                if (
+                    linkFile === activeKey ||
+                    linkFile === currentFile ||
+                    (linkFile === "manage_inventory" && (activeKey === "manage_inventory" || activeKey === "02" || currentFile === "02_manageinventory")) ||
+                    (linkFile === "profile" && (activeKey === "profile" || activeKey === "07" || currentFile === "07_profile"))
+                ) {
+                    li.classList.add("active");
+                } else {
+                    li.classList.remove("active");
+                }
+            });
+        })();
     </script>
 </body>
 

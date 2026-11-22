@@ -309,6 +309,14 @@ foreach ($inventoryReport as $it) {
       align-items: center;
       margin-bottom: 0.75rem;
     }
+
+    /* Page Background matching Dashboard (--mf-bg) */
+    html,
+    body[data-active="reports"],
+    body[data-active="reports"] .main-panel,
+    body[data-active="reports"] .content {
+      background-color: var(--mf-bg, #f5f6f8) !important;
+    }
   </style>
 </head>
 

@@ -31,7 +31,9 @@ function loadHTML(filePath, elementId) {
    ════════════════════════════════════════════════════════════ */
 
 function highlightActiveMenu() {
-  const activeKey = document.body.getAttribute("data-active"); // e.g. "02"
+  const activeKey = (document.body.getAttribute("data-active") || "").toLowerCase().trim();
+  const currentPath = window.location.pathname.toLowerCase();
+  const currentFile = currentPath.split("/").pop().replace(".php", "");
 
   document.querySelectorAll("#sidebar ul li").forEach((li) => {
     const link = li.querySelector("a");
@@ -39,10 +41,42 @@ function highlightActiveMenu() {
     const href = link.getAttribute("href");
     if (!href || href === "#") return;
 
-    const linkFilename = href.split("/").pop().replace(".php", "");
+    const linkFilename = href.split("/").pop().replace(".php", "").toLowerCase();
     const linkPrefix = linkFilename.split("_")[0]; // e.g. "02"
 
-    if (linkPrefix === activeKey) {
+    let isMatch = false;
+
+    // 1. Direct activeKey matches full filename (e.g. "manage_inventory", "dashboard", "pos", "reports", "profile")
+    if (activeKey && linkFilename === activeKey) {
+      isMatch = true;
+    }
+    // 2. Direct activeKey matches prefix (e.g. "01", "02" for user / system admin sidebars)
+    else if (activeKey && linkPrefix === activeKey) {
+      isMatch = true;
+    }
+    // 3. Known aliases for Pharmacy Admin (profile / 07_Profile, manage_inventory / 02_ManageInventory)
+    else if (
+      (activeKey === "profile" || activeKey === "07") &&
+      (linkFilename === "profile" || linkFilename === "07_profile")
+    ) {
+      isMatch = true;
+    } else if (
+      (activeKey === "manage_inventory" || activeKey === "02" || activeKey === "inventory") &&
+      (linkFilename === "manage_inventory" || linkFilename === "02_manageinventory")
+    ) {
+      isMatch = true;
+    }
+    // 4. URL fallback: current filename matches link
+    else if (
+      currentFile &&
+      (currentFile === linkFilename ||
+        (linkFilename === "manage_inventory" && currentFile === "02_manageinventory") ||
+        (linkFilename === "profile" && currentFile === "07_profile"))
+    ) {
+      isMatch = true;
+    }
+
+    if (isMatch) {
       li.classList.add("active");
     } else {
       li.classList.remove("active");

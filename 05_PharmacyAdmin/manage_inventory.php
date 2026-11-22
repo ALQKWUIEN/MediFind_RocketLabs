@@ -45,8 +45,8 @@ try {
       ['generic' => 'Ibuprofen + Paracetamol', 'brand' => 'Alaxan FR', 'cat' => 'Analgesics & Antipyretics', 'mfr' => 'Unilab', 'form' => 'Capsule', 'val' => '500', 'unit' => 'mg', 'rx' => 'No', 'price' => 11.50, 'qty' => 90, 'days' => 365, 'img' => '../07_Assets/images/medicines/Advil.png', 'desc' => 'Synergistic combination offering rapid relief for acute musculoskeletal pain, torticollis, and lumbago.'],
       ['generic' => 'Phenylephrine + Chlorphenamine + Paracetamol', 'brand' => 'Bioflu', 'cat' => 'Cold & Respiratory', 'mfr' => 'Unilab', 'form' => 'Tablet', 'val' => '500', 'unit' => 'mg', 'rx' => 'No', 'price' => 9.50, 'qty' => 105, 'days' => 365, 'img' => '../07_Assets/images/medicines/Paracetamol.png', 'desc' => 'All-in-one multi-symptom cold and flu tablet resolving fever, runny nose, and body malaise.'],
       ['generic' => 'Aluminum + Magnesium Hydroxide + Simethicone', 'brand' => 'Kremil-S', 'cat' => 'Gastrointestinal', 'mfr' => 'Unilab', 'form' => 'Tablet', 'val' => '178', 'unit' => 'mg', 'rx' => 'No', 'price' => 8.00, 'qty' => 65, 'days' => 365, 'img' => '../07_Assets/images/medicines/Glucophage.jpg', 'desc' => 'Antacid and antiflatulent combination for rapid relief of hyperacidity, peptic ulcer, and gas.'],
-      ['generic' => 'Paracetamol Pediatric Oral Solution', 'brand' => 'Tempra', 'cat' => 'Analgesics & Antipyretics', 'mfr' => 'Taisho Pharmaceuticals', 'form' => 'Syrup', 'val' => '120', 'unit' => 'mg/5mL', 'rx' => 'No', 'price' => 125.00, 'qty' => 22, 'days' => 365, 'img' => '../07_Assets/images/medicines/Paracetamol.png', 'desc' => 'Pediatric alcohol-free antipyretic syrup formulated for infants and children with acute fever.'],
-      ['generic' => 'Ascorbic Acid + Zinc', 'brand' => 'Ceelin Plus', 'cat' => 'Vitamins & Minerals', 'mfr' => 'Unilab', 'form' => 'Syrup', 'val' => '100', 'unit' => 'mg', 'rx' => 'No', 'price' => 145.00, 'qty' => 4, 'days' => 22, 'img' => '../07_Assets/images/medicines/Enervon-C.jpg', 'desc' => 'ZincPlus pediatric daily health supplement to boost cellular immunity. Near expiry attention.'],
+      ['generic' => 'Paracetamol Pediatric Oral Solution', 'brand' => 'Tempra', 'cat' => 'Analgesics & Antipyretics', 'mfr' => 'Taisho Pharmaceuticals', 'form' => 'Syrup', 'val' => '120', 'unit' => 'mg/5mL', 'pkg' => '60 mL', 'rx' => 'No', 'price' => 125.00, 'qty' => 22, 'days' => 365, 'img' => '../07_Assets/images/medicines/Paracetamol.png', 'desc' => 'Pediatric alcohol-free antipyretic syrup formulated for infants and children with acute fever.'],
+      ['generic' => 'Ascorbic Acid + Zinc', 'brand' => 'Ceelin Plus', 'cat' => 'Vitamins & Minerals', 'mfr' => 'Unilab', 'form' => 'Syrup', 'val' => '100', 'unit' => 'mg/5mL', 'pkg' => '120 mL', 'rx' => 'No', 'price' => 145.00, 'qty' => 4, 'days' => 22, 'img' => '../07_Assets/images/medicines/Enervon-C.jpg', 'desc' => 'ZincPlus pediatric daily health supplement to boost cellular immunity. Near expiry attention.'],
       ['generic' => 'Salbutamol Sulfate', 'brand' => 'Ventolin', 'cat' => 'Cold & Respiratory', 'mfr' => 'GlaxoSmithKline', 'form' => 'Tablet', 'val' => '2', 'unit' => 'mg', 'rx' => 'Yes', 'price' => 6.50, 'qty' => 0, 'days' => 365, 'img' => '../07_Assets/images/medicines/Solmux.jpg', 'desc' => 'Selective beta-2 adrenergic agonist for rapid relief of asthma bronchospasm and reactive airways.'],
       ['generic' => 'Omeprazole', 'brand' => 'Omez', 'cat' => 'Gastrointestinal', 'mfr' => 'Torrent Pharma', 'form' => 'Capsule', 'val' => '20', 'unit' => 'mg', 'rx' => 'Yes', 'price' => 28.00, 'qty' => 55, 'days' => 365, 'img' => '../07_Assets/images/medicines/Glucophage.jpg', 'desc' => 'Proton pump inhibitor decreasing gastric acid production in gastroesophageal reflux disease.'],
       ['generic' => 'Cefalexin Monohydrate', 'brand' => 'Ceporex', 'cat' => 'Antibiotics', 'mfr' => 'Unilab', 'form' => 'Capsule', 'val' => '500', 'unit' => 'mg', 'rx' => 'Yes', 'price' => 21.00, 'qty' => 7, 'days' => 365, 'img' => '../07_Assets/images/medicines/Amoxicilin.png', 'desc' => 'First-generation oral cephalosporin antibiotic active against susceptible streptococcal infections.'],
@@ -58,11 +58,11 @@ try {
       ['generic' => 'Hyoscine N-Butylbromide', 'brand' => 'Buscopan', 'cat' => 'Gastrointestinal', 'mfr' => 'Sanofi', 'form' => 'Tablet', 'val' => '10', 'unit' => 'mg', 'rx' => 'No', 'price' => 17.00, 'qty' => 80, 'days' => 365, 'img' => '../07_Assets/images/medicines/Glucophage.jpg', 'desc' => 'Peripheral anticholinergic agent providing spasmolytic action in the gastrointestinal tract.'],
       ['generic' => 'Bisacodyl', 'brand' => 'Dulcolax', 'cat' => 'Gastrointestinal', 'mfr' => 'Sanofi', 'form' => 'Tablet', 'val' => '5', 'unit' => 'mg', 'rx' => 'No', 'price' => 12.00, 'qty' => 50, 'days' => 365, 'img' => '../07_Assets/images/medicines/Glucophage.jpg', 'desc' => 'Locally acting stimulant laxative stimulating colon motility for overnight constipation relief.'],
       ['generic' => 'Naproxen Sodium', 'brand' => 'Flanax', 'cat' => 'Analgesics & Antipyretics', 'mfr' => 'Bayer Philippines', 'form' => 'Tablet', 'val' => '550', 'unit' => 'mg', 'rx' => 'No', 'price' => 16.50, 'qty' => 70, 'days' => 365, 'img' => '../07_Assets/images/medicines/Advil.png', 'desc' => 'Long-acting NSAID delivering up to 12 hours relief from acute bursitis, tendonitis, and arthritis.'],
-      ['generic' => 'Dextromethorphan + Guaifenesin', 'brand' => 'Robitussin DM', 'cat' => 'Cold & Respiratory', 'mfr' => 'Haleon', 'form' => 'Syrup', 'val' => '100', 'unit' => 'mL', 'rx' => 'No', 'price' => 165.00, 'qty' => 15, 'days' => 365, 'img' => '../07_Assets/images/medicines/Solmux.jpg', 'desc' => 'Antitussive and expectorant syrup suppressing non-productive coughing while loosening phlegm.'],
+      ['generic' => 'Dextromethorphan + Guaifenesin', 'brand' => 'Robitussin DM', 'cat' => 'Cold & Respiratory', 'mfr' => 'Haleon', 'form' => 'Syrup', 'val' => '15', 'unit' => 'mg/5mL', 'pkg' => '100 mL', 'rx' => 'No', 'price' => 165.00, 'qty' => 15, 'days' => 365, 'img' => '../07_Assets/images/medicines/Solmux.jpg', 'desc' => 'Antitussive and expectorant syrup suppressing non-productive coughing while loosening phlegm.'],
       ['generic' => 'Ciprofloxacin', 'brand' => 'Ciprobay', 'cat' => 'Antibiotics', 'mfr' => 'Bayer', 'form' => 'Tablet', 'val' => '500', 'unit' => 'mg', 'rx' => 'Yes', 'price' => 48.00, 'qty' => 20, 'days' => 365, 'img' => '../07_Assets/images/medicines/Amoxicilin.png', 'desc' => 'Fluoroquinolone bactericidal antibiotic for complicated urinary tract and enteric infections.'],
       ['generic' => 'Simvastatin', 'brand' => 'Zocor', 'cat' => 'Cardiovascular', 'mfr' => 'Organon', 'form' => 'Tablet', 'val' => '20', 'unit' => 'mg', 'rx' => 'Yes', 'price' => 26.00, 'qty' => 40, 'days' => 365, 'img' => '../07_Assets/images/medicines/Cozaar.png', 'desc' => 'Lipid-lowering statin reducing LDL cholesterol and cardiovascular morbidity in dyslipidemia.'],
       ['generic' => 'Loratadine', 'brand' => 'Claritin', 'cat' => 'Antihistamines', 'mfr' => 'Bayer', 'form' => 'Tablet', 'val' => '10', 'unit' => 'mg', 'rx' => 'No', 'price' => 28.50, 'qty' => 30, 'days' => 365, 'img' => '../07_Assets/images/medicines/Allerta.png', 'desc' => 'Non-sedating selective peripheral H1 antihistamine for allergic rhinitis and chronic urticaria.'],
-      ['generic' => 'Povidone-Iodine 1% Solution', 'brand' => 'Betadine / Bactidol', 'cat' => 'Antiseptics & Topical', 'mfr' => 'Mundipharma', 'form' => 'Solution', 'val' => '120', 'unit' => 'mL', 'rx' => 'No', 'price' => 135.00, 'qty' => 25, 'days' => 365, 'img' => '../07_Assets/images/logo.png', 'desc' => 'Broad-spectrum oral gargle and antiseptic solution reducing oral cavity pathogens and sore throat.']
+      ['generic' => 'Povidone-Iodine 1% Solution', 'brand' => 'Betadine / Bactidol', 'cat' => 'Antiseptics & Topical', 'mfr' => 'Mundipharma', 'form' => 'Solution', 'val' => '1', 'unit' => '%', 'pkg' => '120 mL', 'rx' => 'No', 'price' => 135.00, 'qty' => 25, 'days' => 365, 'img' => '../07_Assets/images/logo.png', 'desc' => 'Broad-spectrum oral gargle and antiseptic solution reducing oral cavity pathogens and sore throat.']
     ];
 
     foreach ($philippineMeds as $pm) {
@@ -130,6 +130,18 @@ try {
 
       $rxId = (strtolower($pm['rx']) === 'yes') ? 1 : 2;
 
+      // 6b. Resolve Dosage in 16_meds_dosages
+      $dosageStrength = trim($pm['val'] . ' ' . $pm['unit']);
+      $dosageStmt = $pdo->prepare("SELECT Dosage_ID FROM 16_meds_dosages WHERE Dosage_Strength = ? LIMIT 1");
+      $dosageStmt->execute([$dosageStrength]);
+      $dosageId = $dosageStmt->fetchColumn();
+      if (!$dosageId) {
+        $pdo->prepare("INSERT INTO 16_meds_dosages (Dosage_Strength) VALUES (?)")->execute([$dosageStrength]);
+        $dosageId = (int) $pdo->lastInsertId();
+      }
+
+      $pkgSize = $pm['pkg'] ?? null;
+
       // 7. Insert or resolve in 12_meds_medicines
       $medFind = $pdo->prepare("SELECT Medicine_ID FROM 12_meds_medicines WHERE Gen_ID = ? AND Brand_ID = ? LIMIT 1");
       $medFind->execute([$genId, $brandId]);
@@ -137,11 +149,14 @@ try {
 
       if (!$medId) {
         $insMed = $pdo->prepare("
-          INSERT INTO 12_meds_medicines (Gen_ID, Brand_ID, DosageForm_ID, DosageVal_ID, Unit_ID, Category_ID, Manufacturer_ID, Require_rx_ID)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO 12_meds_medicines (Gen_ID, Brand_ID, DosageForm_ID, DosageVal_ID, Unit_ID, Dosage_ID, Package_Size, Category_ID, Manufacturer_ID, Require_rx_ID)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $insMed->execute([$genId, $brandId, $formId, $valId, $unitId, $catId, $mfrId, $rxId]);
+        $insMed->execute([$genId, $brandId, $formId, $valId, $unitId, $dosageId, $pkgSize, $catId, $mfrId, $rxId]);
         $medId = (int) $pdo->lastInsertId();
+      } else {
+        $pdo->prepare("UPDATE 12_meds_medicines SET Dosage_ID = COALESCE(Dosage_ID, ?), Package_Size = COALESCE(Package_Size, ?) WHERE Medicine_ID = ?")
+            ->execute([$dosageId, $pkgSize, $medId]);
       }
 
       // Link Image in 24_medicine_images
@@ -155,12 +170,13 @@ try {
 
       // 8. Insert or update in 21_inventory for this pharmacy
       $expDate = date('Y-m-d', strtotime('+' . $pm['days'] . ' days'));
+      $batchNo = 'LOT-2026-' . str_pad($medId, 3, '0', STR_PAD_LEFT);
       $insInv = $pdo->prepare("
-        INSERT INTO 21_inventory (Pharmacy_ID, Medicine_ID, Quantity, Price, Expiry_date, Last_updated)
-        VALUES (?, ?, ?, ?, ?, NOW())
+        INSERT INTO 21_inventory (Pharmacy_ID, Medicine_ID, Batch_Number, Quantity, Price, Expiry_date, Last_updated)
+        VALUES (?, ?, ?, ?, ?, ?, NOW())
         ON DUPLICATE KEY UPDATE Quantity = VALUES(Quantity), Price = VALUES(Price), Expiry_date = VALUES(Expiry_date)
       ");
-      $insInv->execute([$pharmacyID, $medId, $pm['qty'], $pm['price'], $expDate]);
+      $insInv->execute([$pharmacyID, $medId, $batchNo, $pm['qty'], $pm['price'], $expDate]);
     }
   }
 } catch (Exception $e) {
@@ -296,7 +312,9 @@ $sql = "
     i.Inventory_ID,
     i.Pharmacy_ID,
     i.Medicine_ID,
+    i.Batch_Number,
     i.Quantity,
+    i.Low_Stock_Threshold,
     i.Price,
     i.Price_Unit_ID,
     i.Expiry_date,
@@ -306,6 +324,9 @@ $sql = "
     df.Dosage_Form,
     dv.Dosage_Value,
     du.Unit_Name,
+    med.Package_Size,
+    med.Pieces_Per_Box,
+    med.Is_Essential,
     c.Category_Name,
     m.Manufacturer_Name,
     rx.Requirement_Status AS Requires_Rx,
@@ -314,7 +335,7 @@ $sql = "
     CASE
       WHEN i.Expiry_date <= CURDATE() THEN 'Expired'
       WHEN i.Quantity = 0 THEN 'Out of Stock'
-      WHEN i.Quantity <= 10 THEN 'Low Stock'
+      WHEN i.Quantity <= COALESCE(i.Low_Stock_Threshold, 10) THEN 'Low Stock'
       ELSE 'Available'
     END AS Availability_Status
   FROM 21_inventory i
@@ -395,10 +416,14 @@ foreach ($inventoryRows as $r) {
 
   <style>
     html,
-    body {
+    body,
+    body[data-active="manage_inventory"],
+    .main-panel,
+    #content,
+    .content {
       height: 100%;
       overflow-y: auto !important;
-      background-color: #f8faf9;
+      background-color: var(--mf-bg, #f5f6f8) !important;
     }
 
     .wrapper {
@@ -665,6 +690,7 @@ foreach ($inventoryRows as $r) {
                       <thead class="table-head">
                         <tr>
                           <th>ID</th>
+                          <th>BATCH / LOT</th>
                           <th>GENERIC NAME</th>
                           <th>BRAND</th>
                           <th>CATEGORY</th>
@@ -688,28 +714,67 @@ foreach ($inventoryRows as $r) {
                             <tr class="inv-row"
                               data-category="<?= htmlspecialchars(strtolower($row['Category_Name'] ?? '')) ?>"
                               data-status="<?= htmlspecialchars(strtolower($row['Availability_Status'] ?? '')) ?>"
-                              data-search="<?= htmlspecialchars(strtolower(($row['Generic_Name'] ?? '') . ' ' . ($row['Brand_Name'] ?? '') . ' ' . ($row['Category_Name'] ?? '') . ' ' . ($row['Inventory_ID'] ?? ''))) ?>">
+                              data-search="<?= htmlspecialchars(strtolower(($row['Generic_Name'] ?? '') . ' ' . ($row['Brand_Name'] ?? '') . ' ' . ($row['Category_Name'] ?? '') . ' ' . ($row['Batch_Number'] ?? '') . ' ' . ($row['Inventory_ID'] ?? ''))) ?>">
                               <td><span class="text-muted fw-mono">#<?= htmlspecialchars($row['Inventory_ID']) ?></span>
                               </td>
                               <td>
-                                <div class="fw-bold text-dark"><?= htmlspecialchars($row['Generic_Name']) ?></div>
-                                <?php if (!empty($row['Requires_Rx']) && (stripos($row['Requires_Rx'], 'yes') !== false || stripos($row['Requires_Rx'], 'require') !== false)): ?>
-                                  <span class="badge bg-danger-subtle text-danger" style="font-size: 10px;">Rx Required</span>
+                                <?php if (!empty($row['Batch_Number'])): ?>
+                                  <span class="badge bg-light text-dark border font-monospace px-2 py-1" style="font-size: 11px;">
+                                    <i class="bi bi-upc me-1 text-muted"></i><?= htmlspecialchars($row['Batch_Number']) ?>
+                                  </span>
+                                <?php else: ?>
+                                  <span class="text-muted small fst-italic">None</span>
                                 <?php endif; ?>
+                              </td>
+                              <td>
+                                <div class="fw-bold text-dark"><?= htmlspecialchars($row['Generic_Name']) ?></div>
+                                <div class="d-flex flex-wrap gap-1 mt-1">
+                                  <?php if (!empty($row['Is_Essential'])): ?>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 10px;" title="Philippine National Formulary (PNF) Essential Medicine">
+                                      <i class="bi bi-shield-check me-1"></i>Essential
+                                    </span>
+                                  <?php endif; ?>
+                                  <?php if (!empty($row['Requires_Rx']) && (stripos($row['Requires_Rx'], 'yes') !== false || stripos($row['Requires_Rx'], 'require') !== false)): ?>
+                                    <span class="badge bg-danger-subtle text-danger" style="font-size: 10px;">Rx Required</span>
+                                  <?php endif; ?>
+                                </div>
                               </td>
                               <td><?= htmlspecialchars($row['Brand_Name'] ?? 'Generics') ?></td>
                               <td><span
                                   class="text-secondary"><?= htmlspecialchars($row['Category_Name'] ?? 'Uncategorized') ?></span>
                               </td>
-                              <td><?= htmlspecialchars($dosageFull) ?></td>
+                              <td>
+                                <div><?= htmlspecialchars($dosageFull) ?></div>
+                                <div class="d-flex flex-wrap gap-2 mt-1">
+                                  <?php if (!empty($row['Package_Size'])): ?>
+                                    <span class="small text-muted" style="font-size: 11px;">
+                                      <i class="bi bi-box-seam me-1 text-secondary"></i><?= htmlspecialchars($row['Package_Size']) ?>
+                                    </span>
+                                  <?php endif; ?>
+                                  <?php if (!empty($row['Pieces_Per_Box']) && (int)$row['Pieces_Per_Box'] > 1): ?>
+                                    <span class="small text-muted" style="font-size: 11px;">
+                                      <i class="bi bi-boxes me-1 text-secondary"></i><?= (int)$row['Pieces_Per_Box'] ?> pcs/box
+                                    </span>
+                                  <?php endif; ?>
+                                </div>
+                              </td>
                               <td class="fw-semibold text-success">₱<?= number_format($row['Price'], 2) ?><span
                                   class="text-muted small fw-normal"><?= htmlspecialchars($pricePer) ?></span></td>
                               <td>
-                                <strong class="<?= ((int) $row['Quantity'] <= 10) ? 'text-danger' : 'text-dark' ?>">
+                                <strong class="<?= ((int) $row['Quantity'] <= (int)($row['Low_Stock_Threshold'] ?? 10)) ? 'text-danger' : 'text-dark' ?>">
                                   <?= htmlspecialchars($row['Quantity']) ?>
                                 </strong>
                               </td>
-                              <td><?= date('M d, Y', strtotime($row['Expiry_date'])) ?></td>
+                              <td class="text-nowrap">
+                                <div class="fw-semibold text-dark" style="font-size: 13.5px;">
+                                  <i class="bi bi-calendar-event me-1 text-secondary"></i><?= date('M d, Y', strtotime($row['Expiry_date'])) ?>
+                                </div>
+                                <div class="mt-1 d-inline-flex align-items-center px-2 py-1 rounded bg-light border border-secondary-subtle" style="font-size: 12px;">
+                                  <i class="bi bi-clock-history text-success me-1.5 fw-bold" style="font-size: 13px;"></i>
+                                  <span class="text-secondary me-1">Updated:</span>
+                                  <strong class="text-dark"><?= !empty($row['Last_updated']) ? date('M d, Y • h:i A', strtotime($row['Last_updated'])) : 'Never' ?></strong>
+                                </div>
+                              </td>
                               <td>
                                 <span class="badge-status <?= $statusClass ?>">
                                   <?= htmlspecialchars($row['Availability_Status']) ?>
@@ -722,7 +787,7 @@ foreach ($inventoryRows as $r) {
                                     'indication' => 'Prescribed medication indicated for clinical treatment in compliance with Philippine health standards.',
                                     'storage' => 'Store at temperatures not exceeding 30°C in a dry place. Protect from heat and light.',
                                     'shelf' => 'Standard Pharmacy Dispensary Rack',
-                                    'reorder' => '10 units (Minimum stock safety threshold)'
+                                    'reorder' => ($row['Low_Stock_Threshold'] ?? 10) . ' units (Minimum stock safety threshold)'
                                   ];
                                   ?>
                                   <!-- View Details Button (Warm Orange) -->
@@ -737,17 +802,22 @@ foreach ($inventoryRows as $r) {
                                     data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value'] ?? '') ?>"
                                     data-dosageunit="<?= htmlspecialchars($row['Unit_Name'] ?? '') ?>"
                                     data-dosage="<?= htmlspecialchars($dosageFull) ?>"
+                                    data-packagesize="<?= htmlspecialchars($row['Package_Size'] ?? '') ?>"
+                                    data-piecesperbox="<?= htmlspecialchars($row['Pieces_Per_Box'] ?? '1') ?>"
+                                    data-isessential="<?= htmlspecialchars($row['Is_Essential'] ?? '1') ?>"
                                     data-price="<?= htmlspecialchars($row['Price']) ?>"
                                     data-priceper="<?= htmlspecialchars($row['Price_Per'] ?? 'unit') ?>"
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
+                                    data-batch="<?= htmlspecialchars($row['Batch_Number'] ?? '') ?>"
+                                    data-lowstock="<?= htmlspecialchars($row['Low_Stock_Threshold'] ?? 10) ?>"
                                     data-rx="<?= htmlspecialchars($row['Requires_Rx'] ?? 'No') ?>"
                                     data-updated="<?= htmlspecialchars($row['Last_updated'] ?? 'Today') ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>"
                                     data-indication="<?= htmlspecialchars($mMeta['indication']) ?>"
                                     data-storage="<?= htmlspecialchars($mMeta['storage']) ?>"
                                     data-shelf="<?= htmlspecialchars($mMeta['shelf']) ?>"
-                                    data-reorder="<?= htmlspecialchars($mMeta['reorder']) ?>">
+                                    data-reorder="<?= htmlspecialchars(($row['Low_Stock_Threshold'] ?? 10) . ' units (Minimum stock safety threshold)') ?>">
                                     <i class="bi bi-eye"></i>
                                   </button>
 
@@ -763,11 +833,16 @@ foreach ($inventoryRows as $r) {
                                     data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value'] ?? '') ?>"
                                     data-dosageunit="<?= htmlspecialchars($row['Unit_Name'] ?? '') ?>"
                                     data-dosage="<?= htmlspecialchars($dosageFull) ?>"
+                                    data-packagesize="<?= htmlspecialchars($row['Package_Size'] ?? '') ?>"
+                                    data-piecesperbox="<?= htmlspecialchars($row['Pieces_Per_Box'] ?? '1') ?>"
+                                    data-isessential="<?= htmlspecialchars($row['Is_Essential'] ?? '1') ?>"
                                     data-price="<?= htmlspecialchars($row['Price']) ?>"
                                     data-priceper="<?= htmlspecialchars($row['Price_Per'] ?? '') ?>"
                                     data-priceunitid="<?= htmlspecialchars($row['Price_Unit_ID'] ?? '1') ?>"
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
+                                    data-batch="<?= htmlspecialchars($row['Batch_Number'] ?? '') ?>"
+                                    data-lowstock="<?= htmlspecialchars($row['Low_Stock_Threshold'] ?? 10) ?>"
                                     data-rx="<?= htmlspecialchars($row['Requires_Rx'] ?? 'No') ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>">
                                     <i class="bi bi-pencil"></i>
@@ -778,7 +853,7 @@ foreach ($inventoryRows as $r) {
                           <?php endforeach; ?>
                         <?php else: ?>
                           <tr>
-                            <td colspan="10" class="text-center text-muted py-5">
+                            <td colspan="11" class="text-center text-muted py-5">
                               <i class="bi bi-inbox fs-2 d-block mb-2 text-muted"></i>
                               No medicines registered in this pharmacy inventory.
                             </td>
@@ -803,38 +878,41 @@ foreach ($inventoryRows as $r) {
   <!-- ══ USER-UI STYLE MEDICINE VIEW DETAILS MODAL ═════════════ -->
   <div class="modal fade" id="viewMedicineModal" tabindex="-1" aria-labelledby="viewMedicineModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 980px; width: 95%;">
       <div class="modal-content"
-        style="border-radius: 18px; border: none; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.12);">
+        style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15);">
 
         <div class="modal-header bg-white border-bottom px-4 py-3">
           <div class="d-flex align-items-center gap-2">
-            <span class="material-symbols-outlined text-success" style="font-size: 1.6rem;">medication</span>
-            <h5 class="modal-title fw-bold text-dark mb-0" id="viewMedicineModalLabel">Medicine Stock &amp; Clinical
-              Details</h5>
+            <span class="material-symbols-outlined text-success" style="font-size: 1.7rem;">medication</span>
+            <h5 class="modal-title fw-bold text-dark mb-0" id="viewMedicineModalLabel" style="font-size: 1.25rem;">
+              Medicine Stock &amp; Clinical Details
+            </h5>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body p-4 bg-light">
 
-          <!-- Hero Card (Matching User UI layout with picture) -->
+          <!-- Hero Card (Spacious 3-Column Layout: Picture | Info | Price Box) -->
           <div class="hero-card"
-            style="background: #ffffff; border-radius: 20px; border: 1px solid #e2ede8; overflow: hidden; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.03);">
-            <div class="hero-inner" style="display: flex; gap: 20px; padding: 20px; align-items: flex-start;">
+            style="background: #ffffff; border-radius: 20px; border: 1px solid #d9eae2; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.04);">
+            <div class="hero-inner p-4 d-flex gap-4 align-items-start">
               <!-- Picture Container with Fallback -->
               <div class="medicine-img-wrap"
-                style="width: 140px; height: 140px; flex-shrink: 0; background: #f0faf5; border-radius: 16px; border: 1px solid #d8ede4; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                style="width: 145px; height: 145px; min-width: 145px; flex-shrink: 0; background: #f0faf5; border-radius: 18px; border: 1px solid #cce8dc; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.03);">
                 <img id="detailMedImage" src="../07_Assets/images/logo.png" alt="Medicine Photo"
-                  style="width: 100%; height: 100%; object-fit: contain; padding: 8px;">
+                  style="width: 100%; height: 100%; object-fit: contain; padding: 10px;">
               </div>
 
-              <!-- Header Info -->
+              <!-- Header Info (Center) -->
               <div class="hero-info" style="flex: 1; min-width: 0;">
                 <div class="badge-row mb-2" style="display: flex; flex-wrap: wrap; gap: 6px;">
                   <span id="detailRxBadge" class="badge"
-                    style="background: #fee2e2; color: #991b1b; border-radius: 20px; font-weight: 600; padding: 4px 10px; font-size: 11px;">Rx
-                    Required</span>
+                    style="background: #fee2e2; color: #991b1b; border-radius: 20px; font-weight: 600; padding: 4px 10px; font-size: 11px;">Rx Required</span>
+                  <span id="detailEssentialBadge" class="badge"
+                    style="background: #e0f2fe; color: #0369a1; border-radius: 20px; font-weight: 600; padding: 4px 10px; font-size: 11px;">
+                    <i class="bi bi-shield-check me-1"></i>PNF Essential</span>
                   <span id="detailCategoryBadge" class="badge"
                     style="background: #e8f7ef; color: #1d9e75; border-radius: 20px; font-weight: 600; padding: 4px 10px; font-size: 11px;">Category</span>
                   <span id="detailFormBadge" class="badge"
@@ -843,22 +921,53 @@ foreach ($inventoryRows as $r) {
                     style="background: #d4f5e2; color: #1a7a45; border-radius: 20px; font-weight: 600; padding: 4px 10px; font-size: 11px;">Available</span>
                 </div>
 
-                <h3 id="detailGenericName" class="medicine-title fw-bold text-dark mb-1" style="font-size: 1.35rem;">
-                  Amoxicillin 500mg</h3>
-                <p id="detailBrandManufacturer" class="medicine-subtitle text-muted small mb-2"
-                  style="font-size: 0.88rem;">Amoxil &bull; Manufactured by GlaxoSmithKline</p>
-
-                <div class="price-row d-flex align-items-baseline gap-2 mb-2">
-                  <span id="detailPrice" class="price-main fw-bold text-success"
-                    style="font-size: 1.5rem;">₱14.00</span>
-                  <span id="detailPricePer" class="price-unit text-muted small">/ capsule</span>
-                </div>
-
-                <p class="text-muted small mb-0 d-flex align-items-center gap-1">
-                  <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #d97706;">shelves</span>
-                  <span>Dispensary Shelf: <strong id="detailShelfText" class="text-dark">Prescription Dispensary Bay
-                      B-02</strong></span>
+                <h3 id="detailGenericName" class="medicine-title fw-bold text-dark mb-1" style="font-size: 1.55rem; letter-spacing: -0.3px;">
+                  Amoxicillin 500mg
+                </h3>
+                <p id="detailBrandManufacturer" class="medicine-subtitle text-muted mb-2"
+                  style="font-size: 0.95rem; font-weight: 500;">
+                  Amoxil &bull; Manufactured by GlaxoSmithKline
                 </p>
+
+                <!-- Location & Packaging Pills -->
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mb-1">
+                  <span class="d-inline-flex align-items-center gap-1.5 px-3 py-1.5 rounded-2 bg-light border text-muted" style="font-size: 12.5px;">
+                    <span class="material-symbols-outlined" style="font-size: 1.15rem; color: #d97706;">shelves</span>
+                    <span>Shelf: <strong id="detailShelfText" class="text-dark">Prescription Dispensary Bay B-02</strong></span>
+                  </span>
+                  <span id="detailPackagingWrap" class="d-inline-flex align-items-center gap-1.5 px-3 py-1.5 rounded-2 bg-light border text-muted" style="font-size: 12.5px;">
+                    <i class="bi bi-boxes text-primary"></i>
+                    <span>Packaging: <strong id="detailPackagingText" class="text-dark">100 pcs/box</strong></span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Price Box (Right Column) -->
+              <div class="hero-price-wrap p-3 rounded-3 text-center border shadow-sm"
+                style="min-width: 175px; background: #fafdfb; border-color: #d1fae5 !important; align-self: flex-start;">
+                <div class="text-muted small fw-semibold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Retail Price</div>
+                <div id="detailPrice" class="price-main fw-bold text-success my-1" style="font-size: 1.85rem; line-height: 1.1;">₱14.00</div>
+                <div id="detailPricePer" class="text-muted small fw-semibold">/ capsule</div>
+              </div>
+            </div>
+
+            <!-- Full-Width High-Visibility Last Stock Update Banner with generous margins and padding -->
+            <div class="px-4" style="margin-top: 18px; margin-bottom: 24px;">
+              <div class="d-flex align-items-center justify-content-between rounded-3 shadow-sm"
+                style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 16px 24px;">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+                    style="width: 48px; height: 48px; min-width: 48px;">
+                    <i class="bi bi-clock-history text-success fs-4"></i>
+                  </div>
+                  <div>
+                    <div class="text-muted fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.6px; margin-bottom: 4px;">Last Stock Update (Date &amp; Time)</div>
+                    <div id="detailLastUpdated" class="fw-bold text-dark" style="font-size: 1.35rem; line-height: 1.2;">Nov 22, 2026 • 05:45 PM</div>
+                  </div>
+                </div>
+                <span class="badge bg-white text-success border border-success-subtle fw-semibold px-3 py-2 shadow-sm" style="font-size: 12.5px;">
+                  <i class="bi bi-shield-check me-1"></i>Verified Record
+                </span>
               </div>
             </div>
 
@@ -866,26 +975,26 @@ foreach ($inventoryRows as $r) {
 
             <!-- Quick info strip (Stock & Diagnostics) -->
             <div class="info-grid"
-              style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 12px 16px; background: #fafdfb;">
+              style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 16px 20px; background: #fafdfb;">
               <div class="info-cell text-center" style="border-right: 1px solid #eef3f0;">
                 <p class="text-muted small mb-1" style="font-size: 11px; text-transform: uppercase; font-weight: 600;">
                   Current Stock</p>
-                <p id="detailQuantity" class="fw-bold mb-0 text-dark fs-6">120 units</p>
+                <p id="detailQuantity" class="fw-bold mb-0 text-dark" style="font-size: 1.25rem;">120 units</p>
               </div>
               <div class="info-cell text-center" style="border-right: 1px solid #eef3f0;">
                 <p class="text-muted small mb-1" style="font-size: 11px; text-transform: uppercase; font-weight: 600;">
                   Expiry Date</p>
-                <p id="detailExpiryDate" class="fw-bold mb-0 text-dark fs-6">Nov 15, 2026</p>
+                <p id="detailExpiryDate" class="fw-bold mb-0 text-dark" style="font-size: 1.25rem;">Nov 15, 2026</p>
               </div>
               <div class="info-cell text-center" style="border-right: 1px solid #eef3f0;">
                 <p class="text-muted small mb-1" style="font-size: 11px; text-transform: uppercase; font-weight: 600;">
-                  Inventory SKU</p>
-                <p id="detailInventoryID" class="fw-bold mb-0 text-secondary fs-6">#INV-1024</p>
+                  Inventory SKU &amp; Lot</p>
+                <p id="detailInventoryID" class="fw-bold mb-0 text-secondary" style="font-size: 1.1rem;">#INV-1024</p>
               </div>
               <div class="info-cell text-center">
                 <p class="text-muted small mb-1" style="font-size: 11px; text-transform: uppercase; font-weight: 600;">
                   Reorder Trigger</p>
-                <p id="detailReorderLevel" class="fw-bold mb-0 text-dark fs-6">10 units</p>
+                <p id="detailReorderLevel" class="fw-bold mb-0 text-dark" style="font-size: 1.25rem;">10 units</p>
               </div>
             </div>
           </div>
@@ -1171,20 +1280,61 @@ Paracetamol x 30"></textarea>
         const indication = btn.dataset.indication || 'Prescribed medication indicated for clinical treatment in compliance with Philippine health standards.';
         const storage = btn.dataset.storage || 'Store at temperatures not exceeding 30°C in a dry place. Protect from heat and light.';
 
+        const batch = btn.dataset.batch || '';
+        const lowstock = btn.dataset.lowstock || '10';
+        const pkgSize = btn.dataset.packagesize || '';
+        const pcsPerBox = parseInt(btn.dataset.piecesperbox || 1);
+        const isEssential = btn.dataset.isessential !== '0';
+
         // Populate elements
         document.getElementById('detailMedImage').src = imgUrl;
         document.getElementById('detailGenericName').textContent = generic + (dosageVal ? ` ${dosageVal} ${dosageUnit}` : '');
-        document.getElementById('detailBrandManufacturer').textContent = `${brand} • Manufactured by ${mfr}`;
+        let brandMfr = `${brand} • Manufactured by ${mfr}`;
+        if (pkgSize) brandMfr += ` (${pkgSize})`;
+        document.getElementById('detailBrandManufacturer').textContent = brandMfr;
+
         document.getElementById('detailPrice').textContent = `₱${price.toFixed(2)}`;
         document.getElementById('detailPricePer').textContent = `/ ${pricePer}`;
         document.getElementById('detailShelfText').textContent = shelf;
 
+        const packagingWrap = document.getElementById('detailPackagingWrap');
+        const packagingText = document.getElementById('detailPackagingText');
+        if (packagingWrap && packagingText) {
+          if (pcsPerBox > 1) {
+            packagingText.textContent = `${pcsPerBox} pcs/box`;
+            packagingWrap.style.display = 'inline-flex';
+          } else {
+            packagingWrap.style.display = 'none';
+          }
+        }
+        if (document.getElementById('detailLastUpdated')) {
+          let updatedStr = updated;
+          if (updated && updated !== 'Today' && !isNaN(Date.parse(updated))) {
+            const dt = new Date(updated);
+            updatedStr = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' +
+                         dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+          }
+          document.getElementById('detailLastUpdated').textContent = updatedStr || 'Never';
+        }
+
         document.getElementById('detailQuantity').textContent = `${qty} units`;
         document.getElementById('detailExpiryDate').textContent = expiry;
-        document.getElementById('detailInventoryID').textContent = `#INV-${invId}`;
-        document.getElementById('detailReorderLevel').textContent = reorder.split(' ')[0] + ' units';
+        document.getElementById('detailInventoryID').textContent = `#INV-${invId}` + (batch ? ` • Lot: ${batch}` : '');
+        document.getElementById('detailReorderLevel').textContent = `${lowstock} units`;
+        if (document.getElementById('detailReorderNotes')) {
+          document.getElementById('detailReorderNotes').textContent = `Maintain minimum safety buffer of ${lowstock} units. Restock alert triggers automatically when stock reaches this threshold.`;
+        }
 
         // Badges
+        const essentialBadge = document.getElementById('detailEssentialBadge');
+        if (essentialBadge) {
+          if (isEssential) {
+            essentialBadge.style.display = 'inline-block';
+          } else {
+            essentialBadge.style.display = 'none';
+          }
+        }
+
         const rxBadge = document.getElementById('detailRxBadge');
         const isRx = rx.toLowerCase().includes('yes') || rx.toLowerCase().includes('require');
         if (isRx) {

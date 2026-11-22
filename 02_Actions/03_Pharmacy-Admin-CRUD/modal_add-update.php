@@ -84,7 +84,7 @@
           </div>
 
           <!-- Category -->
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label class="form-label">
               Category <span class="text-danger">*</span>
             </label>
@@ -98,10 +98,13 @@
           </div>
 
           <!-- Manufacturer -->
-          <div class="col-md-6">
-            <label class="form-label">Manufacturer</label>
+          <div class="col-md-4">
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Manufacturer</span>
+              <span class="text-muted fw-normal" style="font-size:11px;">(Optional)</span>
+            </label>
             <input type="text" id="manufacturerName" class="form-control" list="manufacturerList"
-              placeholder="e.g. Unilab" autocomplete="off">
+              placeholder="e.g. Unilab (Optional)" autocomplete="off">
             <datalist id="manufacturerList">
               <?php foreach ($manufacturers as $m): ?>
                 <option value="<?= htmlspecialchars($m['Manufacturer_Name']) ?>">
@@ -109,22 +112,49 @@
             </datalist>
           </div>
 
+          <!-- Requires Prescription -->
+          <div class="col-md-2">
+            <label class="form-label">
+              Requires Rx <span class="text-danger">*</span>
+            </label>
+            <select id="requiresRx" class="form-select">
+              <?php foreach ($rxOptions as $rx): ?>
+                <option value="<?= htmlspecialchars($rx['Requirement_Status']) ?>">
+                  <?= htmlspecialchars($rx['Requirement_Status']) ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+
+          <!-- Drug Classification (PNF Essential) -->
+          <div class="col-md-2">
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Formulary</span>
+              <span class="text-muted fw-normal" style="font-size:11px;">(PNF)</span>
+            </label>
+            <select id="isEssential" class="form-select">
+              <option value="1">Essential</option>
+              <option value="0">Non-Essential</option>
+            </select>
+          </div>
+
           <!-- Dosage Form -->
           <div class="col-md-3">
             <label class="form-label">
               Dosage Form <span class="text-danger">*</span>
             </label>
-            <input type="text" id="dosageForm" class="form-control" list="dosageFormList"
-              placeholder="e.g. Tablet" autocomplete="off">
-            <datalist id="dosageFormList">
+            <select id="dosageForm" class="form-select">
+              <option value="">-- Select Form --</option>
               <?php foreach ($dosageForms as $df): ?>
                 <option value="<?= htmlspecialchars($df['Dosage_Form']) ?>">
+                  <?= htmlspecialchars($df['Dosage_Form']) ?>
+                </option>
               <?php endforeach; ?>
-            </datalist>
+            </select>
           </div>
 
           <!-- Dosage Value -->
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label class="form-label">
               Dosage Value <span class="text-danger">*</span>
             </label>
@@ -138,12 +168,12 @@
           </div>
 
           <!-- Dosage Unit -->
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label class="form-label">
               Dosage Unit <span class="text-danger">*</span>
             </label>
             <select id="dosageUnit" class="form-select">
-              <option value="">-- Select --</option>
+              <option value="">-- Unit --</option>
               <?php foreach ($dosageUnits as $du): ?>
                 <option value="<?= htmlspecialchars($du['Unit_Name']) ?>">
                   <?= htmlspecialchars($du['Unit_Name']) ?>
@@ -152,18 +182,35 @@
             </select>
           </div>
 
-          <!-- Requires Prescription -->
+          <!-- Package Size / Net Content -->
           <div class="col-md-3">
-            <label class="form-label">
-              Requires Prescription <span class="text-danger">*</span>
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Package Size / Volume</span>
+              <span class="text-muted fw-normal" style="font-size:11px;">(Net Content)</span>
             </label>
-            <select id="requiresRx" class="form-select">
-              <?php foreach ($rxOptions as $rx): ?>
-                <option value="<?= htmlspecialchars($rx['Requirement_Status']) ?>">
-                  <?= htmlspecialchars($rx['Requirement_Status']) ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
+            <input type="text" id="packageSize" class="form-control" list="packageSizeList"
+              placeholder="e.g. 60 mL, 15 mL, 100's" autocomplete="off">
+            <datalist id="packageSizeList">
+              <option value="15 mL">
+              <option value="30 mL">
+              <option value="60 mL">
+              <option value="120 mL">
+              <option value="250 mL">
+              <option value="5 g">
+              <option value="10 g">
+              <option value="15 g">
+              <option value="10's">
+              <option value="100's">
+            </datalist>
+          </div>
+
+          <!-- Pieces Per Box (Unit conversion) -->
+          <div class="col-md-2">
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Pcs / Box</span>
+              <span class="text-muted fw-normal" style="font-size:11px;">(Packaging)</span>
+            </label>
+            <input type="number" id="piecesPerBox" class="form-control" min="1" value="100" placeholder="100">
           </div>
 
         </div>
@@ -177,12 +224,30 @@
 
         <div class="row g-3">
 
-          <!-- Quantity -->
+          <!-- Batch / Lot Number -->
           <div class="col-md-3">
-            <label class="form-label">
-              Quantity <span class="text-danger">*</span>
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Batch / Lot No.</span>
+              <span class="text-muted fw-normal" style="font-size:11px;">(Tracing)</span>
             </label>
-            <input type="number" id="qty" class="form-control" min="0" value="0">
+            <input type="text" id="batchNumber" class="form-control"
+              placeholder="e.g. BATCH-2026-01" autocomplete="off">
+          </div>
+
+          <!-- Stock Received Qty & Unit Conversion -->
+          <div class="col-md-3">
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Stock Received <span class="text-danger">*</span></span>
+              <span id="stockConversionBadge" class="text-primary fw-semibold" style="font-size:11px;"></span>
+            </label>
+            <div class="input-group">
+              <input type="number" id="qty" class="form-control" min="0" value="0">
+              <select id="stockInUnit" class="form-select" style="max-width: 105px; font-size: 13px;">
+                <option value="pieces">Pcs/Tabs</option>
+                <option value="boxes">Boxes</option>
+              </select>
+            </div>
+            <small id="stockConversionText" class="text-muted d-block mt-1" style="font-size: 11px;"></small>
           </div>
 
           <!-- Price -->
@@ -210,7 +275,6 @@
             </select>
           </div>
 
-
           <!-- Expiry Date -->
           <div class="col-md-2">
             <label class="form-label">
@@ -219,9 +283,18 @@
             <input type="date" id="expiryDate" class="form-control">
           </div>
 
+          <!-- Low Stock Threshold -->
+          <div class="col-md-3">
+            <label class="form-label d-flex justify-content-between align-items-center">
+              <span>Low Stock Alert at</span>
+              <span class="text-muted fw-normal" style="font-size:11px;">(Reorder Level)</span>
+            </label>
+            <input type="number" id="lowStockThreshold" class="form-control" min="1" value="10" placeholder="10">
+          </div>
+
           <!-- Status (auto) -->
           <div class="col-md-3">
-            <label class="form-label">Status</label>
+            <label class="form-label">Availability Status</label>
             <input type="text" id="statusDisplay" class="form-control" disabled
               placeholder="Auto-calculated" style="background:#f8f9fa;">
           </div>
@@ -248,9 +321,102 @@
   const getModal = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('medicineModal'));
 
   const medFields   = ['#genericName','#brandName','#categoryName',
-                       '#manufacturerName','#dosageForm','#dosageValue',
-                       '#dosageUnit','#requiresRx'];
-  const stockFields = ['#qty','#unitPrice','#pricePer','#expiryDate'];
+                       '#manufacturerName','#isEssential','#dosageForm','#dosageValue',
+                       '#dosageUnit','#packageSize','#piecesPerBox','#requiresRx'];
+  const stockFields = ['#batchNumber','#qty','#stockInUnit','#unitPrice','#pricePer','#expiryDate','#lowStockThreshold'];
+
+  // ── Stock In Unit Conversion Helper ─────────────────────────
+  function updateStockConversion() {
+    const qtyVal = parseInt($('#qty').val()) || 0;
+    const unit = $('#stockInUnit').val();
+    const pcsPerBox = parseInt($('#piecesPerBox').val()) || 1;
+
+    if (unit === 'boxes' && pcsPerBox > 1) {
+      const totalPieces = qtyVal * pcsPerBox;
+      $('#stockConversionBadge').text(`= ${totalPieces.toLocaleString()} pcs`).show();
+      $('#stockConversionText').html(`<i class="bi bi-box-arrow-in-down me-1 text-primary"></i> ${qtyVal} boxes × ${pcsPerBox} pcs/box = <strong>${totalPieces.toLocaleString()} total dispensing units</strong> in stock.`).show();
+    } else {
+      $('#stockConversionBadge').text('').hide();
+      $('#stockConversionText').text('').hide();
+    }
+  }
+
+  $('#qty, #stockInUnit, #piecesPerBox').on('input change', function () {
+    updateStockConversion();
+    autoStatus();
+  });
+
+  // ── Dynamic Formulation Suggestion (Drops vs Syrup vs Solid) ──
+  function applyDosageFormDefaults(form) {
+    form = (form || '').trim().toLowerCase();
+    if (!form) return;
+
+    let targetUnit = '';
+    let valPlaceholder = 'e.g. 500';
+    let pkgPlaceholder = '';
+
+    if (form.includes('syrup') || form.includes('suspension')) {
+      targetUnit = 'mg/5mL';
+      valPlaceholder = 'e.g. 120 or 250';
+      pkgPlaceholder = 'e.g. 60 mL or 120 mL';
+      $('#piecesPerBox').val(1);
+    } else if (form.includes('drop')) {
+      targetUnit = 'mg/mL';
+      valPlaceholder = 'e.g. 100 or 15';
+      pkgPlaceholder = 'e.g. 15 mL dropper bottle';
+      $('#piecesPerBox').val(1);
+    } else if (form.includes('ointment') || form.includes('cream') || form.includes('gel')) {
+      targetUnit = '%';
+      valPlaceholder = 'e.g. 1 or 2';
+      pkgPlaceholder = 'e.g. 5 g or 10 g tube';
+      $('#piecesPerBox').val(1);
+    } else if (form.includes('solution')) {
+      targetUnit = '%';
+      valPlaceholder = 'e.g. 1';
+      pkgPlaceholder = 'e.g. 120 mL bottle';
+      $('#piecesPerBox').val(1);
+    } else if (form.includes('inhaler')) {
+      targetUnit = 'mcg';
+      valPlaceholder = 'e.g. 100 or 200';
+      pkgPlaceholder = 'e.g. 200 doses';
+      $('#piecesPerBox').val(1);
+    } else if (form.includes('injection')) {
+      targetUnit = 'mg/mL';
+      valPlaceholder = 'e.g. 50';
+      pkgPlaceholder = 'e.g. 10 mL vial';
+      $('#piecesPerBox').val(1);
+    } else if (form.includes('tablet') || form.includes('capsule')) {
+      targetUnit = 'mg';
+      valPlaceholder = 'e.g. 500 or 250';
+      pkgPlaceholder = 'e.g. 100 tabs / box';
+      if (!$('#piecesPerBox').val() || $('#piecesPerBox').val() === '1') {
+        $('#piecesPerBox').val(100);
+      }
+    }
+
+    if (targetUnit) {
+      const $u = $('#dosageUnit');
+      $u.val(targetUnit);
+      // Fallback matching in case of slight casing mismatch
+      if (!$u.val()) {
+        $u.find('option').each(function () {
+          if ($(this).val().trim().toLowerCase() === targetUnit.toLowerCase()) {
+            $(this).prop('selected', true);
+            return false;
+          }
+        });
+      }
+    }
+    $('#dosageValue').attr('placeholder', valPlaceholder);
+    if (!$('#packageSize').val()) {
+      $('#packageSize').attr('placeholder', pkgPlaceholder);
+    }
+    updateStockConversion();
+  }
+
+  $(document).on('change input', '#dosageForm', function () {
+    applyDosageFormDefaults($(this).val());
+  });
 
   // ── Image mode helpers ──────────────────────────────────────
   function showImageViewMode(url) {
@@ -289,16 +455,20 @@
 
   // ── Auto status ─────────────────────────────────────────────
   function autoStatus() {
-    const qty    = parseInt($('#qty').val()) || 0;
-    const expiry = $('#expiryDate').val();
-    const today  = new Date().toISOString().split('T')[0];
-    let status   = 'Available';
-    if (expiry && expiry < today)  status = 'Expired';
-    else if (qty === 0)            status = 'Out of Stock';
-    else if (qty <= 10)            status = 'Low Stock';
+    const qtyVal      = parseInt($('#qty').val()) || 0;
+    const stockUnit   = $('#stockInUnit').val();
+    const pcsPerBox   = parseInt($('#piecesPerBox').val()) || 1;
+    const effQty      = (stockUnit === 'boxes' && pcsPerBox > 1) ? (qtyVal * pcsPerBox) : qtyVal;
+    const threshold   = parseInt($('#lowStockThreshold').val()) || 10;
+    const expiry      = $('#expiryDate').val();
+    const today       = new Date().toISOString().split('T')[0];
+    let status        = 'Available';
+    if (expiry && expiry < today) status = 'Expired';
+    else if (effQty === 0)         status = 'Out of Stock';
+    else if (effQty <= threshold)  status = 'Low Stock';
     $('#statusDisplay').val(status);
   }
-  $('#qty, #expiryDate').on('input change', autoStatus);
+  $('#qty, #stockInUnit, #piecesPerBox, #expiryDate, #lowStockThreshold').on('input change', autoStatus);
 
   // ── Lock fields ─────────────────────────────────────────────
   function lockFields(fields, lock) {
@@ -309,12 +479,18 @@
   function resetModal() {
     $('#inventoryId').val('');
     [...medFields, ...stockFields].forEach(f => $(f).val(''));
+    $('#batchNumber').val('');
+    $('#lowStockThreshold').val('10');
     $('#dosageUnit').val('');
+    $('#isEssential').val('1');
+    $('#piecesPerBox').val('100');
+    $('#stockInUnit').val('pieces');
     $('#requiresRx').val('Yes');
     $('#pricePer').val('1');
     $('#qty').val('0');
     $('#unitPrice').val('0.00');
     $('#statusDisplay').val('');
+    updateStockConversion();
     showImageEditMode('');   // default to edit/add mode with no image
   }
 
@@ -329,14 +505,21 @@
     $('#brandName').val($el.data('brand'));
     $('#categoryName').val($el.data('category'));
     $('#manufacturerName').val($el.data('manufacturer') ?? '');
+    $('#isEssential').val($el.data('isessential') !== undefined ? String($el.data('isessential')) : '1');
     $('#dosageForm').val($el.data('dosageform'));
     $('#dosageValue').val(dosageVal);
     $('#dosageUnit').val(dosageUnit);
+    $('#packageSize').val($el.data('packagesize') ?? '');
+    $('#piecesPerBox').val($el.data('piecesperbox') || '100');
+    $('#batchNumber').val($el.data('batch') ?? '');
     $('#unitPrice').val($el.data('price'));
     $('#qty').val($el.data('qty'));
+    $('#stockInUnit').val('pieces');
     $('#expiryDate').val($el.data('expiry'));
+    $('#lowStockThreshold').val($el.data('lowstock') ?? '10');
     $('#statusDisplay').val($el.data('status'));
     $('#pricePer').val($el.data('priceper') === 'box' ? '2' : '1');
+    updateStockConversion();
 
     return $el.data('image') ?? '';   // return image URL for caller to handle
   }
@@ -415,21 +598,31 @@
     const isAdd = !inventoryId;
     if (!validateForm(isAdd)) return;
 
+    const qtyVal      = parseInt($('#qty').val()) || 0;
+    const stockUnit   = $('#stockInUnit').val();
+    const pcsPerBox   = parseInt($('#piecesPerBox').val()) || 1;
+    const finalQuantity = (stockUnit === 'boxes' && pcsPerBox > 1) ? (qtyVal * pcsPerBox) : qtyVal;
+
     const data = {
-      action       : isAdd ? 'add' : 'update',
-      id           : inventoryId,
-      generic_name : $('#genericName').val().trim(),
-      brand        : $('#brandName').val().trim(),
-      category     : $('#categoryName').val().trim(),
-      manufacturer : $('#manufacturerName').val().trim(),
-      dosage_form  : $('#dosageForm').val().trim(),
-      dosage_value : $('#dosageValue').val().trim(),
-      dosage_unit  : $('#dosageUnit').val(),
-      requires_rx  : $('#requiresRx').val(),
-      unit_price   : $('#unitPrice').val(),
-      price_unit_id: $('#pricePer').val(),
-      qty          : $('#qty').val(),
-      expiry_date  : $('#expiryDate').val(),
+      action              : isAdd ? 'add' : 'update',
+      id                  : inventoryId,
+      generic_name        : $('#genericName').val().trim(),
+      brand               : $('#brandName').val().trim(),
+      category            : $('#categoryName').val().trim(),
+      manufacturer        : $('#manufacturerName').val().trim(),
+      is_essential        : $('#isEssential').val() || 1,
+      dosage_form         : $('#dosageForm').val().trim(),
+      dosage_value        : $('#dosageValue').val().trim(),
+      dosage_unit         : $('#dosageUnit').val(),
+      package_size        : $('#packageSize').val().trim(),
+      pieces_per_box      : pcsPerBox,
+      requires_rx         : $('#requiresRx').val(),
+      unit_price          : $('#unitPrice').val(),
+      price_unit_id       : $('#pricePer').val(),
+      qty                 : finalQuantity,
+      expiry_date         : $('#expiryDate').val(),
+      batch_number        : $('#batchNumber').val().trim(),
+      low_stock_threshold : $('#lowStockThreshold').val().trim() || 10,
     };
 
     $.post('../02_Actions/03_Pharmacy-Admin-CRUD/inventory-add-update.php', data, function (response) {

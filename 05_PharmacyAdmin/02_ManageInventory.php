@@ -201,7 +201,7 @@ $stmt->execute([$pharmacyID]);
   </style>
 </head>
 
-<body data-active="02">
+<body data-active="manage_inventory">
   <div class="wrapper d-flex align-items-stretch">
     <div id="pharmacy-sidebar-container"></div>
 
@@ -352,6 +352,7 @@ $stmt->execute([$pharmacyID]);
                         <tr>
                           <th><input type="checkbox" id="selectAll"></th>
                           <th>ID</th>
+                          <th>BATCH / LOT</th>
                           <th>GENERIC NAME</th>
                           <th>BRAND</th>
                           <th>CATEGORY</th>
@@ -375,20 +376,59 @@ $stmt->execute([$pharmacyID]);
                             <tr>
                               <td><input type="checkbox" class="form-check-input row-check"></td>
                               <td><?= htmlspecialchars($row['Inventory_ID']) ?></td>
-                              <td class="fw-bold"><?= htmlspecialchars($row['Generic_Name']) ?></td>
+                              <td>
+                                <?php if (!empty($row['Batch_Number'])): ?>
+                                  <span class="badge bg-light text-dark border font-monospace px-2 py-1" style="font-size: 11px;">
+                                    <i class="bi bi-upc me-1 text-muted"></i><?= htmlspecialchars($row['Batch_Number']) ?>
+                                  </span>
+                                <?php else: ?>
+                                  <span class="text-muted small fst-italic">None</span>
+                                <?php endif; ?>
+                              </td>
+                              <td>
+                                <div class="fw-bold text-dark"><?= htmlspecialchars($row['Generic_Name']) ?></div>
+                                <?php if (!empty($row['Is_Essential'])): ?>
+                                  <span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 10px;" title="Philippine National Formulary (PNF) Essential Medicine">
+                                    <i class="bi bi-shield-check me-1"></i>Essential
+                                  </span>
+                                <?php endif; ?>
+                              </td>
                               <td><?= htmlspecialchars($row['Brand_Name']) ?></td>
                               <td><?= htmlspecialchars($row['Category_Name']) ?></td>
                               <td><?= htmlspecialchars($row['Dosage_Form']) ?></td>
-                              <td><?= htmlspecialchars($row['Dosage']) ?></td>
+                              <td>
+                                <div><?= htmlspecialchars($row['Dosage']) ?></div>
+                                <div class="d-flex flex-wrap gap-2 mt-1">
+                                  <?php if (!empty($row['Package_Size'])): ?>
+                                    <span class="small text-muted" style="font-size: 11px;">
+                                      <i class="bi bi-box-seam me-1 text-secondary"></i><?= htmlspecialchars($row['Package_Size']) ?>
+                                    </span>
+                                  <?php endif; ?>
+                                  <?php if (!empty($row['Pieces_Per_Box']) && (int)$row['Pieces_Per_Box'] > 1): ?>
+                                    <span class="small text-muted" style="font-size: 11px;">
+                                      <i class="bi bi-boxes me-1 text-secondary"></i><?= (int)$row['Pieces_Per_Box'] ?> pcs/box
+                                    </span>
+                                  <?php endif; ?>
+                                </div>
+                              </td>
                               <td>₱<?= number_format($row['Price'], 2) ?> / <?= htmlspecialchars($row['Price_Per']) ?></td>
-                              <td><?= htmlspecialchars($row['Quantity']) ?></td>
+                              <td>
+                                <strong class="<?= ((int) $row['Quantity'] <= (int)($row['Low_Stock_Threshold'] ?? 10)) ? 'text-danger' : 'text-dark' ?>">
+                                  <?= htmlspecialchars($row['Quantity']) ?>
+                                </strong>
+                              </td>
                               <td><?= date('M d, Y', strtotime($row['Expiry_date'])) ?></td>
                               <td>
                                 <span class="badge-status <?= $statusClass ?>">
                                   <?= htmlspecialchars($row['Availability_Status']) ?>
                                 </span>
                               </td>
-                              <td><?= date('M d, Y', strtotime($row['Last_updated'])) ?></td>
+                              <td class="text-nowrap">
+                                <div class="d-inline-flex align-items-center px-2.5 py-1 rounded bg-light border border-secondary-subtle">
+                                  <i class="bi bi-clock-history text-success me-1.5 fw-bold" style="font-size: 13px;"></i>
+                                  <strong class="text-dark" style="font-size: 12.5px;"><?= !empty($row['Last_updated']) ? date('M d, Y • h:i A', strtotime($row['Last_updated'])) : 'Never' ?></strong>
+                                </div>
+                              </td>
 
                               <td class="text-sat pe-4">
                                 <div class="d-flex gap-2 justify-content-start text-muted" style="margin-left: -17px;">
@@ -400,13 +440,18 @@ $stmt->execute([$pharmacyID]);
                                     data-brand="<?= htmlspecialchars($row['Brand_Name']) ?>"
                                     data-category="<?= htmlspecialchars($row['Category_Name']) ?>"
                                     data-dosageform="<?= htmlspecialchars($row['Dosage_Form']) ?>"
-                                    data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value']) ?>"
-                                    data-dosageunit="<?= htmlspecialchars($row['Unit_Name']) ?>"
+                                    data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value'] ?? '') ?>"
+                                    data-dosageunit="<?= htmlspecialchars($row['Unit_Name'] ?? '') ?>"
                                     data-dosage="<?= htmlspecialchars($row['Dosage']) ?>"
+                                    data-packagesize="<?= htmlspecialchars($row['Package_Size'] ?? '') ?>"
+                                    data-piecesperbox="<?= htmlspecialchars($row['Pieces_Per_Box'] ?? '1') ?>"
+                                    data-isessential="<?= htmlspecialchars($row['Is_Essential'] ?? '1') ?>"
                                     data-price="<?= htmlspecialchars($row['Price']) ?>"
                                     data-priceper="<?= htmlspecialchars($row['Price_Per']) ?>"
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
+                                    data-batch="<?= htmlspecialchars($row['Batch_Number'] ?? '') ?>"
+                                    data-lowstock="<?= htmlspecialchars($row['Low_Stock_Threshold'] ?? 10) ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>">
                                     <i class="bi bi-eye"></i>
                                   </button>
@@ -418,13 +463,18 @@ $stmt->execute([$pharmacyID]);
                                     data-brand="<?= htmlspecialchars($row['Brand_Name']) ?>"
                                     data-category="<?= htmlspecialchars($row['Category_Name']) ?>"
                                     data-dosageform="<?= htmlspecialchars($row['Dosage_Form']) ?>"
-                                    data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value']) ?>"
-                                    data-dosageunit="<?= htmlspecialchars($row['Unit_Name']) ?>"
+                                    data-dosagevalue="<?= htmlspecialchars($row['Dosage_Value'] ?? '') ?>"
+                                    data-dosageunit="<?= htmlspecialchars($row['Unit_Name'] ?? '') ?>"
                                     data-dosage="<?= htmlspecialchars($row['Dosage']) ?>"
+                                    data-packagesize="<?= htmlspecialchars($row['Package_Size'] ?? '') ?>"
+                                    data-piecesperbox="<?= htmlspecialchars($row['Pieces_Per_Box'] ?? '1') ?>"
+                                    data-isessential="<?= htmlspecialchars($row['Is_Essential'] ?? '1') ?>"
                                     data-price="<?= htmlspecialchars($row['Price']) ?>"
                                     data-priceper="<?= htmlspecialchars($row['Price_Per']) ?>"
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
+                                    data-batch="<?= htmlspecialchars($row['Batch_Number'] ?? '') ?>"
+                                    data-lowstock="<?= htmlspecialchars($row['Low_Stock_Threshold'] ?? 10) ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>">
                                     <i class="bi bi-pencil"></i>
                                   </button>

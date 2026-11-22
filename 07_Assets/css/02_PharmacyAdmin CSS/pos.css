@@ -3,6 +3,14 @@
    Matches MediFind Design System (Plus Jakarta Sans, #1d9e75)
    ================================================================ */
 
+/* Page Background matching Dashboard (--mf-bg) */
+html,
+body[data-active="pos"],
+body[data-active="pos"] .main-panel,
+body[data-active="pos"] #content {
+  background-color: var(--mf-bg, #f5f6f8) !important;
+}
+
 :root {
   --mf-primary: var(--mf-green, #1d9e75);
   --mf-primary-dark: var(--mf-green-dark, #178a63);
@@ -25,23 +33,30 @@
   padding: 0.5rem 0.25rem 2rem;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .pos-grid {
     display: grid;
-    grid-template-columns: 1.55fr 1fr;
+    grid-template-columns: 460px minmax(0, 1fr);
     gap: 1.25rem;
-    align-items: start;
+    align-items: stretch;
+  }
+}
+
+@media (min-width: 1200px) {
+  .pos-grid {
+    grid-template-columns: 490px minmax(0, 1fr);
   }
 }
 
 @media (min-width: 1400px) {
   .pos-grid {
-    grid-template-columns: 1.65fr 1fr;
+    grid-template-columns: 520px minmax(0, 1fr);
   }
 }
 
 /* POS Panel Cards */
 .pos-card {
+  min-width: 0;
   background: var(--mf-card-bg);
   border-radius: var(--mf-radius-lg);
   border: 1px solid var(--mf-border);
@@ -231,36 +246,37 @@
    Product Grid & Redesigned Cards (with Medicine Photos & States)
    ================================================================ */
 .pos-results-scrollable {
-  max-height: calc(100vh - 280px);
+  max-height: min(480px, calc(100vh - 315px));
   overflow-y: auto;
-  padding-right: 4px;
+  overflow-x: hidden;
+  padding-right: 6px;
+  padding-bottom: 6px;
+  scrollbar-gutter: stable;
 }
 
 .pos-results-scrollable::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 .pos-results-scrollable::-webkit-scrollbar-track {
-  background: #f1f5f3;
-  border-radius: 4px;
+  background: #f0f7f4;
+  border-radius: 6px;
 }
 .pos-results-scrollable::-webkit-scrollbar-thumb {
-  background: #c3d9cf;
-  border-radius: 4px;
+  background: #a3d4c0;
+  border-radius: 6px;
+  border: 1px solid #f0f7f4;
 }
 .pos-results-scrollable::-webkit-scrollbar-thumb:hover {
   background: var(--mf-primary);
 }
 
+/* ================================================================
+   Product Grid (2 Columns) & Single-Line Medicine Rows (Rodel Pharmacy Spec)
+   ================================================================ */
 .pos-product-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.95rem;
-}
-
-@media (max-width: 1199.98px) {
-  .pos-product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
 }
 
 @media (max-width: 639.98px) {
@@ -272,23 +288,26 @@
 .pos-product-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.95rem 1rem;
-  min-height: 104px;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.75rem 0.95rem;
+  min-height: 84px;
   background: #ffffff;
   border: 1.5px solid var(--mf-border);
-  border-radius: 14px;
+  border-radius: 12px;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   user-select: none;
   position: relative;
   outline: none;
+  overflow: hidden;
 }
 
 .pos-product-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(29, 158, 117, 0.15);
   border-color: var(--mf-primary);
+  background: #fafdfb;
 }
 
 .pos-product-card:focus-visible {
@@ -297,12 +316,12 @@
   border-color: var(--mf-primary);
 }
 
-/* Medicine Photo (Left Thumbnail, enlarged to 82px, aspect-ratio 1:1, object-fit cover) */
+/* Medicine Photo (Spacious 58px Thumbnail) */
 .pos-card-media {
-  width: 82px;
-  height: 82px;
-  min-width: 82px;
-  border-radius: 12px;
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  border-radius: 10px;
   overflow: hidden;
   background: #f0f9f5;
   display: flex;
@@ -320,36 +339,30 @@
   display: block;
 }
 
-/* Card Content & Details */
+/* Content Area */
 .pos-card-content {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  justify-content: center;
+  gap: 3px;
 }
 
-.pos-card-header {
-  margin-bottom: 0.4rem;
-}
-
-.pos-product-card .pos-card-title {
-  font-size: 1.02rem;
+.pos-card-name {
+  font-size: 0.98rem;
   font-weight: 700;
   color: #111827;
-  line-height: 1.3;
-  margin-bottom: 3px;
-  display: block;
+  line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.pos-card-brand-dosage {
-  font-size: 0.84rem;
+.pos-card-sub {
+  font-size: 0.82rem;
   color: #5f6b7c;
-  line-height: 1.25;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -360,36 +373,43 @@
 
 .pos-rx-pill {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
   background: #fef2f2;
   color: #dc2626;
   border: 1px solid #fecaca;
-  margin-left: 3px;
+  margin-left: 2px;
   vertical-align: middle;
+  line-height: 1.1;
 }
 
-.pos-card-footer {
+/* Right-Side Price & Stock Meta */
+.pos-card-meta {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .pos-card-price {
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--mf-primary);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 /* Stock Chips */
 .pos-stock-chip {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 20px;
+  padding: 2px 7px;
+  border-radius: 12px;
+  white-space: nowrap;
 }
 
 .pos-stock-chip.available {
@@ -411,7 +431,7 @@
 
 /* Out of Stock Card State */
 .pos-product-card.is-out-of-stock {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
   background: #f9fafb;
   border-color: #e5e7eb;
@@ -496,14 +516,17 @@
 }
 
 /* ================================================================
-   "Current Order" Card (Green Theme, WCAG AA Contrast, Sticky Desktop)
+   "Current Order" Card (Green Theme, WCAG AA Contrast, Equal Height)
    ================================================================ */
 .pos-card.pos-order-card {
+  min-width: 440px;
   background: var(--mf-green-tint, #f0f9f5) !important;
   border: 1.5px solid var(--mf-border, #d1ded8);
   border-radius: var(--mf-radius-lg, 16px);
   padding: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 992px) {
@@ -511,7 +534,6 @@
     position: sticky;
     top: 1rem;
     max-height: calc(100vh - 2rem);
-    overflow-y: auto;
   }
 }
 
@@ -522,6 +544,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .pos-order-header .pos-card-title {
@@ -529,6 +552,7 @@
   margin-bottom: 0;
   font-size: 1.05rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .pos-order-header .pos-card-title .material-symbols-outlined {
@@ -544,6 +568,7 @@
   font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
@@ -553,10 +578,22 @@
 }
 
 .pos-order-body {
-  padding: 1.15rem 1.25rem;
+  padding: 0.85rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.55rem;
+  flex: 1;
+  justify-content: space-between;
+}
+
+/* Cart Empty State inside Order Body */
+#posCartEmpty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 0.5rem;
 }
 
 /* Cart Table Container inside Order Body */
@@ -564,7 +601,26 @@
   background: #ffffff;
   border: 1.5px solid #d1ded8;
   border-radius: var(--mf-radius-md);
-  padding: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  flex: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+#posCartTableWrap::-webkit-scrollbar {
+  width: 6px;
+}
+#posCartTableWrap::-webkit-scrollbar-track {
+  background: #f0f7f4;
+  border-radius: 4px;
+}
+#posCartTableWrap::-webkit-scrollbar-thumb {
+  background: #a3d4c0;
+  border-radius: 4px;
+}
+#posCartTableWrap::-webkit-scrollbar-thumb:hover {
+  background: var(--mf-primary);
 }
 
 /* Checkout Summary Section */
@@ -572,7 +628,7 @@
   background: #ffffff;
   border: 1.5px solid #d1ded8;
   border-radius: var(--mf-radius-md);
-  padding: 0.85rem 1rem;
+  padding: 0.65rem 0.85rem;
 }
 
 .pos-summary-row {
@@ -676,8 +732,8 @@
   background: var(--mf-primary);
   color: #ffffff;
   font-weight: 600;
-  font-size: 1rem;
-  padding: 0.85rem;
+  font-size: 0.95rem;
+  padding: 0.65rem 0.85rem;
   border: none;
   border-radius: var(--mf-radius-md);
   display: flex;

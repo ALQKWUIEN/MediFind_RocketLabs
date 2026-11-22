@@ -27,7 +27,7 @@ if (!$_SESSION['user_id']) {
   <?php include '../01_Includes/page-transition-hardcode.php' ?>
 </head>
 
-<body data-active="07">
+<body data-active="profile">
   <div class="wrapper d-flex align-items-stretch">
 
     <div id="pharmacy-sidebar-container"></div>

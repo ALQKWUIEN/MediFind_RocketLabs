@@ -45,18 +45,31 @@ function findOrInsertPK(PDO $pdo, string $table, string $pkCol, string $valCol, 
 // ============================================================
 if ($action === 'add') {
 
-    $genericName      = trim($_POST['generic_name']  ?? '');
-    $brandName        = trim($_POST['brand']          ?? '');
-    $categoryName     = trim($_POST['category']       ?? '');
-    $manufacturerName = trim($_POST['manufacturer']   ?? '');
-    $dosageForm       = trim($_POST['dosage_form']    ?? '');
-    $dosageValue      = trim($_POST['dosage_value']   ?? '');
-    $dosageUnit       = trim($_POST['dosage_unit']    ?? '');
-    $requiresRx       = trim($_POST['requires_rx']    ?? 'No');
-    $unitPrice        = (float)($_POST['unit_price']  ?? 0);
-    $priceUnitID      = (int)($_POST['price_unit_id'] ?? 1);
-    $quantity         = (int)($_POST['qty']           ?? 0);
-    $expiryDate       = $_POST['expiry_date']         ?? null;
+    $genericName        = trim($_POST['generic_name']        ?? '');
+    $brandName          = trim($_POST['brand']               ?? '');
+    $categoryName       = trim($_POST['category']            ?? '');
+    $manufacturerName   = trim($_POST['manufacturer']        ?? '');
+    $dosageForm         = trim($_POST['dosage_form']         ?? '');
+    $dosageValue        = trim($_POST['dosage_value']        ?? '');
+    $dosageUnit         = trim($_POST['dosage_unit']         ?? '');
+    $packageSize        = trim($_POST['package_size']        ?? '');
+    $piecesPerBox       = (int)($_POST['pieces_per_box']     ?? 1);
+    if ($piecesPerBox <= 0) $piecesPerBox = 1;
+    $isEssential        = isset($_POST['is_essential'])      ? (int)$_POST['is_essential'] : 1;
+    $requiresRx         = trim($_POST['requires_rx']         ?? 'No');
+    $unitPrice          = (float)($_POST['unit_price']       ?? 0);
+    $priceUnitID        = (int)($_POST['price_unit_id']      ?? 1);
+    $quantity           = (int)($_POST['qty']                ?? 0);
+    $expiryDate         = $_POST['expiry_date']              ?? null;
+    $batchNumber        = trim($_POST['batch_number']        ?? '');
+    $lowStockThreshold  = (int)($_POST['low_stock_threshold'] ?? 10);
+    if ($lowStockThreshold <= 0) $lowStockThreshold = 10;
+
+    // Sanitize dosage value (remove duplicate unit text like "mg" if user typed it into value field)
+    $cleanDosageVal = preg_replace('/[a-zA-Z\/% ]+$/', '', $dosageValue);
+    if ($cleanDosageVal !== '') {
+        $dosageValue = trim($cleanDosageVal);
+    }
 
     if (!$genericName || !$brandName || !$categoryName ||
         !$dosageForm  || !$dosageValue || !$dosageUnit ||
@@ -79,6 +92,10 @@ if ($action === 'add') {
                         ? findOrInsertPK($pdo, '19_meds_manufacturer', 'Manufacturer_ID', 'Manufacturer_Name', $manufacturerName)
                         : null;
 
+        // Resolve normalized dosage in 16_meds_dosages if table exists
+        $dosageStrength = $dosageValue . ' ' . $dosageUnit;
+        $dosageID       = findOrInsertPK($pdo, '16_meds_dosages', 'Dosage_ID', 'Dosage_Strength', $dosageStrength);
+
         // Check if exact medicine combo exists
         $s = $pdo->prepare(
             "SELECT Medicine_ID FROM 12_meds_medicines
@@ -92,20 +109,34 @@ if ($action === 'add') {
         if (!$medicineID) {
             $pdo->prepare(
                 "INSERT INTO 12_meds_medicines
-                 (Gen_ID, Brand_ID, DosageForm_ID, DosageVal_ID, Unit_ID,
-                  Category_ID, Manufacturer_ID, Require_rx_ID, IsDeleted)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)"
-            )->execute([$genID, $brandID, $formID, $valID, $unitID,
+                 (Gen_ID, Brand_ID, DosageForm_ID, DosageVal_ID, Unit_ID, Dosage_ID,
+                  Package_Size, Pieces_Per_Box, Is_Essential, Category_ID, Manufacturer_ID, Require_rx_ID, IsDeleted)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)"
+            )->execute([$genID, $brandID, $formID, $valID, $unitID, $dosageID ?: null,
+                        $packageSize !== '' ? $packageSize : null,
+                        $piecesPerBox, $isEssential,
                         $categoryID, $manuID, $rxID]);
             $medicineID = (int)$pdo->lastInsertId();
+        } else {
+            $pdo->prepare("UPDATE 12_meds_medicines SET Package_Size = COALESCE(?, Package_Size), Pieces_Per_Box = ?, Is_Essential = ? WHERE Medicine_ID = ?")
+                ->execute([$packageSize !== '' ? $packageSize : null, $piecesPerBox, $isEssential, $medicineID]);
         }
 
-        // Insert inventory
+        // Insert inventory with Batch_Number and Low_Stock_Threshold
         $pdo->prepare(
             "INSERT INTO 21_inventory
-             (Pharmacy_ID, Medicine_ID, Quantity, Price_Unit_ID, Price, Expiry_date, IsDeleted)
-             VALUES (?, ?, ?, ?, ?, ?, 0)"
-        )->execute([$pharmacyID, $medicineID, $quantity, $priceUnitID, $unitPrice, $expiryDate]);
+             (Pharmacy_ID, Medicine_ID, Batch_Number, Quantity, Low_Stock_Threshold, Price_Unit_ID, Price, Expiry_date, Last_updated, IsDeleted)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 0)"
+        )->execute([
+            $pharmacyID,
+            $medicineID,
+            $batchNumber !== '' ? $batchNumber : null,
+            $quantity,
+            $lowStockThreshold,
+            $priceUnitID,
+            $unitPrice,
+            $expiryDate
+        ]);
 
         $pdo->commit();
         echo 'success';
@@ -116,15 +147,21 @@ if ($action === 'add') {
     }
 
 // ============================================================
-//  UPDATE — only 21_inventory columns
+//  UPDATE — 21_inventory columns
 // ============================================================
 } elseif ($action === 'update') {
 
-    $inventoryID = (int)($_POST['id']           ?? 0);
-    $quantity    = (int)($_POST['qty']           ?? 0);
-    $unitPrice   = (float)($_POST['unit_price']  ?? 0);
-    $priceUnitID = (int)($_POST['price_unit_id'] ?? 1);
-    $expiryDate  = $_POST['expiry_date']         ?? null;
+    $inventoryID       = (int)($_POST['id']                  ?? 0);
+    $quantity          = (int)($_POST['qty']                 ?? 0);
+    $unitPrice         = (float)($_POST['unit_price']        ?? 0);
+    $priceUnitID       = (int)($_POST['price_unit_id']       ?? 1);
+    $expiryDate        = $_POST['expiry_date']               ?? null;
+    $batchNumber       = trim($_POST['batch_number']         ?? '');
+    $packageSize       = trim($_POST['package_size']        ?? '');
+    $piecesPerBox      = isset($_POST['pieces_per_box'])     ? (int)$_POST['pieces_per_box'] : null;
+    $isEssential       = isset($_POST['is_essential'])       ? (int)$_POST['is_essential'] : null;
+    $lowStockThreshold = (int)($_POST['low_stock_threshold'] ?? 10);
+    if ($lowStockThreshold <= 0) $lowStockThreshold = 10;
 
     if (!$inventoryID || !$expiryDate || $unitPrice <= 0) {
         echo 'missing_fields';
@@ -134,13 +171,28 @@ if ($action === 'add') {
     try {
         $stmt = $pdo->prepare(
             "UPDATE 21_inventory
-             SET Quantity=?, Price=?, Price_Unit_ID=?, Expiry_date=?
+             SET Quantity=?, Batch_Number=?, Low_Stock_Threshold=?, Price=?, Price_Unit_ID=?, Expiry_date=?, Last_updated=NOW()
              WHERE Inventory_ID=? AND Pharmacy_ID=? AND IsDeleted=0"
         );
         $ok = $stmt->execute([
-            $quantity, $unitPrice, $priceUnitID,
-            $expiryDate, $inventoryID, $pharmacyID
+            $quantity,
+            $batchNumber !== '' ? $batchNumber : null,
+            $lowStockThreshold,
+            $unitPrice,
+            $priceUnitID,
+            $expiryDate,
+            $inventoryID,
+            $pharmacyID
         ]);
+
+        $pdo->prepare("
+            UPDATE 12_meds_medicines m
+            JOIN 21_inventory i ON m.Medicine_ID = i.Medicine_ID
+            SET m.Package_Size = CASE WHEN ? != '' THEN ? ELSE m.Package_Size END,
+                m.Pieces_Per_Box = COALESCE(?, m.Pieces_Per_Box),
+                m.Is_Essential = COALESCE(?, m.Is_Essential)
+            WHERE i.Inventory_ID = ?
+        ")->execute([$packageSize, $packageSize, $piecesPerBox, $isEssential, $inventoryID]);
 
         echo ($ok && $stmt->rowCount() > 0) ? 'success' : 'not_found';
 

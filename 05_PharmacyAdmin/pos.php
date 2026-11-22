@@ -54,7 +54,7 @@ $preloadStmt = $pdo->prepare("
   ) img ON med.Medicine_ID = img.Medicine_ID
   WHERE i.Pharmacy_ID = ? AND i.Quantity > 0 AND (i.IsDeleted = 0 OR i.IsDeleted IS NULL)
   ORDER BY i.Quantity DESC
-  LIMIT 12
+  LIMIT 50
 ");
 $preloadStmt->execute([$pharmacyID]);
 $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -93,26 +93,103 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main-panel d-flex flex-column flex-grow-1">
       <div id="topbar-container"></div>
 
-      <div id="content" style="padding: 1.25rem;">
+      <div id="content" style="padding: 0.65rem 1.25rem 0.5rem;">
         <div class="content-body">
 
           <!-- Page Header -->
-          <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-              <h4 class="fw-bold mb-0 admin-page-title">Point of Sale (POS) Counter</h4>
-            </div>
-            <div class="d-flex gap-2">
-              <span class="badge bg-success-subtle text-success border border-success-subtle py-2 px-3 fw-semibold">
-                <i class="bi bi-shop me-1"></i>
-                <?= htmlspecialchars($_SESSION['pharmacy_name'] ?? 'Pharmacy Counter') ?>
-              </span>
+              <h4 class="fw-bold mb-0 admin-page-title" style="font-size: 1.25rem;">Point of Sale (POS) Counter</h4>
             </div>
           </div>
 
-          <!-- POS Main Grid -->
+          <!-- POS Main Grid (Swapped: Cart on Left, Catalog on Right) -->
           <div class="pos-grid">
 
-            <!-- LEFT COLUMN: Search & Item Selection & Quick Pills -->
+            <!-- LEFT COLUMN: Counter Cart & Checkout Summary -->
+            <div class="pos-card pos-order-card">
+              <div class="pos-order-header">
+                <div class="pos-card-title mb-0">
+                  <span class="material-symbols-outlined">shopping_cart</span>
+                  Current Order
+                </div>
+                <button type="button" id="posClearCartBtn" class="btn-pos-clear">
+                  <i class="bi bi-trash3 me-1"></i> Clear Cart
+                </button>
+              </div>
+
+              <div class="pos-order-body">
+                <!-- Customer Name Input -->
+                <div>
+                  <label for="posCustomerName" class="form-label small fw-semibold text-muted mb-1">Customer / Patient Name (Optional):</label>
+                  <input type="text" id="posCustomerName" class="pos-input" placeholder="Walk-in Customer" value="Walk-in Customer">
+                </div>
+
+                <!-- Cart Empty State -->
+                <div id="posCartEmpty" class="text-center py-4 text-muted">
+                  <span class="material-symbols-outlined d-block mb-1 text-muted" style="font-size: 2.75rem;">shopping_bag</span>
+                  <h6 class="fw-bold mb-1">Cart is empty</h6>
+                  <p class="small text-muted mb-0">Click medicine cards on the right or search to add items.</p>
+                </div>
+
+                <!-- Cart Table Wrap -->
+                <div id="posCartTableWrap" style="display: none;">
+                  <table class="pos-cart-table">
+                    <thead>
+                      <tr>
+                        <th>Medicine</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="posCartTbody"></tbody>
+                  </table>
+                </div>
+
+                <!-- Totals Calculation -->
+                <div class="pos-order-summary-box">
+                  <div class="pos-summary-row">
+                    <span>Subtotal:</span>
+                    <span id="posSubtotal" class="fw-semibold">₱0.00</span>
+                  </div>
+                  <div class="pos-summary-row total">
+                    <span>Grand Total:</span>
+                    <span id="posGrandTotal" class="pos-grandTotal pos-grand-total">₱0.00</span>
+                  </div>
+                </div>
+
+                <!-- Cash Tendered & Change -->
+                <div class="payment-grid">
+                  <div>
+                    <label for="posCashTendered" class="form-label small fw-semibold text-muted mb-1">Cash Tendered (₱):</label>
+                    <input type="number" id="posCashTendered" class="pos-input" placeholder="0.00" min="0" step="any">
+                  </div>
+                  <div>
+                    <label class="form-label small fw-semibold text-muted mb-1">Change (₱):</label>
+                    <div id="posChange" class="pos-input bg-light fw-bold text-success d-flex align-items-center">₱0.00</div>
+                  </div>
+                </div>
+
+                <!-- Quick Cash Buttons -->
+                <div class="d-flex gap-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="100">₱100</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="200">₱200</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="500">₱500</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="1000">₱1,000</button>
+                </div>
+
+                <!-- Complete Checkout Button -->
+                <button type="button" id="posCheckoutBtn" class="btn-checkout" disabled>
+                  <span class="material-symbols-outlined">receipt_long</span>
+                  Complete &amp; Print Receipt
+                </button>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Search & Item Selection & Quick Pills -->
             <div class="pos-card">
               <div class="pos-card-title">
                 <span class="material-symbols-outlined">manage_search</span>
@@ -170,6 +247,7 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
                           tabindex="0"
                           role="button"
                           aria-label="<?= htmlspecialchars($fullName) ?>"
+                          title="<?= htmlspecialchars($fullName) ?>"
                           onclick='window.mediFindPOS && window.mediFindPOS.addToCart(<?= json_encode($qm) ?>)'
                           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); window.mediFindPOS && window.mediFindPOS.addToCart(<?= json_encode($qm) ?>);}">
                           <div class="pos-card-media">
@@ -180,27 +258,28 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
                               onerror="this.onerror=null; this.src='<?= $fallbackSvg ?>';">
                           </div>
                           <div class="pos-card-content">
-                            <div class="pos-card-header">
-                              <div class="pos-card-title text-truncate" title="<?= htmlspecialchars($qm['Generic_Name']) ?>">
-                                <?= htmlspecialchars($qm['Generic_Name']) ?>
-                              </div>
-                              <div class="pos-card-brand-dosage text-truncate">
-                                <?= htmlspecialchars($qm['Brand_Name'] ?? 'Generic') ?><?= $dStr ? ' &bull; ' . htmlspecialchars($dStr) : '' ?>
-                                <?php if ($isRx): ?>
-                                  <span class="pos-rx-pill">Rx</span>
-                                <?php endif; ?>
-                              </div>
+                            <div class="pos-card-name text-truncate" title="<?= htmlspecialchars($qm['Generic_Name']) ?>">
+                              <?= htmlspecialchars($qm['Generic_Name']) ?>
                             </div>
-                            <div class="pos-card-footer">
-                              <span class="pos-card-price">₱<?= number_format($qm['Price'], 2) ?></span>
-                              <?php if ($isOut): ?>
-                                <span class="pos-stock-chip out-stock">Out of stock</span>
-                              <?php elseif ($isLow): ?>
-                                <span class="pos-stock-chip low-stock">Stock: <?= $qm['Quantity'] ?></span>
-                              <?php else: ?>
-                                <span class="pos-stock-chip available">Stock: <?= $qm['Quantity'] ?></span>
+                            <div class="pos-card-sub text-truncate">
+                              <span class="text-dark fw-semibold"><?= htmlspecialchars($qm['Brand_Name'] ?? 'Generic') ?></span>
+                              <?php if ($dStr): ?>
+                                <span class="text-muted">&bull; <?= htmlspecialchars($dStr) ?></span>
+                              <?php endif; ?>
+                              <?php if ($isRx): ?>
+                                <span class="pos-rx-pill">Rx</span>
                               <?php endif; ?>
                             </div>
+                          </div>
+                          <div class="pos-card-meta">
+                            <span class="pos-card-price">₱<?= number_format($qm['Price'], 2) ?></span>
+                            <?php if ($isOut): ?>
+                              <span class="pos-stock-chip out-stock">Out of stock</span>
+                            <?php elseif ($isLow): ?>
+                              <span class="pos-stock-chip low-stock">Stock: <?= $qm['Quantity'] ?></span>
+                            <?php else: ?>
+                              <span class="pos-stock-chip available">Stock: <?= $qm['Quantity'] ?></span>
+                            <?php endif; ?>
                           </div>
                         </div>
                       <?php endforeach; ?>
@@ -211,103 +290,6 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php endif; ?>
                   </div>
                 </div>
-              </div>
-
-            </div>
-
-            <!-- RIGHT COLUMN: Counter Cart & Checkout Summary -->
-            <div class="pos-card pos-order-card">
-              <div class="pos-order-header">
-                <div class="pos-card-title mb-0">
-                  <span class="material-symbols-outlined">shopping_cart</span>
-                  Current Order
-                </div>
-                <button type="button" id="posClearCartBtn" class="btn-pos-clear">
-                  <i class="bi bi-trash3 me-1"></i> Clear Cart
-                </button>
-              </div>
-
-              <div class="pos-order-body">
-                <!-- Customer Name Input -->
-                <div>
-                  <label for="posCustomerName" class="form-label small fw-semibold text-muted mb-1">Customer / Patient Name (Optional):</label>
-                  <input type="text" id="posCustomerName" class="pos-input" placeholder="Walk-in Customer" value="Walk-in Customer">
-                </div>
-
-                <!-- Cart Empty State -->
-                <div id="posCartEmpty" class="text-center py-4 text-muted">
-                  <span class="material-symbols-outlined d-block mb-1 text-muted" style="font-size: 2.75rem;">shopping_bag</span>
-                  <h6 class="fw-bold mb-1">Cart is empty</h6>
-                  <p class="small text-muted mb-0">Click medicine cards on the left or search to add items.</p>
-                </div>
-
-                <!-- Cart Table Wrap -->
-                <div id="posCartTableWrap" style="display: none; max-height: 250px; overflow-y: auto;">
-                  <table class="pos-cart-table">
-                    <thead>
-                      <tr>
-                        <th>Medicine</th>
-                        <th>Price</th>
-                        <th>Qty</th>
-                        <th>Total</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody id="posCartTbody"></tbody>
-                  </table>
-                </div>
-
-                <!-- Discount Options -->
-                <div class="discount-box">
-                  <label class="form-label small fw-bold text-dark mb-1">Apply Discount:</label>
-                  <div class="discount-options">
-                    <button type="button" class="discount-btn active" data-type="None">None (0%)</button>
-                    <button type="button" class="discount-btn" data-type="Senior/PWD">Senior / PWD (20%)</button>
-                    <button type="button" class="discount-btn" data-type="5%">Special (5%)</button>
-                  </div>
-                </div>
-
-                <!-- Totals Calculation -->
-                <div class="pos-order-summary-box">
-                  <div class="pos-summary-row">
-                    <span>Subtotal:</span>
-                    <span id="posSubtotal" class="fw-semibold">₱0.00</span>
-                  </div>
-                  <div class="pos-summary-row">
-                    <span>Applied Discount:</span>
-                    <span id="posDiscount" class="text-warning fw-semibold">-₱0.00</span>
-                  </div>
-                  <div class="pos-summary-row total">
-                    <span>Grand Total:</span>
-                    <span id="posGrandTotal" class="pos-grandTotal pos-grand-total">₱0.00</span>
-                  </div>
-                </div>
-
-                <!-- Cash Tendered & Change -->
-                <div class="payment-grid">
-                  <div>
-                    <label for="posCashTendered" class="form-label small fw-semibold text-muted mb-1">Cash Tendered (₱):</label>
-                    <input type="number" id="posCashTendered" class="pos-input" placeholder="0.00" min="0" step="any">
-                  </div>
-                  <div>
-                    <label class="form-label small fw-semibold text-muted mb-1">Change (₱):</label>
-                    <div id="posChange" class="pos-input bg-light fw-bold text-success d-flex align-items-center">₱0.00</div>
-                  </div>
-                </div>
-
-                <!-- Quick Cash Buttons -->
-                <div class="d-flex gap-1">
-                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="100">₱100</button>
-                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="200">₱200</button>
-                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="500">₱500</button>
-                  <button type="button" class="btn btn-outline-secondary btn-sm flex-fill quick-cash-btn" data-amount="1000">₱1,000</button>
-                </div>
-
-                <!-- Complete Checkout Button -->
-                <button type="button" id="posCheckoutBtn" class="btn-checkout" disabled>
-                  <span class="material-symbols-outlined">receipt_long</span>
-                  Complete &amp; Print Receipt
-                </button>
               </div>
 
             </div>

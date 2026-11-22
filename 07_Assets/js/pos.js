@@ -215,29 +215,25 @@ class MediFindPOS {
       const isLow = stock > 0 && stock <= 10;
 
       div.innerHTML = `
-        <div class="pos-search-item-left">
-          <div class="pos-search-item-thumb">
+        <div class="pos-search-item-left text-truncate">
+          <div class="pos-search-item-thumb" style="width: 32px; height: 32px; min-width: 32px;">
             <img src="${this.escapeHtml(imgSrc)}"
                  alt="${this.escapeHtml(item.Generic_Name || '')}"
                  loading="lazy"
                  onerror="this.onerror=null; this.src='${FALLBACK_MED_SVG}';">
           </div>
-          <div>
-            <div class="pos-item-title">
-              ${this.escapeHtml(item.Generic_Name || 'Unknown')}
-              ${item.Brand_Name ? `<span class="text-muted fw-normal">(${this.escapeHtml(item.Brand_Name)})</span>` : ''}
-              ${isRx ? `<span class="pos-rx-badge">Rx</span>` : ''}
-            </div>
-            <div class="pos-item-sub">
-              ${this.escapeHtml(dosageStr)} &bull; <span class="text-secondary">${this.escapeHtml(item.Category_Name || 'General')}</span>
-            </div>
+          <div class="text-truncate">
+            <span class="fw-bold text-dark">${this.escapeHtml(item.Generic_Name || 'Unknown')}</span>
+            ${dosageStr ? `<span class="text-muted small"> ${this.escapeHtml(dosageStr)}</span>` : ''}
+            ${item.Brand_Name ? `<span class="text-muted small">(${this.escapeHtml(item.Brand_Name)})</span>` : ''}
+            ${isRx ? `<span class="pos-rx-badge">Rx</span>` : ''}
           </div>
         </div>
-        <div class="text-end">
-          <div class="pos-item-price">₱${price.toFixed(2)}</div>
-          <div class="pos-item-stock ${isOut ? 'text-danger fw-bold' : (isLow ? 'text-warning fw-semibold' : '')}">
-            ${isOut ? 'Out of stock' : `Stock: ${stock}`}
-          </div>
+        <div class="text-end d-flex align-items-center gap-2 flex-shrink-0">
+          <span class="pos-item-price">₱${price.toFixed(2)}</span>
+          <span class="pos-stock-chip ${isOut ? 'out-stock' : (isLow ? 'low-stock' : 'available')}">
+            ${isOut ? 'Out' : stock}
+          </span>
         </div>
       `;
 
@@ -298,6 +294,7 @@ class MediFindPOS {
         stockChipHtml = `<span class="pos-stock-chip available">Stock: ${stock}</span>`;
       }
 
+      card.title = fullName;
       card.innerHTML = `
         <div class="pos-card-media">
           <img src="${this.escapeHtml(imgSrc)}"
@@ -307,19 +304,18 @@ class MediFindPOS {
                onerror="this.onerror=null; this.src='${FALLBACK_MED_SVG}';">
         </div>
         <div class="pos-card-content">
-          <div class="pos-card-header">
-            <div class="pos-card-title" title="${this.escapeHtml(item.Generic_Name || '')}">
-              ${this.escapeHtml(item.Generic_Name || 'Unknown')}
-            </div>
-            <div class="pos-card-brand-dosage">
-              <span>${this.escapeHtml(item.Brand_Name || 'Generic')}${dosageStr ? ` &bull; ${this.escapeHtml(dosageStr)}` : ''}</span>
-              ${isRx ? '<span class="pos-rx-pill">Rx</span>' : ''}
-            </div>
+          <div class="pos-card-name text-truncate" title="${this.escapeHtml(item.Generic_Name || '')}">
+            ${this.escapeHtml(item.Generic_Name || 'Unknown')}
           </div>
-          <div class="pos-card-footer">
-            <span class="pos-card-price">₱${price.toFixed(2)}</span>
-            ${stockChipHtml}
+          <div class="pos-card-sub text-truncate">
+            <span class="text-dark fw-semibold">${this.escapeHtml(item.Brand_Name || 'Generic')}</span>
+            ${dosageStr ? `<span class="text-muted">&bull; ${this.escapeHtml(dosageStr)}</span>` : ''}
+            ${isRx ? '<span class="pos-rx-pill">Rx</span>' : ''}
           </div>
+        </div>
+        <div class="pos-card-meta">
+          <span class="pos-card-price">₱${price.toFixed(2)}</span>
+          ${stockChipHtml}
         </div>
       `;
 
@@ -441,12 +437,11 @@ class MediFindPOS {
     this.cart.forEach((item, idx) => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>
-          <div class="fw-semibold text-dark">${this.escapeHtml(item.generic_name)}</div>
-          <div class="text-muted" style="font-size: 0.78rem;">
-            ${item.brand_name ? this.escapeHtml(item.brand_name) + ' &bull; ' : ''}${this.escapeHtml(item.dosage)}
-            ${item.requires_rx ? '<span class="pos-rx-badge">Rx</span>' : ''}
-          </div>
+        <td class="text-truncate" style="max-width: 250px;" title="${this.escapeHtml(item.generic_name)}${item.brand_name ? ' (' + this.escapeHtml(item.brand_name) + ')' : ''}">
+          <span class="fw-semibold text-dark">${this.escapeHtml(item.generic_name)}</span>
+          ${item.brand_name ? `<span class="text-muted small">(${this.escapeHtml(item.brand_name)})</span>` : ''}
+          ${item.dosage ? `<span class="text-muted small"> ${this.escapeHtml(item.dosage)}</span>` : ''}
+          ${item.requires_rx ? '<span class="pos-rx-badge">Rx</span>' : ''}
         </td>
         <td class="text-nowrap">₱${item.unit_price.toFixed(2)}</td>
         <td>

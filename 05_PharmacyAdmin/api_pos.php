@@ -128,7 +128,7 @@ if ($action === 'search') {
         $params[':category'] = $category;
     }
 
-    $sql .= " ORDER BY gn.Generic_Name ASC LIMIT 30";
+    $sql .= " ORDER BY gn.Generic_Name ASC LIMIT 50";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
