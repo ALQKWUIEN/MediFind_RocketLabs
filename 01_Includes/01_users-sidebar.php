@@ -64,12 +64,6 @@ if (isset($_POST['logout'])) {
         </a>
       </li>
       <li>
-        <a href="../04_User/03_Medicines.php">
-          <span class="material-symbols-outlined">pill</span>
-          <span class="sidebar-label">Medicines</span>
-        </a>
-      </li>
-      <li>
         <a href="../04_User/04_Pharmacies.php">
           <span class="material-symbols-outlined">local_hospital</span>
           <span class="sidebar-label">Pharmacies</span>

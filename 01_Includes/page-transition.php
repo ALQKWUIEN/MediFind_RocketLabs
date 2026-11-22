@@ -1,6 +1,6 @@
 <style>
     html.is-animating body { opacity: 0; }
-    body.transition-fade { transition: opacity 1s ease; }
+    body.transition-fade { transition: opacity 0.15s ease; }
 </style>
 
 <script src="https://unpkg.com/swup@4"></script>

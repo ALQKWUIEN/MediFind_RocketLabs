@@ -1,3 +1,14 @@
+<?php
+include_once '02_Actions/GlobalVariables.php';
+$isLoggedIn = !empty($_SESSION['user_id']);
+$medicinesJsonPath = __DIR__ . '/database/medicines_db.json';
+$medicinesData = file_exists($medicinesJsonPath) ? json_decode(file_get_contents($medicinesJsonPath), true) : ['medicines' => []];
+$medicinesList = $medicinesData['medicines'] ?? [];
+
+$pharmaciesJsonPath = __DIR__ . '/database/pharmacies_db.json';
+$pharmaciesData = file_exists($pharmaciesJsonPath) ? json_decode(file_get_contents($pharmaciesJsonPath), true) : ['pharmacies' => []];
+$pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
+?>
 <!doctype html>
 <html lang="en">
 
@@ -21,6 +32,58 @@
 
   <link rel="stylesheet" href="07_Assets/node_modules/material-symbols/outlined.css" />
 
+  <style>
+    /* Hide visible vertical scrollbar while preserving scroll */
+    html, body {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+      display: none;
+    }
+
+    .landing-floating-bot-btn {
+      display: none;
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1200;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: none;
+      background: #1d9e75;
+      color: #ffffff;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(29, 158, 117, 0.35);
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .landing-floating-bot-btn:hover {
+      background: #178360;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 768px) {
+      .search-bot-btn {
+        display: none !important;
+      }
+      .landing-floating-bot-btn {
+        display: inline-flex;
+      }
+      .guest-route-panel {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-height: 150px;
+      }
+      .guest-cards-row {
+        grid-template-columns: repeat(3, 250px);
+      }
+    }
+  </style>
+
   <!-- Page transition -->
   <?php include '01_Includes/page-transition-hardcode.php' ?>
 
@@ -39,15 +102,25 @@
     </div>
 
     <div class="d-flex align-items-center justify-content-center gap-2">
-      <div class="search-wrapper">
-        <span class="material-symbols-outlined" style="color: #87a199; font-size: 1.2rem">search</span>
-        <input type="text" placeholder="Search medicine by name..." />
+      <div class="search-wrapper position-relative" id="landingSearchWrapper">
+        <span id="landingSearchBtn" class="material-symbols-outlined" style="color: #87a199; font-size: 1.2rem; cursor: pointer;" title="Search">search</span>
+        <input
+          type="text"
+          id="landingMedSearch"
+          placeholder="Search medicine by name..."
+          autocomplete="off" />
+        <div id="landingSearchDropdown" style="display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;background:#fff;border:1px solid #dce9e3;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,0.1);z-index:1000;max-height:320px;overflow-y:auto;text-align:left;"></div>
       </div>
 
-      <button class="search-bot-btn">
+      <button class="search-bot-btn" type="button" title="Ask MediFind Assistant">
         <span class="material-symbols-outlined">smart_toy</span>
       </button>
     </div>
+
+    <!-- Mobile floating bot button (matches users page) -->
+    <button class="landing-floating-bot-btn" id="landingFloatingBotBtn" type="button" aria-label="Open MediFind Assistant" title="Ask MediFind Assistant">
+      <span class="material-symbols-outlined" style="font-size:1.45rem;">smart_toy</span>
+    </button>
   </div>
 
   <!-- CHAT MODAL OVERLAY -->
@@ -104,222 +177,102 @@
     </div>
   </div>
 
-  <!-- NEARBY PHARMACIES -->
+  <!-- PARTNERED PHARMACIES -->
   <div class="nearby-section">
     <div class="nearby-label">
       <span class="material-symbols-outlined loc">location_on</span>
       <div class="label-text">
-        <strong>Nearby Pharmacies</strong>
-        <a>Malaybalay, 8700, Bukidnon, Philippines<span
-            class="material-symbols-outlined dropdown-ico">arrow_drop_down</span></a>
+        <strong>Participating Local Pharmacies</strong>
+        <a>Malaybalay City, 8700, Bukidnon, Philippines</a>
       </div>
     </div>
 
-    <div class="pharmacy-cards">
+    <div class="container px-0" style="max-width: 1140px;">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
 
-      <!-- Card 1: Rose Pharmacy -->
-      <div class="pharmacy-card">
-        <img src="07_Assets/images/pharmacies/RosePharmacy.png" alt="Rose Pharmacy" />
-        <div class="card-body-custom">
-          <div class="pharmacy-name">Rose Pharmacy</div>
-          <div class="pharmacy-distance">
-            <span class="material-symbols-outlined">location_on</span>
-            <span>0.5 km away</span>
-          </div>
-          <div class="pharmacy-status">
-            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 10PM</span>
-          </div>
-          <div class="card-actions">
-            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1548,125.1281','_blank')">
-              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
-              Directions
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
-              Nearby
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
-              Send to phone
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
-              Share
+        <!-- Card 1: Malaybalay Community Pharmacy -->
+        <div class="col">
+          <div class="pharmacy-card h-100 w-100" data-lat="8.1548" data-lng="125.1281">
+            <img src="07_Assets/images/pharmacies/RosePharmacy.png" alt="Malaybalay Community Pharmacy" />
+            <div class="card-body-custom">
+              <div class="pharmacy-name">Malaybalay Community Pharmacy</div>
+              <div class="pharmacy-distance">
+                <span class="material-symbols-outlined">location_on</span>
+                <span class="geo-distance">Fortich St., Brgy. 8</span>
+              </div>
+              <div class="pharmacy-status d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge rounded-pill d-inline-flex align-items-center gap-1" style="background:#e8f7f2;color:#0f6e56;font-weight:600;">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">check_circle</span>
+                  Open
+                </span>
+                <span>Closes 9:00 PM</span>
+              </div>
+              <div class="card-actions">
+                <div class="card-action-btn" role="button" tabindex="0" onclick="handleDirections(8.1548, 125.1281, 'Malaybalay Community Pharmacy')">
+                  <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
+                  Directions
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Card 2: Generika Drugstore -->
-      <div class="pharmacy-card">
-        <img src="07_Assets/images/pharmacies/Generika.png" alt="Generika Drugstore" />
-        <div class="card-body-custom">
-          <div class="pharmacy-name">Generika Drugstore</div>
-          <div class="pharmacy-distance">
-            <span class="material-symbols-outlined">location_on</span>
-            <span>0.8 km away</span>
-          </div>
-          <div class="pharmacy-status">
-            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 9PM</span>
-          </div>
-          <div class="card-actions">
-            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1563,125.1285','_blank')">
-              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
-              Directions
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
-              Nearby
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
-              Send to phone
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
-              Share
+        <!-- Card 2: Bukidnon Care Pharmacy -->
+        <div class="col">
+          <div class="pharmacy-card h-100 w-100" data-lat="8.1563" data-lng="125.1285">
+            <img src="07_Assets/images/pharmacies/Generika.png" alt="Bukidnon Care Pharmacy" />
+            <div class="card-body-custom">
+              <div class="pharmacy-name">Bukidnon Care Pharmacy</div>
+              <div class="pharmacy-distance">
+                <span class="material-symbols-outlined">location_on</span>
+                <span class="geo-distance">Sayre Hwy, Casisang</span>
+              </div>
+              <div class="pharmacy-status d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge rounded-pill d-inline-flex align-items-center gap-1" style="background:#e8f7f2;color:#0f6e56;font-weight:600;">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">check_circle</span>
+                  Open
+                </span>
+                <span>Closes 8:00 PM</span>
+              </div>
+              <div class="card-actions">
+                <div class="card-action-btn" role="button" tabindex="0" onclick="handleDirections(8.1563, 125.1285, 'Bukidnon Care Pharmacy')">
+                  <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
+                  Directions
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Card 3: Mercury Drug -->
-      <div class="pharmacy-card">
-        <img src="07_Assets/images/pharmacies/MercuryDrug.jpg" alt="Mercury Drug" />
-        <div class="card-body-custom">
-          <div class="pharmacy-name">Mercury Drug</div>
-          <div class="pharmacy-distance">
-            <span class="material-symbols-outlined">location_on</span>
-            <span>1.1 km away</span>
-          </div>
-          <div class="pharmacy-status">
-            <span class="open-text">Open</span><span class="dot">·</span><span>Open 24 Hours</span>
-          </div>
-          <div class="card-actions">
-            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1547,125.1279','_blank')">
-              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
-              Directions
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
-              Nearby
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
-              Send to phone
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
-              Share
+        <!-- Card 3: Poblacion Healthmart Pharmacy -->
+        <div class="col">
+          <div class="pharmacy-card h-100 w-100" data-lat="8.1558" data-lng="125.1269">
+            <img src="07_Assets/images/pharmacies/RojonPharmacy.png" alt="Poblacion Healthmart Pharmacy" />
+            <div class="card-body-custom">
+              <div class="pharmacy-name">Poblacion Healthmart Pharmacy</div>
+              <div class="pharmacy-distance">
+                <span class="material-symbols-outlined">location_on</span>
+                <span class="geo-distance">Bonifacio St., Poblacion</span>
+              </div>
+              <div class="pharmacy-status d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge rounded-pill d-inline-flex align-items-center gap-1" style="background:#fef2f2;color:#b91c1c;font-weight:600;">
+                  <span class="material-symbols-outlined" style="font-size:0.9rem;">schedule</span>
+                  Closed
+                </span>
+                <span>Opens 8:00 AM</span>
+              </div>
+              <div class="card-actions">
+                <div class="card-action-btn" role="button" tabindex="0" onclick="handleDirections(8.1558, 125.1269, 'Poblacion Healthmart Pharmacy')">
+                  <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
+                  Directions
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Card 4: Watsons -->
-      <div class="pharmacy-card">
-        <img src="07_Assets/images/pharmacies/Watsons.png" alt="Watsons Pharmacy" />
-        <div class="card-body-custom">
-          <div class="pharmacy-name">Watsons Pharmacy</div>
-          <div class="pharmacy-distance">
-            <span class="material-symbols-outlined">location_on</span>
-            <span>1.4 km away</span>
-          </div>
-          <div class="pharmacy-status">
-            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 9PM</span>
-          </div>
-          <div class="card-actions">
-            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1547,125.1275','_blank')">
-              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
-              Directions
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
-              Nearby
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
-              Send to phone
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
-              Share
-            </div>
-          </div>
-        </div>
       </div>
-
-      <!-- Card 5: Rojon Pharmacy -->
-      <div class="pharmacy-card">
-        <img src="07_Assets/images/pharmacies/RojonPharmacy.png" alt="Rojon Pharmacy" />
-        <div class="card-body-custom">
-          <div class="pharmacy-name">Rojon Pharmacy</div>
-          <div class="pharmacy-distance">
-            <span class="material-symbols-outlined">location_on</span>
-            <span>1.7 km away</span>
-          </div>
-          <div class="pharmacy-status">
-            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 10PM</span>
-          </div>
-          <div class="card-actions">
-            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1558,125.1269','_blank')">
-              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
-              Directions
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
-              Nearby
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
-              Send to phone
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
-              Share
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 6: TGP -->
-      <div class="pharmacy-card">
-        <img src="07_Assets/images/pharmacies/TGP.png" alt="TGP The Generics Pharmacy" />
-        <div class="card-body-custom">
-          <div class="pharmacy-name">TGP The Generics Pharmacy</div>
-          <div class="pharmacy-distance">
-            <span class="material-symbols-outlined">location_on</span>
-            <span>2.0 km away</span>
-          </div>
-          <div class="pharmacy-status">
-            <span class="open-text">Open</span><span class="dot">·</span><span>Closes 8PM</span>
-          </div>
-          <div class="card-actions">
-            <div class="card-action-btn" onclick="window.open('https://www.openstreetmap.org/directions?to=8.1567,125.1263','_blank')">
-              <div class="card-action-icon"><span class="material-symbols-outlined">directions</span></div>
-              Directions
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">near_me</span></div>
-              Nearby
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">phone_iphone</span></div>
-              Send to phone
-            </div>
-            <div class="card-action-btn">
-              <div class="card-action-icon"><span class="material-symbols-outlined">share</span></div>
-              Share
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
-
-
-
-
   </div>
 
   <!-- HOW IT WORKS SECTION -->
@@ -364,27 +317,27 @@
     </div>
   </section>
 
-  <!-- STATS SECTION -->
+  <!-- STATS / PLATFORM HIGHLIGHTS SECTION -->
   <section class="stats-section">
     <div class="stats-inner">
       <div class="stat-item">
-        <div class="stat-number">50+</div>
-        <div class="stat-label">Pharmacies Listed</div>
+        <div class="stat-number" style="font-size:1.55rem;">FDA-Verified</div>
+        <div class="stat-label">Philippine FDA Drug Registry</div>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <div class="stat-number">1,200+</div>
-        <div class="stat-label">Medicines Tracked</div>
+        <div class="stat-number" style="font-size:1.55rem;">OCR + LLM</div>
+        <div class="stat-label">Prescription Scanning</div>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <div class="stat-number">5,000+</div>
-        <div class="stat-label">Residents Served</div>
+        <div class="stat-number" style="font-size:1.55rem;">Multilingual AI</div>
+        <div class="stat-label">English, Tagalog &amp; Cebuano</div>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <div class="stat-number">24/7</div>
-        <div class="stat-label">Always Available</div>
+        <div class="stat-number" style="font-size:1.55rem;">24/7 Access</div>
+        <div class="stat-label">Mobile &amp; Web PWA</div>
       </div>
     </div>
   </section>
@@ -448,11 +401,11 @@
       <div class="cta-icon">
         <span class="material-symbols-outlined">medication</span>
       </div>
-      <h2>Can't find your medicine?</h2>
-      <p>Sign up and get notified when your medicine becomes available at a nearby pharmacy.</p>
+      <h2>Ready to find your medicine?</h2>
+      <p>Create a free account to scan prescriptions, check local availability, and get directions to participating pharmacies.</p>
       <div class="cta-buttons">
         <a href="03_Authentication/signup.php" class="btn-cta-primary">Create Free Account</a>
-        <a href="#" class="btn-cta-secondary">Learn More</a>
+        <a href="about.php" class="btn-cta-secondary">Learn More</a>
       </div>
     </div>
   </section>
@@ -467,9 +420,49 @@
     <div class="footer-content">
       <p class="footer-brand">MediFind</p>
       <p class="footer-text">Malaybalay Medicine Availability Checker</p>
+      <p class="footer-text" style="max-width:780px;margin:8px auto;font-size:0.82rem;opacity:0.9;">
+        MediFind is for informational purposes only. It does not provide medical diagnosis, treatment advice, or approve medicine substitutions. Always consult a licensed physician or pharmacist.
+      </p>
+      <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap my-2" style="font-size:0.85rem;">
+        <a href="#" class="text-decoration-none" style="color:#1d9e75;font-weight:600;" data-bs-toggle="modal" data-bs-target="#privacyNoticeModal">
+          Privacy Notice (RA 10173)
+        </a>
+        <span>·</span>
+        <a href="about.php" class="text-decoration-none text-muted">About Us</a>
+        <span>·</span>
+        <a href="faqs.php" class="text-decoration-none text-muted">FAQs</a>
+      </div>
       <p class="footer-copy">© 2026 MediFind. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- PRIVACY NOTICE MODAL (RA 10173) -->
+  <div class="modal fade" id="privacyNoticeModal" tabindex="-1" aria-labelledby="privacyNoticeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius:18px;border:none;box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="privacyNoticeLabel" style="color:#1a2e27;">
+            <span class="material-symbols-outlined align-middle me-1" style="color:#1d9e75;">verified_user</span>
+            Privacy Notice (RA 10173)
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-start" style="font-size:0.9rem;color:#4a635a;line-height:1.6;">
+          <p class="mb-2">
+            MediFind complies with the <strong>Data Privacy Act of 2012 (Republic Act No. 10173)</strong> to protect your personal and health-related information:
+          </p>
+          <ul class="mb-0 ps-3">
+            <li class="mb-2"><strong>Minimal Data Collection:</strong> We only collect essential account details required to provide pharmacy routing and prescription lookup features.</li>
+            <li class="mb-2"><strong>Immediate Image Deletion:</strong> Uploaded prescription images are processed for OCR extraction and deleted immediately after scanning—they are never permanently stored.</li>
+            <li><strong>Anonymized Text Processing:</strong> Medicine queries and extracted prescription text are processed in anonymized form without linking sensitive health data to third parties.</li>
+          </ul>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn rounded-pill px-4" data-bs-dismiss="modal" style="background:#1d9e75;color:#fff;font-weight:600;">I Understand</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     let landingChatOpen = false;
@@ -477,8 +470,10 @@
     const landingMsgs = document.getElementById('landingChatMessages');
     const landingInput = document.getElementById('landingChatInput');
 
-    // Wire up the search bar bot button
+    // Wire up the search bar bot button & mobile floating bot button
     document.querySelector('.search-bot-btn').addEventListener('click', toggleLandingChat);
+    const floatingBotBtn = document.getElementById('landingFloatingBotBtn');
+    if (floatingBotBtn) floatingBotBtn.addEventListener('click', toggleLandingChat);
 
     // Close on overlay click (outside modal)
     function closeLandingChat(e) {
@@ -576,6 +571,120 @@
         navbar.classList.remove('scrolled');
       }
     });
+  </script>
+
+  <?php
+  $mapBasePath = '';
+  $mapMode = 'overlay';
+  $mapInitialQuery = '';
+  include_once '01_Includes/medicine-map-component.php';
+
+  $loginModalBasePath = '';
+  include_once '01_Includes/login-prompt-modal.php';
+  ?>
+
+  <script>
+    const LANDING_IS_LOGGED_IN = <?= json_encode($isLoggedIn) ?>;
+    const LANDING_MEDICINES = <?= json_encode($medicinesList, JSON_UNESCAPED_SLASHES) ?>;
+
+    function handleDirections(lat, lng, pharmacyName) {
+      if (!LANDING_IS_LOGGED_IN) {
+        openLoginPromptModal(pharmacyName);
+        return;
+      }
+      window.open(`https://www.openstreetmap.org/directions?to=${lat},${lng}`, '_blank');
+    }
+
+    (function () {
+      const searchInput = document.getElementById('landingMedSearch');
+      const searchBtn = document.getElementById('landingSearchBtn');
+      const dropdown = document.getElementById('landingSearchDropdown');
+      const wrapper = document.getElementById('landingSearchWrapper');
+
+      function goToMap(query) {
+        const trimmed = (query || searchInput.value || '').trim();
+        if (!trimmed) {
+          searchInput.focus();
+          return;
+        }
+        dropdown.style.display = 'none';
+        if (window.openMediFindMap) {
+          window.openMediFindMap(trimmed);
+        }
+      }
+
+      function renderDropdown(term) {
+        const q = term.trim().toLowerCase();
+        const matches = q
+          ? LANDING_MEDICINES.filter(m =>
+              m.brand_name.toLowerCase().includes(q) ||
+              m.generic_name.toLowerCase().includes(q) ||
+              m.category.toLowerCase().includes(q)
+            )
+          : LANDING_MEDICINES.slice(0, 6);
+
+        if (!matches.length) {
+          dropdown.innerHTML = `<div style="padding:12px 16px;font-size:0.86rem;color:#6b8f82;">No matching medicines in local catalog. Press Enter to search anyway.</div>`;
+          dropdown.style.display = 'block';
+          return;
+        }
+
+        dropdown.innerHTML = matches.map(m => `
+          <div class="landing-med-option" data-name="${m.brand_name}" style="display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f4;">
+            <img src="${m.image}" alt="${m.brand_name}" style="width:36px;height:36px;object-fit:contain;border-radius:8px;background:#f8fbfa;padding:3px;border:1px solid #e6efec;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;font-size:0.9rem;color:#1a2e27;">${m.brand_name} <span style="font-weight:400;color:#6b8f82;">(${m.dosage})</span></div>
+              <div style="font-size:0.78rem;color:#6b8f82;">${m.generic_name} · ${m.category}</div>
+            </div>
+            <span style="font-size:0.72rem;font-weight:600;padding:3px 8px;border-radius:99px;background:${m.requires_prescription ? '#fff3cd' : '#e8f7f2'};color:${m.requires_prescription ? '#9a6700' : '#0f6e56'};">
+              ${m.requires_prescription ? 'Rx' : 'OTC'}
+            </span>
+          </div>
+        `).join('');
+
+        dropdown.style.display = 'block';
+        dropdown.querySelectorAll('.landing-med-option').forEach(opt => {
+          opt.addEventListener('mouseenter', () => opt.style.background = '#f4fbf8');
+          opt.addEventListener('mouseleave', () => opt.style.background = '#fff');
+          opt.addEventListener('click', () => goToMap(opt.dataset.name));
+        });
+      }
+
+      searchInput.addEventListener('focus', () => renderDropdown(searchInput.value));
+      searchInput.addEventListener('input', () => renderDropdown(searchInput.value));
+      searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          goToMap();
+        }
+      });
+      searchBtn.addEventListener('click', () => goToMap());
+
+      document.addEventListener('click', e => {
+        if (!wrapper.contains(e.target)) {
+          dropdown.style.display = 'none';
+        }
+      });
+    })();
+
+    // Update pharmacy card distances on landing page if geolocation is permitted
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const toRad = d => d * Math.PI / 180;
+        const uLat = pos.coords.latitude;
+        const uLng = pos.coords.longitude;
+        document.querySelectorAll('.pharmacy-card[data-lat][data-lng]').forEach(card => {
+          const pLat = parseFloat(card.dataset.lat);
+          const pLng = parseFloat(card.dataset.lng);
+          const dLat = toRad(pLat - uLat);
+          const dLng = toRad(pLng - uLng);
+          const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(uLat)) * Math.cos(toRad(pLat)) * Math.sin(dLng / 2) ** 2;
+          const km = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          const el = card.querySelector('.geo-distance');
+          if (el) el.textContent = `${km.toFixed(1)} km away`;
+        });
+      });
+    }
   </script>
 
 </body>

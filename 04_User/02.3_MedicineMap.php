@@ -12,10 +12,20 @@ include_once '../02_Actions/GlobalVariables.php';
 include_once '../00_Config/config.php';
 
 // ── Guard: must be logged in ───────────────────────────────────────
-if (!$_SESSION['user_id']) {
+if (empty($_SESSION['user_id'])) {
     header('Location: ../03_Authentication/login.php');
     exit;
 }
+
+$isLoggedIn = true;
+$searchQuery = trim($_GET['q'] ?? '');
+$medicinesJsonPath = __DIR__ . '/../database/medicines_db.json';
+$medicinesData = file_exists($medicinesJsonPath) ? json_decode(file_get_contents($medicinesJsonPath), true) : ['medicines' => []];
+$medicinesList = $medicinesData['medicines'] ?? [];
+
+$pharmaciesJsonPath = __DIR__ . '/../database/pharmacies_db.json';
+$pharmaciesData = file_exists($pharmaciesJsonPath) ? json_decode(file_get_contents($pharmaciesJsonPath), true) : ['pharmacies' => []];
+$pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
 ?>
 
 
@@ -39,277 +49,147 @@ if (!$_SESSION['user_id']) {
 
   <!-- Page transition -->
   <?php include '../01_Includes/page-transition-hardcode.php' ?>
+
+  <style>
+    /* Fix faint white Leaflet tile grid seams */
+    #map-full .leaflet-tile-container img {
+      width: 256.5px !important;
+      height: 256.5px !important;
+    }
+    .map-locate-btn {
+      position: absolute;
+      top: 72px;
+      left: 56px;
+      z-index: 520;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #d5e2dd;
+      color: #1a2e27;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+    }
+    .map-locate-btn:hover {
+      background: #eef9f4;
+      color: #1d9e75;
+    }
+    .map-route-panel {
+      display: none;
+      position: absolute;
+      top: 72px;
+      right: 16px;
+      z-index: 540;
+      width: 320px;
+      max-width: calc(100vw - 32px);
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .map-route-panel.open { display: block; }
+    .map-route-panel.minimized .map-route-body { display: none; }
+    .map-route-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .map-route-panel.minimized .map-route-header { margin-bottom: 0; }
+    .map-route-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f7f2;
+      color: #0f6e56;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-bottom: 8px;
+    }
+    /* Dark slate marker popup */
+    #map-full .leaflet-popup-content-wrapper {
+      background: #1e293b;
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 0;
+    }
+    #map-full .leaflet-popup-tip { background: #1e293b; }
+    #map-full .leaflet-popup-close-button { color: #cbd5e1 !important; top: 6px !important; right: 8px !important; }
+    .mf-slate-popup {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      min-width: 210px;
+      padding: 12px 26px 12px 14px;
+    }
+    .mf-slate-popup .popup-name { font-weight: 700; font-size: 0.88rem; color: #fff; margin-bottom: 2px; }
+    .mf-slate-popup .popup-addr { font-size: 0.74rem; color: #cbd5e1; margin-bottom: 8px; }
+    .mf-slate-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(74, 222, 128, 0.16);
+      color: #86efac;
+    }
+    .mf-slate-pill.unavail { background: rgba(248, 113, 113, 0.18); color: #fca5a5; }
+    /* Card button hierarchy */
+    .pharmacy-result-card { border: 1.5px solid #e2e8f0 !important; }
+    .pharmacy-result-card.selected { border-color: #1d9e75 !important; }
+    .pharmacy-result-card .btn-directions {
+      background: #eef9f4 !important;
+      color: #0f6e56 !important;
+      border: 1.5px solid #1d9e75 !important;
+    }
+    .pharmacy-result-card.selected .btn-directions {
+      background: #ff5b27 !important;
+      color: #ffffff !important;
+      border-color: #ff5b27 !important;
+    }
+    @media (max-width: 768px) {
+      .map-route-panel { top: 68px; right: 10px; left: 10px; width: auto; max-height: 170px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
 </head>
 
 <body data-active="02">
   <div class="wrapper">
 
-    <!-- Sidebar -->
-    <div id="sidebar-container"></div>
+    <?php if ($isLoggedIn): ?>
+      <!-- Sidebar -->
+      <div id="sidebar-container"><?php include '../01_Includes/users-sidebar-fixed.php'; ?></div>
+    <?php endif; ?>
 
     <!-- Main panel -->
     <div class="main-panel">
 
-      <!-- Topbar -->
-      <div id="topbar-container"></div>
+      <?php if ($isLoggedIn): ?>
+        <!-- Topbar -->
+        <div id="topbar-container"></div>
+      <?php endif; ?>
 
       <!-- Content -->
       <div id="content">
-
-        <!-- MAP -->
-        <div id="map-full"></div>
-
-        <!-- TOP SEARCH BAR -->
-        <div class="top-bar">
-          <a class="back-btn" onclick="history.back()" href="02_ScanRX.php">
-            <span class="material-symbols-outlined">arrow_back</span>
-            Back
-          </a>
-          <div class="search-bar">
-            <span class="material-symbols-outlined">search</span>
-            <input type="text" id="searchInput" value="Paracetamol 500mg" placeholder="Search medicine..." />
-          </div>
-        </div>
-
-        <!-- BOTTOM SHEET -->
-        <div class="bottom-sheet" id="bottomSheet">
-          <div class="sheet-handle-row" id="sheetHandleRow">
-            <div class="sheet-handle"></div>
-          </div>
-
-          <div class="sheet-header">
-            <div class="result-summary">
-              <span>12 nearby pharmacies with</span>
-              <span class="medicine-badge">Paracetamol 500mg</span>
-            </div>
-            <div class="result-count">Sorted by distance · Malaybalay, Bukidnon</div>
-          </div>
-
-          <div class="filter-chips">
-            <div class="chip active"><span class="material-symbols-outlined">near_me</span>Nearest</div>
-            <div class="chip"><span class="material-symbols-outlined">check_circle</span>In Stock</div>
-            <div class="chip"><span class="material-symbols-outlined">schedule</span>Open Now</div>
-            <div class="chip"><span class="material-symbols-outlined">payments</span>Lowest Price</div>
-            <div class="chip"><span class="material-symbols-outlined">star</span>Top Rated</div>
-          </div>
-
-          <!-- CARD GRID -->
-          <div class="pharmacy-scroll">
-
-            <!-- Card 1 -->
-            <div class="pharmacy-result-card selected" data-lat="8.1548" data-lng="125.1281" data-name="Rose Pharmacy">
-              <div class="card-img-wrap">
-                <img src="../07_Assets/images/pharmacies/RosePharmacy.png" alt="Rose Pharmacy" class="card-pharmacy-img" />
-
-              </div>
-              <div class="card-body-inner">
-                <div class="card-pharmacy-name">Rose Pharmacy</div>
-                <div class="card-pharmacy-addr">Fortich St., Barangay 8, M</div>
-                <div class="card-status-row">
-                  <span class="open-dot"></span>
-                  <span class="open-label">Open · Closes 10PM</span>
-                </div>
-                <div class="card-dist-row">
-                  <span class="material-symbols-outlined">location_on</span>0.8 km away
-                </div>
-                <div class="card-med-box">
-                  <div class="card-med-info">
-                    <div class="card-med-name">Paracetamol 500mg · Tablet</div>
-                    <div class="card-stock in-stock">
-                      <span class="material-symbols-outlined">check_circle</span>In Stock · 8 packs left
-                    </div>
-                  </div>
-                  <div class="card-price-wrap">
-                    <div class="card-price">₱2.75</div>
-                    <div class="card-per-unit">/ tablet</div>
-                  </div>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-directions"><span class="material-symbols-outlined">north_east</span>Get Directions</button>
-                  <button class="btn-save"><span class="material-symbols-outlined">bookmark</span></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="pharmacy-result-card" data-lat="8.1563" data-lng="125.1285" data-name="Generika Drugstore">
-              <div class="card-img-wrap">
-                <img src="../07_Assets/images/pharmacies/Generika.png" alt="Generika Drugstore" class="card-pharmacy-img" />
-
-              </div>
-              <div class="card-body-inner">
-                <div class="card-pharmacy-name">Generika Drugstore</div>
-                <div class="card-pharmacy-addr">Fortich St., Poblacion, Mal</div>
-                <div class="card-status-row">
-                  <span class="open-dot"></span>
-                  <span class="open-label">Open · Closes 9PM</span>
-                </div>
-                <div class="card-dist-row">
-                  <span class="material-symbols-outlined">location_on</span>0.8 km away
-                </div>
-                <div class="card-med-box">
-                  <div class="card-med-info">
-                    <div class="card-med-name">Paracetamol 500mg · Tablet</div>
-                    <div class="card-stock in-stock">
-                      <span class="material-symbols-outlined">check_circle</span>In Stock · 8 packs left
-                    </div>
-                  </div>
-                  <div class="card-price-wrap">
-                    <div class="card-price">₱2.75</div>
-                    <div class="card-per-unit">/ tablet</div>
-                  </div>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-directions"><span class="material-symbols-outlined">north_east</span>Get Directions</button>
-                  <button class="btn-save"><span class="material-symbols-outlined">bookmark</span></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="pharmacy-result-card" data-lat="8.1547" data-lng="125.1279" data-name="Mercury Drug">
-              <div class="card-img-wrap">
-                <img src="../07_Assets/images/pharmacies/MercuryDrug.jpg" alt="Mercury Drug" class="card-pharmacy-img" />
-
-              </div>
-              <div class="card-body-inner">
-                <div class="card-pharmacy-name">Mercury Drug</div>
-                <div class="card-pharmacy-addr">Sayre Highway, Casisang</div>
-                <div class="card-status-row">
-                  <span class="open-dot"></span>
-                  <span class="open-label">Open 24 Hours</span>
-                </div>
-                <div class="card-dist-row">
-                  <span class="material-symbols-outlined">location_on</span>1.1 km away
-                </div>
-                <div class="card-med-box">
-                  <div class="card-med-info">
-                    <div class="card-med-name">Paracetamol 500mg · Tablet</div>
-                    <div class="card-stock low-stock">
-                      <span class="material-symbols-outlined">warning</span>Low Stock · 3 packs left
-                    </div>
-                  </div>
-                  <div class="card-price-wrap">
-                    <div class="card-price">₱3.00</div>
-                    <div class="card-per-unit">/ tablet</div>
-                  </div>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-directions"><span class="material-symbols-outlined">north_east</span>Get Directions</button>
-                  <button class="btn-save"><span class="material-symbols-outlined">bookmark</span></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="pharmacy-result-card" data-lat="8.1547" data-lng="125.1275" data-name="Watsons Pharmacy">
-              <div class="card-img-wrap">
-                <img src="../07_Assets/images/pharmacies/Watsons.png" alt="Watsons Pharmacy" class="card-pharmacy-img" />
-
-              </div>
-              <div class="card-body-inner">
-                <div class="card-pharmacy-name">Watsons Pharmacy</div>
-                <div class="card-pharmacy-addr">Centrio Mall, Sayre Highw</div>
-                <div class="card-status-row">
-                  <span class="open-dot"></span>
-                  <span class="open-label">Open · Closes 9PM</span>
-                </div>
-                <div class="card-dist-row">
-                  <span class="material-symbols-outlined">location_on</span>1.4 km away
-                </div>
-                <div class="card-med-box">
-                  <div class="card-med-info">
-                    <div class="card-med-name">Paracetamol 500mg · Tablet</div>
-                    <div class="card-stock in-stock">
-                      <span class="material-symbols-outlined">check_circle</span>In Stock · 12 packs left
-                    </div>
-                  </div>
-                  <div class="card-price-wrap">
-                    <div class="card-price">₱2.75</div>
-                    <div class="card-per-unit">/ tablet</div>
-                  </div>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-directions"><span class="material-symbols-outlined">north_east</span>Get Directions</button>
-                  <button class="btn-save"><span class="material-symbols-outlined">bookmark</span></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 5 -->
-            <div class="pharmacy-result-card" data-lat="8.1558" data-lng="125.1269" data-name="Rojon Pharmacy">
-              <div class="card-img-wrap">
-                <img src="../07_Assets/images/pharmacies/RojonPharmacy.png" alt="Rojon Pharmacy" class="card-pharmacy-img" />
-
-              </div>
-              <div class="card-body-inner">
-                <div class="card-pharmacy-name">Rojon Pharmacy</div>
-                <div class="card-pharmacy-addr">546C+P3R, Sayre Hwy, Mc</div>
-                <div class="card-status-row">
-                  <span class="open-dot"></span>
-                  <span class="open-label">Open · Closes 10PM</span>
-                </div>
-                <div class="card-dist-row">
-                  <span class="material-symbols-outlined">location_on</span>1.7 km away
-                </div>
-                <div class="card-med-box">
-                  <div class="card-med-info">
-                    <div class="card-med-name">Paracetamol 500mg · Tablet</div>
-                    <div class="card-stock in-stock">
-                      <span class="material-symbols-outlined">check_circle</span>In Stock · 5 packs left
-                    </div>
-                  </div>
-                  <div class="card-price-wrap">
-                    <div class="card-price">₱2.50</div>
-                    <div class="card-per-unit">/ tablet</div>
-                  </div>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-directions"><span class="material-symbols-outlined">north_east</span>Get Directions</button>
-                  <button class="btn-save"><span class="material-symbols-outlined">bookmark</span></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="pharmacy-result-card" data-lat="8.1567" data-lng="125.1263" data-name="TGP The Generics Pharmacy">
-              <div class="card-img-wrap">
-                <img src="../07_Assets/images/pharmacies/TGP.png" alt="TGP The Generics Pharmacy" class="card-pharmacy-img" />
-
-              </div>
-              <div class="card-body-inner">
-                <div class="card-pharmacy-name">TGP The Generics Pha...</div>
-                <div class="card-pharmacy-addr">Chavez St., Poblacion, Mc</div>
-                <div class="card-status-row">
-                  <span class="open-dot"></span>
-                  <span class="open-label">Open · Closes 8PM</span>
-                </div>
-                <div class="card-dist-row">
-                  <span class="material-symbols-outlined">location_on</span>2.0 km away
-                </div>
-                <div class="card-med-box">
-                  <div class="card-med-info">
-                    <div class="card-med-name">Paracetamol 500mg · Tablet</div>
-                    <div class="card-stock in-stock">
-                      <span class="material-symbols-outlined">check_circle</span>In Stock · 20 packs left
-                    </div>
-                  </div>
-                  <div class="card-price-wrap">
-                    <div class="card-price">₱2.00</div>
-                    <div class="card-per-unit">/ tablet</div>
-                  </div>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-directions"><span class="material-symbols-outlined">north_east</span>Get Directions</button>
-                  <button class="btn-save"><span class="material-symbols-outlined">bookmark</span></button>
-                </div>
-              </div>
-            </div>
-
-          </div><!-- /pharmacy-scroll -->
-        </div><!-- /bottom-sheet -->
-
-
+        <?php
+        $mapBasePath = '../';
+        $mapMode = 'embedded';
+        $mapInitialQuery = $searchQuery !== '' ? $searchQuery : 'Paracetamol';
+        $mapBackHref = '02_ScanRX.php';
+        include '../01_Includes/medicine-map-component.php';
+        ?>
       </div><!-- /#content -->
     </div><!-- /.main-panel -->
   </div><!-- /.wrapper -->
@@ -500,136 +380,15 @@ if (!$_SESSION['user_id']) {
     }
   </script>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <?php
+  $loginModalBasePath = '../';
+  include_once '../01_Includes/login-prompt-modal.php';
+  ?>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
-  <script>
-    const map = L.map('map-full').setView([8.1555, 125.1275], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    function makeIcon(color = '#1d9e75') {
-      return L.divIcon({
-        className: '',
-        html: `<div style="background:${color};width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);"></div>`,
-        iconSize: [30, 30],
-        iconAnchor: [15, 30],
-        popupAnchor: [0, -32]
-      });
-    }
-
-    const pharmacyData = [{
-        name: 'Rose Pharmacy',
-        lat: 8.1548,
-        lng: 125.1281,
-        stock: 'In Stock · 8 packs',
-        price: '₱2.75'
-      },
-      {
-        name: 'Generika Drugstore',
-        lat: 8.1563,
-        lng: 125.1285,
-        stock: 'In Stock · 8 packs',
-        price: '₱2.75'
-      },
-      {
-        name: 'Mercury Drug',
-        lat: 8.1547,
-        lng: 125.1279,
-        stock: 'Low Stock · 3 packs',
-        price: '₱3.00'
-      },
-      {
-        name: 'Watsons Pharmacy',
-        lat: 8.1547,
-        lng: 125.1275,
-        stock: 'In Stock · 12 packs',
-        price: '₱2.75'
-      },
-      {
-        name: 'Rojon Pharmacy',
-        lat: 8.1558,
-        lng: 125.1269,
-        stock: 'In Stock · 5 packs',
-        price: '₱2.50'
-      },
-      {
-        name: 'TGP The Generics Pharmacy',
-        lat: 8.1567,
-        lng: 125.1263,
-        stock: 'In Stock · 20 packs',
-        price: '₱2.00'
-      },
-    ];
-
-    const markers = {};
-    pharmacyData.forEach(p => {
-      const m = L.marker([p.lat, p.lng], {
-          icon: makeIcon()
-        }).addTo(map)
-        .bindPopup(`
-        <div class="popup-inner">
-          <div class="popup-top-bar">
-            <div class="popup-name">${p.name}</div>
-            <div class="popup-avail ${p.stock.toLowerCase().includes('low') ? 'low' : ''}">${p.stock}</div>
-          </div>
-          <div class="popup-bottom-bar">
-            <div class="popup-med-name">Paracetamol 500mg</div>
-            <div>
-              <div class="popup-price">${p.price}</div>
-              <div class="popup-per">/ tablet</div>
-            </div>
-          </div>
-        </div>
-      `, {
-          maxWidth: 240
-        });
-      markers[p.name] = m;
-    });
-    markers['Rose Pharmacy'].openPopup();
-
-    const sheet = document.getElementById('bottomSheet');
-    const floatingBtns = document.getElementById('floatingBtns');
-
-    document.getElementById('sheetHandleRow').addEventListener('click', () => {
-      sheet.classList.toggle('expanded');
-      // removed floatingBtns.style.bottom — button is now fixed outside wrapper
-      setTimeout(() => map.invalidateSize(), 360);
-    });
-
-    document.querySelectorAll('.pharmacy-result-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.pharmacy-result-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        const lat = parseFloat(card.dataset.lat);
-        const lng = parseFloat(card.dataset.lng);
-        const name = card.dataset.name;
-        sheet.classList.remove('expanded');
-        // removed floatingBtns.style.bottom — button is now fixed outside wrapper
-        setTimeout(() => {
-          map.invalidateSize();
-          map.setView([lat, lng], 16);
-          if (markers[name]) markers[name].openPopup();
-        }, 360);
-      });
-
-      const dirBtn = card.querySelector('.btn-directions');
-      if (dirBtn) {
-        dirBtn.addEventListener('click', e => {
-          e.stopPropagation();
-          window.open(`https://www.openstreetmap.org/directions?to=${card.dataset.lat},${card.dataset.lng}`, '_blank');
-        });
-      }
-    });
-
-    document.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-      });
-    });
-  </script>
+  <?php if ($isLoggedIn): ?>
+    <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
+  <?php endif; ?>
 </body>
 
 </html>

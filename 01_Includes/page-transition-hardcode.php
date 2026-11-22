@@ -1,40 +1,104 @@
 <!-- filepath: /d:/xampp/htdocs/MediFind_RocketLabs/01_Includes/page-transition-hardcode.php -->
+<script>
+    if ("onpagereveal" in window) {
+        document.documentElement.classList.add("mf-vt-supported");
+    }
+</script>
 <style>
-    body {
-        opacity: 0;
-        transition: opacity 0.25s ease;
+    @view-transition {
+        navigation: auto;
     }
 
-    body.is-visible {
+    @media (min-width: 769px) {
+        #sidebar-container,
+        #pharmacy-sidebar-container,
+        #system-sidebar-container {
+            view-transition-name: mf-sidebar;
+        }
+
+        #topbar-container {
+            view-transition-name: mf-topbar;
+        }
+    }
+
+    ::view-transition-old(mf-sidebar),
+    ::view-transition-new(mf-sidebar),
+    ::view-transition-old(mf-topbar),
+    ::view-transition-new(mf-topbar) {
+        animation: none;
+    }
+
+    @keyframes mfFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Keep old root solid while new root cross-dissolves smoothly on top (prevents white/gray brightness dip) */
+    ::view-transition-old(root) {
+        animation: none;
+    }
+
+    ::view-transition-new(root) {
+        animation: 0.22s cubic-bezier(0.22, 1, 0.36, 1) both mfFadeIn;
+        mix-blend-mode: normal;
+    }
+
+    /* Fallback opacity fade ONLY when native View Transitions are unavailable */
+    html:not(.mf-vt-supported) body:not(:has(#content)):not(:has(#sidebar-container)):not(:has(#pharmacy-sidebar-container)):not(:has(#system-sidebar-container)) {
+        opacity: 0;
+        transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html:not(.mf-vt-supported) body:not(:has(#content)):not(:has(#sidebar-container)):not(:has(#pharmacy-sidebar-container)):not(:has(#system-sidebar-container)).is-visible {
+        opacity: 1;
+    }
+
+    html:not(.mf-vt-supported) #content {
+        opacity: 0;
+        transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html:not(.mf-vt-supported) #content.is-visible {
         opacity: 1;
     }
 </style>
 
 <script>
     (function () {
+        var supportsViewTransitions = document.documentElement.classList.contains("mf-vt-supported");
 
-    
+        /* Let native View Transitions handle link/form navigations without JS interception */
+        if (supportsViewTransitions) {
+            return;
+        }
+
+        function getTarget() {
+            return document.getElementById("content") || document.body;
+        }
+
         function fadeIn() {
             requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
-                    document.body.classList.add("is-visible");
+                    getTarget().classList.add("is-visible");
                 });
             });
         }
 
-        if (document.readyState === "complete") {
+        if (document.readyState === "interactive" || document.readyState === "complete") {
             fadeIn();
         } else {
-            window.addEventListener("load", fadeIn);
+            document.addEventListener("DOMContentLoaded", fadeIn);
         }
 
-        /* ── Fade out helper ── */
+        window.addEventListener("pageshow", function () {
+            getTarget().classList.add("is-visible");
+        });
+
         function fadeOutThen(callback) {
-            document.body.classList.remove("is-visible");
-            setTimeout(callback, 250); /* match transition duration */
+            getTarget().classList.remove("is-visible");
+            setTimeout(callback, 180);
         }
 
-        /* ── Intercept internal link clicks ── */
         document.addEventListener("click", function (e) {
             var link = e.target.closest("a");
             if (!link) return;
@@ -56,11 +120,8 @@
             });
         });
 
-        /* ── Intercept form submits ── */
         document.addEventListener("submit", function (e) {
             var form = e.target;
-
-            /* Only intercept GET/POST forms navigating away (not fetch/xhr forms) */
             if (form.dataset.noTransition) return;
 
             e.preventDefault();
@@ -68,6 +129,5 @@
                 form.submit();
             });
         });
-
     })();
 </script>
