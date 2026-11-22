@@ -36,6 +36,11 @@
   </div>
 
   <!-- Mobile Profile Hub (<= 767.98px) -->
+  <style>
+    .mf-mobile-profile-hub {
+      display: none;
+    }
+  </style>
   <div class="mf-mobile-profile-hub" id="mfMobileProfileHub">
     <div class="mf-mobile-profile-hero"></div>
     <div class="mf-mobile-profile-sheet">

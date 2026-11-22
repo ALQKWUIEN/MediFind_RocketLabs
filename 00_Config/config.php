@@ -2,7 +2,7 @@
 // 00_Config/config.php
 
 $host = "localhost";
-$dbname = "medifindv2";
+$dbname = "medifind";
 $user = "root";
 $pass = "";
 
