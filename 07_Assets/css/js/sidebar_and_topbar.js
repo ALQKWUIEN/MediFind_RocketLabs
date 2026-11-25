@@ -5,7 +5,10 @@
 function applySidebarHTML(elementId, data) {
   const el = document.getElementById(elementId);
   if (!el) return;
-  el.innerHTML = data;
+  if (el.dataset.mfHydrated !== "1") {
+    el.innerHTML = data;
+    el.dataset.mfHydrated = "1";
+  }
   if (
     elementId === "sidebar-container" ||
     elementId === "pharmacy-sidebar-container" ||
@@ -31,7 +34,7 @@ function applySidebarHTML(elementId, data) {
 }
 
 function loadHTML(filePath, elementId) {
-  const cacheKey = "mf_html_" + filePath;
+  const cacheKey = "mf_html_v3_" + filePath;
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) {
     applySidebarHTML(elementId, cached);
@@ -242,46 +245,46 @@ function initTopbar() {
     });
   }
 
-  // ── Notifications data ────────────────────────────────────
+  // ── Notifications data (Pharmacy Stock Outage & Inventory Samples) ──
   let notifications = [
     {
-      id: 1,
-      icon: "fas fa-file-alt",
-      color: "#1d4ed8",
-      text: "<strong>Mark Reyes</strong> submitted a new incident report.",
-      time: "2 min ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      icon: "fas fa-exclamation-triangle",
+      id: "sample_1",
+      icon: "fas fa-times-circle",
       color: "#dc2626",
-      text: "<strong>Alert #3</strong> has been flagged as high severity.",
-      time: "15 min ago",
+      text: "<strong>Stock Outage:</strong> Mefenamic Acid (Ponstan) has <strong>0 units</strong> remaining.",
+      time: "Just now",
       unread: true,
     },
     {
-      id: 3,
-      icon: "fas fa-check-circle",
-      color: "#059669",
-      text: "Report <strong>#12</strong> was resolved by Admin Cruz.",
-      time: "1 hr ago",
-      unread: true,
-    },
-    {
-      id: 4,
-      icon: "fas fa-user-plus",
+      id: "sample_2",
+      icon: "fas fa-exclamation-triangle",
       color: "#d97706",
-      text: "<strong>New user</strong> Ella Mendoza has registered.",
-      time: "3 hrs ago",
+      text: "<strong>Low Stock Warning:</strong> Losartan Potassium (Cozaar) is down to <strong>5 / 10 units</strong>.",
+      time: "12 min ago",
+      unread: true,
+    },
+    {
+      id: "sample_3",
+      icon: "fas fa-exclamation-triangle",
+      color: "#d97706",
+      text: "<strong>Low Stock Warning:</strong> Amoxicillin (Amoxil) reached <strong>8 / 10 units</strong>.",
+      time: "45 min ago",
+      unread: true,
+    },
+    {
+      id: "sample_4",
+      icon: "fas fa-calendar-times",
+      color: "#b45309",
+      text: "<strong>Expiring Soon:</strong> Cetirizine (Alnix) batch expires in <strong>18 days</strong>.",
+      time: "2 hrs ago",
       unread: false,
     },
     {
-      id: 5,
-      icon: "fas fa-shield-alt",
-      color: "#6b7280",
-      text: "Suspicious activity detected at <strong>Main Gate</strong>.",
-      time: "Yesterday",
+      id: "sample_5",
+      icon: "fas fa-check-circle",
+      color: "#059669",
+      text: "<strong>Restock Logged:</strong> Paracetamol (Biogesic) inventory synced with POS.",
+      time: "Today",
       unread: false,
     },
   ];
@@ -341,13 +344,16 @@ function initTopbar() {
         .map(
           (n) => `
                 <div class="notif-item ${n.unread ? "unread" : ""}"
-                     onclick="readNotif(${n.id}); event.stopPropagation();">
+                     onclick="readNotif('${String(n.id).replace(/'/g, "\\'")}'); event.stopPropagation();">
                     <div class="notif-avatar" style="background:${n.color};">
                         <i class="${n.icon}"></i>
                     </div>
                     <div class="notif-content">
                         <p class="notif-text">${n.text}</p>
-                        <span class="notif-time"><i class="fas fa-clock me-1"></i>${n.time}</span>
+                        <div class="d-flex align-items-center justify-content-between gap-2 mt-1">
+                          <span class="notif-time"><i class="fas fa-clock me-1"></i>${n.time}</span>
+                          ${n.inventoryId ? `<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.72rem;background:#e8f7f2;color:#0f6e56;border:1px solid #bce6d7;border-radius:999px;font-weight:600;" onclick="restockFromNotif(${n.inventoryId}, '${String(n.id).replace(/'/g, "\\'")}'); event.stopPropagation();">Restock</button>` : ""}
+                        </div>
                     </div>
                     ${n.unread ? '<div class="notif-unread-dot"></div>' : ""}
                 </div>`,
@@ -355,6 +361,44 @@ function initTopbar() {
         .join("")
       : `<div class="notif-empty"><i class="fas fa-bell-slash"></i>No notifications</div>`;
   }
+
+  // Load live low-stock alerts for Pharmacy Admin portal
+  (function loadLiveInventoryAlerts() {
+    if (!window.location.pathname.includes("05_PharmacyAdmin")) return;
+    fetch("../05_PharmacyAdmin/api_inventory.php?action=get_alerts", { credentials: "same-origin" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data || !data.success || !Array.isArray(data.alerts) || !data.alerts.length) return;
+        const liveItems = data.alerts.map((a) => ({
+          id: "alert_" + a.Alert_ID,
+          alertId: a.Alert_ID,
+          inventoryId: a.Inventory_ID,
+          icon: a.Alert_Type === "out_of_stock" ? "fas fa-times-circle" : "fas fa-exclamation-triangle",
+          color: a.Alert_Type === "out_of_stock" ? "#dc2626" : "#d97706",
+          text: a.Alert_Type === "out_of_stock"
+            ? `<strong>${a.Medicine_Name}</strong> is <strong>Out of Stock</strong> (0 units).`
+            : `<strong>${a.Medicine_Name}</strong> is low on stock (<strong>${a.Current_Qty}</strong> / ${a.Threshold_Used} min).`,
+          time: a.Created_At ? a.Created_At.slice(0, 16).replace("T", " ") : "Just now",
+          unread: Number(a.Is_Read) === 0
+        }));
+        notifications = liveItems;
+        renderNotifications();
+      })
+      .catch(() => { });
+  })();
+
+  window.restockFromNotif = function (inventoryId, notifId) {
+    window.readNotif(notifId);
+    const inManage = window.location.pathname.toLowerCase().includes("manage_inventory.php");
+    if (inManage) {
+      const btn = document.querySelector(`.quick-restock-btn[data-id="${inventoryId}"]`);
+      if (btn) {
+        btn.click();
+        return;
+      }
+    }
+    window.location.href = `../05_PharmacyAdmin/manage_inventory.php?restock=${encodeURIComponent(inventoryId)}`;
+  };
 
   function renderMessages() {
     const list = document.getElementById("msgList");
@@ -389,10 +433,18 @@ function initTopbar() {
 
   // ── Actions (must be on window so onclick="" in HTML can reach them) ──
   window.readNotif = function (id) {
-    const n = notifications.find((x) => x.id === id);
+    const n = notifications.find((x) => String(x.id) === String(id));
     if (n) {
       n.unread = false;
       renderNotifications();
+      if (n.alertId) {
+        fetch("../05_PharmacyAdmin/api_inventory.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ action: "mark_alert_read", alert_id: n.alertId })
+        }).catch(() => { });
+      }
     }
   };
 
@@ -408,6 +460,14 @@ function initTopbar() {
     if (type === "notif") {
       notifications.forEach((n) => (n.unread = false));
       renderNotifications();
+      if (window.location.pathname.includes("05_PharmacyAdmin")) {
+        fetch("../05_PharmacyAdmin/api_inventory.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ action: "mark_all_alerts_read" })
+        }).catch(() => { });
+      }
     } else {
       messages.forEach((m) => (m.unread = false));
       renderMessages();

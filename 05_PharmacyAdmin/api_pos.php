@@ -7,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 include_once __DIR__ . '/../00_Config/config.php';
+include_once __DIR__ . '/inventory_alert_helper.php';
 
 // Auth Guard
 if (empty($_SESSION['user_id'])) {
@@ -233,6 +234,8 @@ if ($action === 'checkout') {
         ");
 
         $updatedStockList = [];
+        $triggeredAlerts = [];
+        $getNewQty = $pdo->prepare("SELECT Quantity FROM 21_inventory WHERE Inventory_ID = ?");
 
         foreach ($items as $item) {
             $invId = (int) $item['inventory_id'];
@@ -241,13 +244,22 @@ if ($action === 'checkout') {
             $unitPrice = (float) $item['unit_price'];
             $lineTotal = (float) ($item['total_price'] ?? ($qty * $unitPrice));
 
+            $getNewQty->execute([$invId]);
+            $oldQty = (int) $getNewQty->fetchColumn();
+
             $itemStmt->execute([$saleId, $invId, $medId, $qty, $unitPrice, $lineTotal]);
             $updateStockStmt->execute([$qty, $invId, $pharmacyId]);
 
             // Query new quantity
-            $getNewQty = $pdo->prepare("SELECT Quantity FROM 21_inventory WHERE Inventory_ID = ?");
             $getNewQty->execute([$invId]);
-            $updatedStockList[$invId] = (int) $getNewQty->fetchColumn();
+            $newQty = (int) $getNewQty->fetchColumn();
+            $updatedStockList[$invId] = $newQty;
+
+            // Trigger low-stock / out-of-stock alert only when crossing threshold
+            $alert = mfCheckAndRecordStockAlert($pdo, $pharmacyId, $invId, $oldQty, $newQty);
+            if ($alert) {
+                $triggeredAlerts[] = $alert;
+            }
         }
 
         $pdo->commit();

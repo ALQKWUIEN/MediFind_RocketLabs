@@ -15,37 +15,21 @@ include_once '../00_Config/config.php';
 </head>
 <body>
   <div class="topbar">
-    <button id="sidebarToggle" class="topbar-hamburger" type="button">
-      <i class="fas fa-bars"></i>
-    </button>
+    <div class="d-flex align-items-center gap-2">
+      <button id="sidebarToggle" class="topbar-hamburger" type="button">
+        <i class="fas fa-bars"></i>
+      </button>
+      <button id="posFocusToggleBtn" class="pos-focus-btn" type="button" title="Toggle Full-Screen POS">
+        <span class="material-symbols-outlined" id="posFocusIcon" style="font-size:1.1rem;">fullscreen</span>
+        <span id="posFocusLabel">Full Screen</span>
+      </button>
+    </div>
 
     <div class="topbar-right">
       <!-- Date -->
       <div class="topbar-date">
         <i class="fas fa-calendar-alt" style="color: #146f50"></i>
         <span id="topbar-date-text"></span>
-      </div>
-
-      <!-- Messages -->
-      <div class="dropdown">
-        <button class="topbar-icon-btn" type="button" id="msgDropdown"
-          data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fas fa-comment-dots"></i>
-          <span class="topbar-badge" id="msgBadge">0</span>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end notif-dropdown" aria-labelledby="msgDropdown">
-          <div class="notif-header">
-            <p class="notif-header-title">
-              <i class="fas fa-comment-dots me-2" style="color: #146f50"></i>Messages
-            </p>
-            <button class="notif-mark-all" type="button"
-              onclick="markAllRead('msg'); event.stopPropagation();">
-              Mark all read
-            </button>
-          </div>
-          <div class="notif-list" id="msgList"></div>
-          <div class="notif-footer"><a href="#">View all messages</a></div>
-        </div>
       </div>
 
       <!-- Notifications -->

@@ -7,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 include_once __DIR__ . '/../00_Config/config.php';
+include_once __DIR__ . '/inventory_alert_helper.php';
 
 // Auth Guard
 if (empty($_SESSION['user_id'])) {
@@ -221,6 +222,7 @@ if ($action === 'update_stock') {
                 WHERE Inventory_ID = ? AND Pharmacy_ID = ?
             ");
             $upd->execute([$newQty, $invId, $pharmacyId]);
+            mfCheckAndRecordStockAlert($pdo, $pharmacyId, $invId, (int)$currentStock, $newQty);
 
         } else {
             // Inventory does not exist yet for this medicine, create it

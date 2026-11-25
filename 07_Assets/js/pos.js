@@ -49,6 +49,87 @@ class MediFindPOS {
   init() {
     this.bindEvents();
     this.renderCart();
+    this.initFocusMode();
+  }
+
+  initFocusMode() {
+    let escArmed = false;
+    let escTimer = null;
+    const toast = document.getElementById('posEscToast');
+
+    const syncButtonUI = () => {
+      const isFocus = document.body.classList.contains('pos-focus-mode');
+      const iconEl = document.getElementById('posFocusIcon');
+      const labelEl = document.getElementById('posFocusLabel');
+      if (iconEl) iconEl.textContent = isFocus ? 'fullscreen_exit' : 'fullscreen';
+      if (labelEl) labelEl.textContent = isFocus ? 'Exit Full Screen' : 'Full Screen';
+    };
+
+    const setFocusMode = async (enable) => {
+      document.body.classList.toggle('pos-focus-mode', enable);
+      escArmed = false;
+      clearTimeout(escTimer);
+      if (toast) toast.classList.remove('show');
+      syncButtonUI();
+
+      try {
+        if (enable) {
+          if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+            await document.documentElement.requestFullscreen();
+          }
+          if (navigator.keyboard && navigator.keyboard.lock) {
+            await navigator.keyboard.lock(['Escape']);
+          }
+        } else {
+          if (navigator.keyboard && navigator.keyboard.unlock) {
+            navigator.keyboard.unlock();
+          }
+          if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+        }
+      } catch (err) {
+        // Fallback smoothly to in-app full-screen focus mode if browser blocks fullscreen/keyboard lock
+      }
+    };
+
+    // Sync if user exits native fullscreen via browser UI
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && document.body.classList.contains('pos-focus-mode')) {
+        if (navigator.keyboard && navigator.keyboard.unlock) {
+          navigator.keyboard.unlock();
+        }
+        document.body.classList.remove('pos-focus-mode');
+        escArmed = false;
+        clearTimeout(escTimer);
+        if (toast) toast.classList.remove('show');
+        syncButtonUI();
+      }
+    });
+
+    // Delegate click because topbar may hydrate asynchronously on first load
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('#posFocusToggleBtn');
+      if (!btn) return;
+      setFocusMode(!document.body.classList.contains('pos-focus-mode'));
+    });
+
+    // Guarded Esc exit: first press warns, second press within 2.5s exits
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !document.body.classList.contains('pos-focus-mode')) return;
+      e.preventDefault();
+      if (escArmed) {
+        setFocusMode(false);
+      } else {
+        escArmed = true;
+        if (toast) toast.classList.add('show');
+        clearTimeout(escTimer);
+        escTimer = setTimeout(() => {
+          escArmed = false;
+          if (toast) toast.classList.remove('show');
+        }, 2500);
+      }
+    });
   }
 
   bindEvents() {
@@ -173,7 +254,7 @@ class MediFindPOS {
         } else {
           this.hideSearchResults();
         }
-        
+
         let title = 'Fast Available Stock';
         if (query) {
           title = `Search: "${query}"`;
@@ -390,7 +471,8 @@ class MediFindPOS {
         unit_price: parseFloat(item.Price || 0),
         quantity: 1,
         max_stock: maxStock,
-        total_price: parseFloat(item.Price || 0)
+        total_price: parseFloat(item.Price || 0),
+        image_url: resolveMedImageUrl(item.Med_Image_URL)
       });
     }
 
@@ -435,50 +517,62 @@ class MediFindPOS {
     this.cartTbody.innerHTML = '';
 
     this.cart.forEach((item, idx) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="text-truncate" style="max-width: 250px;" title="${this.escapeHtml(item.generic_name)}${item.brand_name ? ' (' + this.escapeHtml(item.brand_name) + ')' : ''}">
-          <span class="fw-semibold text-dark">${this.escapeHtml(item.generic_name)}</span>
-          ${item.brand_name ? `<span class="text-muted small">(${this.escapeHtml(item.brand_name)})</span>` : ''}
-          ${item.dosage ? `<span class="text-muted small"> ${this.escapeHtml(item.dosage)}</span>` : ''}
-          ${item.requires_rx ? '<span class="pos-rx-badge">Rx</span>' : ''}
-        </td>
-        <td class="text-nowrap">₱${item.unit_price.toFixed(2)}</td>
-        <td>
-          <div class="cart-qty-ctrl">
-            <button type="button" class="cart-qty-btn btn-minus" data-index="${idx}">-</button>
-            <input type="number" class="cart-qty-input" value="${item.quantity}" min="1" max="${item.max_stock}" data-index="${idx}">
-            <button type="button" class="cart-qty-btn btn-plus" data-index="${idx}">+</button>
+      const card = document.createElement('div');
+      card.className = 'pos-cart-item-card';
+      const subParts = [];
+      if (item.brand_name) subParts.push(this.escapeHtml(item.brand_name));
+      subParts.push(`₱${item.unit_price.toFixed(2)}/${this.escapeHtml(item.price_per || 'unit')}`);
+
+      card.innerHTML = `
+        <img src="${this.escapeHtml(item.image_url || FALLBACK_MED_SVG)}"
+             alt="${this.escapeHtml(item.generic_name || '')}"
+             class="pos-cart-thumb"
+             onerror="this.onerror=null; this.src='${FALLBACK_MED_SVG}';">
+        <div class="pos-cart-item-right">
+          <div class="pos-cart-item-top">
+            <div class="pos-cart-item-meta">
+              <div class="pos-cart-item-name">
+                <span>${this.escapeHtml(item.generic_name)}</span>
+                ${item.requires_rx ? '<span class="pos-rx-badge">Rx</span>' : ''}
+              </div>
+              <div class="pos-cart-item-sub">${subParts.join(' &bull; ')}</div>
+            </div>
+            <button type="button" class="pos-cart-item-close cart-remove-btn" data-index="${idx}" title="Remove item" aria-label="Remove item">
+              <span class="material-symbols-outlined" style="font-size: 1.05rem;">close</span>
+            </button>
           </div>
-        </td>
-        <td class="fw-bold text-nowrap">₱${item.total_price.toFixed(2)}</td>
-        <td class="text-end">
-          <button type="button" class="cart-remove-btn" data-index="${idx}" title="Remove item">
-            <span class="material-symbols-outlined" style="font-size: 1.15rem;">delete</span>
-          </button>
-        </td>
+          <div class="pos-cart-item-divider"></div>
+          <div class="pos-cart-item-bottom">
+            <div class="pos-cart-qty-pill">
+              <button type="button" class="cart-qty-btn btn-minus" data-index="${idx}">-</button>
+              <input type="number" class="cart-qty-input" value="${item.quantity}" min="1" max="${item.max_stock}" data-index="${idx}">
+              <button type="button" class="cart-qty-btn btn-plus" data-index="${idx}">+</button>
+            </div>
+            <div class="pos-cart-item-total">₱${item.total_price.toFixed(2)}</div>
+          </div>
+        </div>
       `;
 
       // Event listeners for quantity controls
-      tr.querySelector('.btn-minus').addEventListener('click', () => {
+      card.querySelector('.btn-minus').addEventListener('click', () => {
         this.updateQuantity(idx, item.quantity - 1);
       });
 
-      tr.querySelector('.btn-plus').addEventListener('click', () => {
+      card.querySelector('.btn-plus').addEventListener('click', () => {
         this.updateQuantity(idx, item.quantity + 1);
       });
 
-      const qtyInput = tr.querySelector('.cart-qty-input');
+      const qtyInput = card.querySelector('.cart-qty-input');
       qtyInput.addEventListener('change', (e) => {
         const val = parseInt(e.target.value) || 1;
         this.updateQuantity(idx, val);
       });
 
-      tr.querySelector('.cart-remove-btn').addEventListener('click', () => {
+      card.querySelector('.cart-remove-btn').addEventListener('click', () => {
         this.removeFromCart(idx);
       });
 
-      this.cartTbody.appendChild(tr);
+      this.cartTbody.appendChild(card);
     });
 
     this.updateTotals();

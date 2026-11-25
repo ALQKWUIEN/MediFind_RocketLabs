@@ -75,7 +75,7 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Scripts & CSS -->
-  <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
+  <script src="../07_Assets/css/js/sidebar_and_topbar.js?v=<?= time() ?>"></script>
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/theme-tokens.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/admin-buttons.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-fonts.css" />
@@ -84,6 +84,279 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
   <link rel="stylesheet" href="../07_Assets/css/02_PharmacyAdmin CSS/pos.css?v=<?= time() ?>" />
 
   <?php include '../01_Includes/page-transition-hardcode.php' ?>
+  <style>
+    #posCartTableWrap {
+      max-height: 310px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 2px;
+      margin-bottom: 12px;
+    }
+    .pos-cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pos-cart-item-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .pos-cart-thumb {
+      width: 84px;
+      height: 84px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      object-fit: contain;
+      padding: 6px;
+      flex-shrink: 0;
+    }
+    .pos-cart-item-right {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .pos-cart-item-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pos-cart-item-meta {
+      min-width: 0;
+      flex: 1;
+    }
+    .pos-cart-item-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #0f172a;
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .pos-cart-item-sub {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pos-cart-item-close {
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .pos-cart-item-close:hover {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .pos-cart-item-divider {
+      border-top: 1px solid #f1f5f9;
+      margin: 10px 0;
+    }
+    .pos-cart-item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pos-cart-qty-pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      overflow: hidden;
+      height: 32px;
+    }
+    .pos-cart-qty-pill .cart-qty-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pos-cart-qty-pill .cart-qty-btn:hover {
+      background: #e2e8f0;
+    }
+    .pos-cart-qty-pill .cart-qty-input {
+      width: 38px;
+      height: 30px;
+      border: none;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #0f172a;
+      background: #ffffff;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    .pos-cart-qty-pill .cart-qty-input::-webkit-outer-spin-button,
+    .pos-cart-qty-pill .cart-qty-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .pos-cart-item-total {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    /* Full-Screen Focus Mode Button & Smooth Sidebar Transition */
+    .pos-focus-btn {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border-radius: 10px;
+      border: 1px solid #d1e3dc;
+      background: #f4f9f7;
+      color: #1a2e27;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    body[data-active="pos"] .pos-focus-btn {
+      display: inline-flex;
+    }
+    .pos-focus-btn:hover {
+      background: #1d9e75;
+      border-color: #1d9e75;
+      color: #ffffff;
+    }
+    body.pos-focus-mode .pos-focus-btn {
+      background: #fff3ee;
+      border-color: #ffcdb8;
+      color: #c2410c;
+    }
+    body.pos-focus-mode .pos-focus-btn:hover {
+      background: #ff5b27;
+      border-color: #ff5b27;
+      color: #ffffff;
+    }
+
+    #pharmacy-sidebar-container {
+      transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  min-width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  max-width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.22s ease;
+    }
+    body.pos-focus-mode #sidebarToggle {
+      display: none !important;
+    }
+    body.pos-focus-mode #pharmacy-sidebar-container {
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      opacity: 0;
+      overflow: hidden;
+      border-right: none !important;
+      pointer-events: none;
+    }
+    body.pos-focus-mode .main-panel {
+      height: 100vh;
+      overflow: hidden;
+    }
+    body.pos-focus-mode #content,
+    body.pos-focus-mode .content-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 1rem !important;
+    }
+    body.pos-focus-mode .pos-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      grid-template-columns: clamp(500px, 37vw, 620px) minmax(0, 1fr);
+    }
+    body.pos-focus-mode .pos-card.pos-catalog-card,
+    body.pos-focus-mode .pos-card.pos-order-card {
+      height: 100%;
+      max-height: none !important;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    body.pos-focus-mode .pos-catalog-card > .mt-3 {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    body.pos-focus-mode .pos-results-scrollable {
+      flex: 1 1 auto;
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+    }
+    body.pos-focus-mode .pos-product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    body.pos-focus-mode .pos-order-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    body.pos-focus-mode #posCartTableWrap {
+      flex: 1 1 auto;
+      max-height: none;
+    }
+
+    /* Esc Double-Press Toast */
+    .pos-esc-toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translate(-50%, -18px);
+      z-index: 2600;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .pos-esc-toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  </style>
 </head>
 
 <body data-active="pos">
@@ -132,20 +405,9 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
                   <p class="small text-muted mb-0">Click medicine cards on the right or search to add items.</p>
                 </div>
 
-                <!-- Cart Table Wrap -->
+                <!-- Cart Items List -->
                 <div id="posCartTableWrap" style="display: none;">
-                  <table class="pos-cart-table">
-                    <thead>
-                      <tr>
-                        <th>Medicine</th>
-                        <th>Price</th>
-                        <th>Qty</th>
-                        <th>Total</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody id="posCartTbody"></tbody>
-                  </table>
+                  <div id="posCartTbody" class="pos-cart-list"></div>
                 </div>
 
                 <!-- Totals Calculation -->
@@ -327,8 +589,14 @@ $quickAddMeds = $preloadStmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </div>
 
+  <!-- Esc Double-Press Toast -->
+  <div id="posEscToast" class="pos-esc-toast" role="status" aria-live="polite">
+    <span class="material-symbols-outlined" style="font-size:1.05rem;color:#34d399;">info</span>
+    <span>Press <strong>Esc</strong> again to continue</span>
+  </div>
+
   <!-- POS JavaScript Module -->
-  <script type="module" src="../07_Assets/js/pos.js"></script>
+  <script type="module" src="../07_Assets/js/pos.js?v=<?= time() ?>"></script>
 </body>
 
 </html>

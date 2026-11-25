@@ -9,6 +9,8 @@ if (empty($_SESSION['user_id'])) {
   exit;
 }
 
+include_once __DIR__ . '/inventory_alert_helper.php';
+
 $pharmacyID = (int) ($_SESSION['pharmacy_id'] ?? 0);
 if (!$pharmacyID) {
   $stmt = $pdo->prepare("SELECT Pharmacy_ID, Pharmacy_name FROM 09_pharmacies WHERE User_ID = ? LIMIT 1");
@@ -306,6 +308,8 @@ $medMetaMap = [
   ]
 ];
 
+$globalThreshold = mfGetGlobalLowStockThreshold($pdo, $pharmacyID);
+
 // ── Strict Normalized Multi-Table Query ─────────────
 $sql = "
   SELECT 
@@ -314,7 +318,8 @@ $sql = "
     i.Medicine_ID,
     i.Batch_Number,
     i.Quantity,
-    i.Low_Stock_Threshold,
+    i.Low_Stock_Threshold AS Custom_Threshold,
+    COALESCE(i.Low_Stock_Threshold, p.Default_Low_Stock_Threshold, 10) AS Effective_Threshold,
     i.Price,
     i.Price_Unit_ID,
     i.Expiry_date,
@@ -335,10 +340,11 @@ $sql = "
     CASE
       WHEN i.Expiry_date <= CURDATE() THEN 'Expired'
       WHEN i.Quantity = 0 THEN 'Out of Stock'
-      WHEN i.Quantity <= COALESCE(i.Low_Stock_Threshold, 10) THEN 'Low Stock'
+      WHEN i.Quantity <= COALESCE(i.Low_Stock_Threshold, p.Default_Low_Stock_Threshold, 10) THEN 'Low Stock'
       ELSE 'Available'
     END AS Availability_Status
   FROM 21_inventory i
+  INNER JOIN 09_pharmacies p ON i.Pharmacy_ID = p.Pharmacy_ID
   INNER JOIN 12_meds_medicines med ON i.Medicine_ID = med.Medicine_ID
   LEFT JOIN 13_meds_generic_name gn ON med.Gen_ID = gn.Gen_ID
   LEFT JOIN 14_meds_brand_name bn ON med.Brand_ID = bn.Brand_ID
@@ -378,10 +384,11 @@ foreach ($inventoryRows as $r) {
   $q = (int) $r['Quantity'];
   $p = (float) $r['Price'];
   $exp = $r['Expiry_date'];
+  $effThresh = (int) ($r['Effective_Threshold'] ?? $globalThreshold);
   $totalValue += ($q * $p);
-  if ($q <= 10)
+  if ($q <= $effThresh)
     $lowStockMeds++;
-  if ($exp >= $today && $exp <= $thirtyDays)
+  if (!empty($exp) && $exp <= $thirtyDays)
     $expiringMeds++;
 }
 ?>
@@ -403,7 +410,7 @@ foreach ($inventoryRows as $r) {
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <!-- Scripts & CSS -->
-  <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
+  <script src="../07_Assets/css/js/sidebar_and_topbar.js?v=<?= time() ?>"></script>
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/theme-tokens.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/admin-buttons.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-fonts.css" />
@@ -459,6 +466,51 @@ foreach ($inventoryRows as $r) {
       font-size: 11px;
       font-weight: 600;
       display: inline-block;
+    }
+
+    .stat-card.kpi-clickable {
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+    }
+
+    .stat-card.kpi-clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .stat-card.kpi-filter-active {
+      border: 2px solid #1d9e75 !important;
+      box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.14);
+    }
+
+    .kpi-threshold-btn {
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      color: #b45309;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .kpi-threshold-btn:hover {
+      background: #fef3c7;
+    }
+
+    .btn-restock {
+      background: #e8f7f2;
+      color: #0f6e56;
+      border: 1px solid #bce6d7;
+    }
+
+    .btn-restock:hover {
+      background: #1d9e75;
+      color: #ffffff;
     }
 
     .badge-available {
@@ -598,7 +650,7 @@ foreach ($inventoryRows as $r) {
                 </div>
 
                 <div class="col-12 col-sm-6 col-xl-3">
-                  <div class="stat-card">
+                  <div class="stat-card kpi-clickable" id="kpiLowStockCard" role="button" tabindex="0" title="Click to filter Low Stock items">
                     <div class="card-header-row">
                       <div class="card-icon icon-amber">
                         <span class="material-symbols-outlined">brightness_alert</span>
@@ -606,12 +658,17 @@ foreach ($inventoryRows as $r) {
                       <span class="card-label label-amber">Low Stock Warnings</span>
                     </div>
                     <div class="card-value"><?= number_format($lowStockMeds) ?></div>
-                    <div class="card-sub">&le; 10 units threshold</div>
+                    <div class="card-sub d-flex align-items-center justify-content-between gap-2">
+                      <span>Default: &le; <strong id="globalThresholdDisplay"><?= (int)$globalThreshold ?></strong> units</span>
+                      <button type="button" class="kpi-threshold-btn" id="openGlobalThresholdBtn" title="Configure default low-stock threshold">
+                        <i class="bi bi-gear"></i> Set
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 <div class="col-12 col-sm-6 col-xl-3">
-                  <div class="stat-card">
+                  <div class="stat-card kpi-clickable" id="kpiExpiringCard" role="button" tabindex="0" title="Click to filter Expiring Soon &amp; Expired items">
                     <div class="card-header-row">
                       <div class="card-icon icon-red">
                         <span class="material-symbols-outlined">event_busy</span>
@@ -619,7 +676,7 @@ foreach ($inventoryRows as $r) {
                       <span class="card-label label-red">Expiring Soon</span>
                     </div>
                     <div class="card-value"><?= number_format($expiringMeds) ?></div>
-                    <div class="card-sub">Within next 30 days</div>
+                    <div class="card-sub">Within 30 days / Expired (click to filter)</div>
                   </div>
                 </div>
 
@@ -704,12 +761,12 @@ foreach ($inventoryRows as $r) {
                         <span class="text-nowrap">Add Stock</span>
                       </button>
 
-                      <!-- Collapse Stats Button -->
+                      <!-- Hide Summary Stats Button -->
                       <button class="btn btn-outline-secondary px-3 rounded-3 d-flex align-items-center gap-1"
-                        id="statsToggleBtn" onclick="toggleStatsCards()">
+                        id="statsToggleBtn" onclick="toggleStatsCards()" title="Toggle summary KPI cards">
                         <span id="statsChevron" class="material-symbols-outlined"
                           style="color: #87a199; font-size: 1.1rem; transition: transform 0.35s ease;">expand</span>
-                        <span id="statsToggleLabel" class="d-none d-sm-inline">Collapse</span>
+                        <span id="statsToggleLabel" class="d-none d-sm-inline">Hide Summary</span>
                       </button>
                     </div>
 
@@ -723,10 +780,8 @@ foreach ($inventoryRows as $r) {
 
                       <thead class="table-head">
                         <tr>
-                          <th>ID</th>
                           <th>BATCH / LOT</th>
-                          <th>GENERIC NAME</th>
-                          <th>BRAND</th>
+                          <th>MEDICINE</th>
                           <th>CATEGORY</th>
                           <th>DOSAGE</th>
                           <th>PRICE (₱)</th>
@@ -744,13 +799,20 @@ foreach ($inventoryRows as $r) {
                             $statusClass = 'badge-' . strtolower(str_replace(' ', '-', $row['Availability_Status']));
                             $dosageFull = ($row['Dosage_Value'] ? $row['Dosage_Value'] . ' ' . $row['Unit_Name'] : '') . ($row['Dosage_Form'] ? ' (' . $row['Dosage_Form'] . ')' : '');
                             $pricePer = $row['Price_Per'] ? ' / ' . $row['Price_Per'] : '';
+                            $effThresh = (int) ($row['Effective_Threshold'] ?? $globalThreshold);
+                            $isCustomThresh = $row['Custom_Threshold'] !== null && $row['Custom_Threshold'] !== '';
+                            $expTs = !empty($row['Expiry_date']) ? strtotime($row['Expiry_date']) : false;
+                            $todayTs = strtotime(date('Y-m-d'));
+                            $daysToExp = $expTs !== false ? (int) floor(($expTs - $todayTs) / 86400) : 999;
+                            $isExpiringOrExpired = $daysToExp <= 30;
+                            $updatedTooltip = !empty($row['Last_updated']) ? 'Last updated: ' . date('M d, Y • h:i A', strtotime($row['Last_updated'])) : 'Last updated: Never';
                             ?>
                             <tr class="inv-row"
+                              data-id="<?= (int) $row['Inventory_ID'] ?>"
                               data-category="<?= htmlspecialchars(strtolower($row['Category_Name'] ?? '')) ?>"
                               data-status="<?= htmlspecialchars(strtolower($row['Availability_Status'] ?? '')) ?>"
+                              data-expiring="<?= $isExpiringOrExpired ? '1' : '0' ?>"
                               data-search="<?= htmlspecialchars(strtolower(($row['Generic_Name'] ?? '') . ' ' . ($row['Brand_Name'] ?? '') . ' ' . ($row['Category_Name'] ?? '') . ' ' . ($row['Batch_Number'] ?? '') . ' ' . ($row['Inventory_ID'] ?? ''))) ?>">
-                              <td><span class="text-muted fw-mono">#<?= htmlspecialchars($row['Inventory_ID']) ?></span>
-                              </td>
                               <td>
                                 <?php if (!empty($row['Batch_Number'])): ?>
                                   <span class="badge bg-light text-dark border font-monospace px-2 py-1" style="font-size: 11px;">
@@ -762,6 +824,7 @@ foreach ($inventoryRows as $r) {
                               </td>
                               <td>
                                 <div class="fw-bold text-dark"><?= htmlspecialchars($row['Generic_Name']) ?></div>
+                                <div class="text-muted small"><?= htmlspecialchars($row['Brand_Name'] ?? 'Generics') ?></div>
                                 <div class="d-flex flex-wrap gap-1 mt-1">
                                   <?php if (!empty($row['Is_Essential'])): ?>
                                     <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 10px;" title="Philippine National Formulary (PNF) Essential Medicine">
@@ -773,7 +836,6 @@ foreach ($inventoryRows as $r) {
                                   <?php endif; ?>
                                 </div>
                               </td>
-                              <td><?= htmlspecialchars($row['Brand_Name'] ?? 'Generics') ?></td>
                               <td><span
                                   class="text-secondary"><?= htmlspecialchars($row['Category_Name'] ?? 'Uncategorized') ?></span>
                               </td>
@@ -795,19 +857,36 @@ foreach ($inventoryRows as $r) {
                               <td class="fw-semibold text-success">₱<?= number_format($row['Price'], 2) ?><span
                                   class="text-muted small fw-normal"><?= htmlspecialchars($pricePer) ?></span></td>
                               <td>
-                                <strong class="<?= ((int) $row['Quantity'] <= (int)($row['Low_Stock_Threshold'] ?? 10)) ? 'text-danger' : 'text-dark' ?>">
-                                  <?= htmlspecialchars($row['Quantity']) ?>
-                                </strong>
+                                <div class="d-flex align-items-baseline gap-1">
+                                  <strong class="<?= ((int) $row['Quantity'] <= $effThresh) ? 'text-danger' : 'text-dark' ?>">
+                                    <?= htmlspecialchars($row['Quantity']) ?>
+                                  </strong>
+                                  <span class="text-muted small">/ <?= $effThresh ?></span>
+                                </div>
+                                <div class="text-muted" style="font-size: 11px;">
+                                  Min: <?= $effThresh ?><?= $isCustomThresh ? ' (Custom)' : '' ?>
+                                </div>
                               </td>
-                              <td class="text-nowrap">
-                                <div class="fw-semibold text-dark" style="font-size: 13.5px;">
-                                  <i class="bi bi-calendar-event me-1 text-secondary"></i><?= date('M d, Y', strtotime($row['Expiry_date'])) ?>
-                                </div>
-                                <div class="mt-1 d-inline-flex align-items-center px-2 py-1 rounded bg-light border border-secondary-subtle" style="font-size: 12px;">
-                                  <i class="bi bi-clock-history text-success me-1.5 fw-bold" style="font-size: 13px;"></i>
-                                  <span class="text-secondary me-1">Updated:</span>
-                                  <strong class="text-dark"><?= !empty($row['Last_updated']) ? date('M d, Y • h:i A', strtotime($row['Last_updated'])) : 'Never' ?></strong>
-                                </div>
+                              <td class="text-nowrap" title="<?= htmlspecialchars($updatedTooltip) ?>">
+                                <?php if ($daysToExp <= 0): ?>
+                                  <div class="fw-semibold text-danger" style="font-size: 13.5px;">
+                                    <i class="bi bi-exclamation-octagon me-1"></i><?= date('M d, Y', $expTs) ?>
+                                  </div>
+                                  <span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-1" style="font-size: 10.5px;">
+                                    <?= $daysToExp === 0 ? 'Expires today' : 'Expired ' . abs($daysToExp) . 'd ago' ?>
+                                  </span>
+                                <?php elseif ($daysToExp <= 30): ?>
+                                  <div class="fw-semibold" style="font-size: 13.5px; color: #b45309;">
+                                    <i class="bi bi-exclamation-triangle me-1"></i><?= date('M d, Y', $expTs) ?>
+                                  </div>
+                                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mt-1" style="font-size: 10.5px;">
+                                    <?= $daysToExp ?>d left
+                                  </span>
+                                <?php else: ?>
+                                  <div class="fw-semibold text-dark" style="font-size: 13.5px;">
+                                    <i class="bi bi-calendar-event me-1 text-secondary"></i><?= $expTs ? date('M d, Y', $expTs) : 'N/A' ?>
+                                  </div>
+                                <?php endif; ?>
                               </td>
                               <td>
                                 <span class="badge-status <?= $statusClass ?>">
@@ -821,9 +900,21 @@ foreach ($inventoryRows as $r) {
                                     'indication' => 'Prescribed medication indicated for clinical treatment in compliance with Philippine health standards.',
                                     'storage' => 'Store at temperatures not exceeding 30°C in a dry place. Protect from heat and light.',
                                     'shelf' => 'Standard Pharmacy Dispensary Rack',
-                                    'reorder' => ($row['Low_Stock_Threshold'] ?? 10) . ' units (Minimum stock safety threshold)'
+                                    'reorder' => $effThresh . ' units (Minimum stock safety threshold)'
                                   ];
                                   ?>
+                                  <!-- Quick Restock (+) Button -->
+                                  <button type="button" class="btn-action btn-restock quick-restock-btn" title="Quick Restock (+)"
+                                    data-id="<?= (int) $row['Inventory_ID'] ?>"
+                                    data-image="<?= htmlspecialchars($row['Med_Image_URL'] ?? '') ?>"
+                                    data-generic="<?= htmlspecialchars($row['Generic_Name']) ?>"
+                                    data-brand="<?= htmlspecialchars($row['Brand_Name'] ?? '') ?>"
+                                    data-qty="<?= (int) $row['Quantity'] ?>"
+                                    data-batch="<?= htmlspecialchars($row['Batch_Number'] ?? '') ?>"
+                                    data-expiry="<?= htmlspecialchars($row['Expiry_date'] ?? '') ?>">
+                                    <i class="bi bi-plus-lg"></i>
+                                  </button>
+
                                   <!-- View Details Button (Warm Orange) -->
                                   <button class="btn-action btn-view custom-view-btn" title="View Medicine Details & Stock"
                                     data-image="<?= htmlspecialchars($row['Med_Image_URL'] ?? '') ?>"
@@ -844,14 +935,14 @@ foreach ($inventoryRows as $r) {
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
                                     data-batch="<?= htmlspecialchars($row['Batch_Number'] ?? '') ?>"
-                                    data-lowstock="<?= htmlspecialchars($row['Low_Stock_Threshold'] ?? 10) ?>"
+                                    data-lowstock="<?= htmlspecialchars($effThresh) ?>"
                                     data-rx="<?= htmlspecialchars($row['Requires_Rx'] ?? 'No') ?>"
                                     data-updated="<?= htmlspecialchars($row['Last_updated'] ?? 'Today') ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>"
                                     data-indication="<?= htmlspecialchars($mMeta['indication']) ?>"
                                     data-storage="<?= htmlspecialchars($mMeta['storage']) ?>"
                                     data-shelf="<?= htmlspecialchars($mMeta['shelf']) ?>"
-                                    data-reorder="<?= htmlspecialchars(($row['Low_Stock_Threshold'] ?? 10) . ' units (Minimum stock safety threshold)') ?>">
+                                    data-reorder="<?= htmlspecialchars($effThresh . ' units (Minimum stock safety threshold)') ?>">
                                     <i class="bi bi-eye"></i>
                                   </button>
 
@@ -876,7 +967,8 @@ foreach ($inventoryRows as $r) {
                                     data-qty="<?= htmlspecialchars($row['Quantity']) ?>"
                                     data-expiry="<?= htmlspecialchars($row['Expiry_date']) ?>"
                                     data-batch="<?= htmlspecialchars($row['Batch_Number'] ?? '') ?>"
-                                    data-lowstock="<?= htmlspecialchars($row['Low_Stock_Threshold'] ?? 10) ?>"
+                                    data-lowstock="<?= htmlspecialchars($row['Custom_Threshold'] ?? '') ?>"
+                                    data-efflowstock="<?= htmlspecialchars($effThresh) ?>"
                                     data-rx="<?= htmlspecialchars($row['Requires_Rx'] ?? 'No') ?>"
                                     data-status="<?= htmlspecialchars($row['Availability_Status']) ?>">
                                     <i class="bi bi-pencil"></i>
@@ -887,7 +979,7 @@ foreach ($inventoryRows as $r) {
                           <?php endforeach; ?>
                         <?php else: ?>
                           <tr>
-                            <td colspan="11" class="text-center text-muted py-5">
+                            <td colspan="9" class="text-center text-muted py-5">
                               <i class="bi bi-inbox fs-2 d-block mb-2 text-muted"></i>
                               No medicines registered in this pharmacy inventory.
                             </td>
@@ -1216,6 +1308,152 @@ Paracetamol x 30"></textarea>
   <!-- ══ EXISTING ADD / UPDATE MODAL INCLUDED ═════════════════ -->
   <?php include '../02_Actions/03_Pharmacy-Admin-CRUD/modal_add-update.php'; ?>
 
+  <!-- ══ GLOBAL LOW-STOCK THRESHOLD MODAL ═════════════════════ -->
+  <div class="modal fade" id="globalThresholdModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 390px;">
+      <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden;">
+        <div class="modal-header bg-white border-bottom px-4 py-3">
+          <h6 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-warning">tune</span>
+            Default Low-Stock Threshold
+          </h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="globalThresholdForm">
+          <div class="modal-body p-4">
+            <label for="globalThresholdInput" class="form-label small fw-semibold text-dark">Minimum Stock Buffer (units)</label>
+            <input type="number" id="globalThresholdInput" class="form-control" min="1" max="9999" value="<?= (int) $globalThreshold ?>" required />
+            <div class="form-text small text-muted mt-2">
+              Applies to all medicines without a custom per-medicine threshold override.
+            </div>
+            <div id="globalThresholdMsg" class="small mt-2"></div>
+          </div>
+          <div class="modal-footer bg-light px-4 py-3 d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-semibold" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success rounded-3 px-4 py-2 fw-semibold" style="background:#1d9e75 !important;border-color:#1d9e75 !important;">Save Default</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ QUICK RESTOCK (+) MODAL ══════════════════════════════ -->
+  <div class="modal fade" id="quickRestockModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+      <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden;">
+        <div class="modal-header text-white px-4 py-3" style="background:#1d9e75;">
+          <h6 class="modal-title fw-bold mb-0 d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined">add_box</span>
+            Quick Restock
+          </h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="quickRestockForm">
+          <input type="hidden" id="restockInvId" />
+          <div class="modal-body p-4">
+            <div class="p-3 rounded-3 bg-light border mb-3 d-flex align-items-center gap-3">
+              <img id="restockMedImg" src="../07_Assets/images/logo.png" alt="Medicine"
+                   style="width:52px;height:52px;border-radius:12px;border:1px solid #d9eae2;background:#ffffff;object-fit:contain;padding:4px;flex-shrink:0;"
+                   onerror="this.onerror=null;this.src='../07_Assets/images/logo.png';" />
+              <div style="min-width:0;">
+                <div class="fw-bold text-dark" id="restockMedTitle">Medicine</div>
+                <div class="small text-muted">Current Stock: <strong id="restockCurrentQty" class="text-dark">0</strong> units</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="restockAddQty" class="form-label small fw-semibold text-dark">Incoming Quantity (+ units)</label>
+              <input type="number" id="restockAddQty" class="form-control" min="1" placeholder="e.g. 25" required />
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <label for="restockBatch" class="form-label small fw-semibold text-dark">Batch / Lot (Optional)</label>
+                <input type="text" id="restockBatch" class="form-control" placeholder="LOT-2026-..." />
+              </div>
+              <div class="col-6">
+                <label for="restockExpiry" class="form-label small fw-semibold text-dark">Expiry Date</label>
+                <input type="date" id="restockExpiry" class="form-control" />
+              </div>
+            </div>
+            <div id="quickRestockMsg" class="small mt-2"></div>
+          </div>
+          <div class="modal-footer bg-light px-4 py-3 d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-semibold" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success rounded-3 px-4 py-2 fw-semibold" id="quickRestockSubmitBtn" style="background:#1d9e75 !important;border-color:#1d9e75 !important;">Add Stock</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ADD / EDIT MEDICINE MODAL ════════════════════════════ -->
+  <div class="modal fade" id="medicineFormModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden;">
+        <div class="modal-header bg-white border-bottom px-4 py-3">
+          <h5 class="modal-title fw-bold text-dark mb-0" id="medFormModalTitle">Add Medicine Stock</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="medicineForm">
+          <input type="hidden" id="medFormInvId" value="0" />
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Generic Name *</label>
+                <input type="text" id="medFormGeneric" class="form-control" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Brand Name</label>
+                <input type="text" id="medFormBrand" class="form-control" placeholder="e.g. Biogesic" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Category</label>
+                <input type="text" id="medFormCategory" class="form-control" placeholder="e.g. Analgesics" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Dosage Form</label>
+                <input type="text" id="medFormDosageForm" class="form-control" value="Tablet" />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small fw-semibold">Strength</label>
+                <input type="text" id="medFormDosageVal" class="form-control" value="500" />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small fw-semibold">Unit</label>
+                <input type="text" id="medFormDosageUnit" class="form-control" value="mg" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Batch / Lot</label>
+                <input type="text" id="medFormBatch" class="form-control" placeholder="LOT-2026-001" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Retail Price (₱) *</label>
+                <input type="number" step="0.01" min="0" id="medFormPrice" class="form-control" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Quantity *</label>
+                <input type="number" min="0" id="medFormQty" class="form-control" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Expiry Date *</label>
+                <input type="date" id="medFormExpiry" class="form-control" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Low-Stock Threshold Override (Optional)</label>
+                <input type="number" min="1" id="medFormThreshold" class="form-control" placeholder="Inherit global default (<?= (int) $globalThreshold ?>)" />
+                <div class="form-text small text-muted">Leave blank to inherit global default (<?= (int) $globalThreshold ?> units).</div>
+              </div>
+            </div>
+            <div id="medFormMsg" class="small mt-3"></div>
+          </div>
+          <div class="modal-footer bg-light px-4 py-3 d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-semibold" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success rounded-3 px-4 py-2 fw-semibold" id="medFormSubmitBtn" style="background:#1d9e75 !important;border-color:#1d9e75 !important;">Save Medicine</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script type="module" src="../07_Assets/js/scanner.js"></script>
 
@@ -1228,7 +1466,7 @@ Paracetamol x 30"></textarea>
       const isVisible = !hero.classList.contains('collapsed');
 
       hero.classList.toggle('collapsed', isVisible);
-      if (label) label.textContent = isVisible ? 'Expand' : 'Collapse';
+      if (label) label.textContent = isVisible ? 'Show Summary' : 'Hide Summary';
       if (chevron) chevron.classList.toggle('rotated', isVisible);
     }
 
@@ -1246,23 +1484,28 @@ Paracetamol x 30"></textarea>
       let currentPage = 1;
       let itemsPerPage = parseInt(itemsPerPageSelect ? itemsPerPageSelect.value : 10) || 10;
       let filteredRows = [...rows];
+      let activeKpiFilter = '';
 
       function updateTableDisplay() {
         const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
         const cat = filterCategory ? filterCategory.value.toLowerCase().trim() : '';
         const stat = filterStatus ? filterStatus.value.toLowerCase().trim() : '';
 
-        // Filter rows based on search and category/status
+        // Filter rows based on search, category/status, or active KPI card
         filteredRows = rows.filter(r => {
           const rSearch = r.getAttribute('data-search') || '';
           const rCat = r.getAttribute('data-category') || '';
           const rStat = r.getAttribute('data-status') || '';
+          const rExp = r.getAttribute('data-expiring') === '1';
 
           const matchQuery = !query || rSearch.includes(query);
           const matchCat = !cat || rCat === cat;
           const matchStat = !stat || rStat === stat;
+          const matchKpi = !activeKpiFilter
+            || (activeKpiFilter === 'low stock' && (rStat === 'low stock' || rStat === 'out of stock'))
+            || (activeKpiFilter === 'expiring' && rExp);
 
-          return matchQuery && matchCat && matchStat;
+          return matchQuery && matchCat && matchStat && matchKpi;
         });
 
         const totalItems = filteredRows.length;
@@ -1286,7 +1529,7 @@ Paracetamol x 30"></textarea>
             noMatchRow = document.createElement('tr');
             noMatchRow.id = 'noMatchRow';
             noMatchRow.innerHTML = `
-              <td colspan="11" class="text-center text-muted py-5">
+              <td colspan="9" class="text-center text-muted py-5">
                 <i class="bi bi-search fs-2 d-block mb-2 text-muted"></i>
                 No matching medicines found for the selected filter or search term.
               </td>
@@ -1391,7 +1634,235 @@ Paracetamol x 30"></textarea>
 
       if (searchInput) searchInput.addEventListener('input', () => { currentPage = 1; updateTableDisplay(); });
       if (filterCategory) filterCategory.addEventListener('change', () => { currentPage = 1; updateTableDisplay(); });
-      if (filterStatus) filterStatus.addEventListener('change', () => { currentPage = 1; updateTableDisplay(); });
+      if (filterStatus) filterStatus.addEventListener('change', () => {
+        activeKpiFilter = '';
+        document.querySelectorAll('.stat-card.kpi-filter-active').forEach(c => c.classList.remove('kpi-filter-active'));
+        currentPage = 1;
+        updateTableDisplay();
+      });
+
+      // Clickable KPI Cards (Low Stock Warnings & Expiring Soon)
+      const kpiLowCard = document.getElementById('kpiLowStockCard');
+      const kpiExpCard = document.getElementById('kpiExpiringCard');
+
+      function toggleKpiFilter(type, cardEl) {
+        if (activeKpiFilter === type) {
+          activeKpiFilter = '';
+          cardEl.classList.remove('kpi-filter-active');
+        } else {
+          activeKpiFilter = type;
+          document.querySelectorAll('.stat-card.kpi-filter-active').forEach(c => c.classList.remove('kpi-filter-active'));
+          cardEl.classList.add('kpi-filter-active');
+          if (filterStatus) filterStatus.value = '';
+        }
+        currentPage = 1;
+        updateTableDisplay();
+      }
+
+      if (kpiLowCard) {
+        kpiLowCard.addEventListener('click', () => toggleKpiFilter('low stock', kpiLowCard));
+        kpiLowCard.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleKpiFilter('low stock', kpiLowCard); }
+        });
+      }
+      if (kpiExpCard) {
+        kpiExpCard.addEventListener('click', () => toggleKpiFilter('expiring', kpiExpCard));
+        kpiExpCard.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleKpiFilter('expiring', kpiExpCard); }
+        });
+      }
+
+      // Global Low-Stock Threshold Modal
+      const globalThreshBtn = document.getElementById('openGlobalThresholdBtn');
+      const globalThreshModalEl = document.getElementById('globalThresholdModal');
+      const globalThreshModal = globalThreshModalEl ? new bootstrap.Modal(globalThreshModalEl) : null;
+      if (globalThreshBtn && globalThreshModal) {
+        globalThreshBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          globalThreshModal.show();
+        });
+      }
+      const globalThreshForm = document.getElementById('globalThresholdForm');
+      if (globalThreshForm) {
+        globalThreshForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const val = parseInt(document.getElementById('globalThresholdInput').value, 10);
+          const msgEl = document.getElementById('globalThresholdMsg');
+          try {
+            const res = await fetch('api_inventory.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'set_global_threshold', threshold: val })
+            });
+            const data = await res.json();
+            if (data.success) {
+              window.location.reload();
+            } else if (msgEl) {
+              msgEl.className = 'small mt-2 text-danger';
+              msgEl.textContent = data.message || 'Unable to save threshold.';
+            }
+          } catch (err) {
+            if (msgEl) {
+              msgEl.className = 'small mt-2 text-danger';
+              msgEl.textContent = 'Connection error.';
+            }
+          }
+        });
+      }
+
+      // Quick Restock (+) Modal
+      const restockModalEl = document.getElementById('quickRestockModal');
+      const restockModal = restockModalEl ? new bootstrap.Modal(restockModalEl) : null;
+
+      function openQuickRestock(btn) {
+        if (!restockModal || !btn) return;
+        document.getElementById('restockInvId').value = btn.dataset.id || '';
+        document.getElementById('restockMedImg').src = btn.dataset.image || '../07_Assets/images/logo.png';
+        document.getElementById('restockMedTitle').textContent = `${btn.dataset.generic || 'Medicine'}${btn.dataset.brand ? ' (' + btn.dataset.brand + ')' : ''}`;
+        document.getElementById('restockCurrentQty').textContent = btn.dataset.qty || '0';
+        document.getElementById('restockAddQty').value = '';
+        document.getElementById('restockBatch').value = btn.dataset.batch || '';
+        document.getElementById('restockExpiry').value = btn.dataset.expiry || '';
+        document.getElementById('quickRestockMsg').textContent = '';
+        restockModal.show();
+        setTimeout(() => document.getElementById('restockAddQty').focus(), 250);
+      }
+
+      document.querySelectorAll('.quick-restock-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openQuickRestock(btn);
+        });
+      });
+
+      const restockForm = document.getElementById('quickRestockForm');
+      if (restockForm) {
+        restockForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const submitBtn = document.getElementById('quickRestockSubmitBtn');
+          const msgEl = document.getElementById('quickRestockMsg');
+          submitBtn.disabled = true;
+          try {
+            const res = await fetch('api_inventory.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'quick_restock',
+                inventory_id: parseInt(document.getElementById('restockInvId').value, 10),
+                add_qty: parseInt(document.getElementById('restockAddQty').value, 10),
+                batch_number: document.getElementById('restockBatch').value.trim(),
+                expiry_date: document.getElementById('restockExpiry').value
+              })
+            });
+            const data = await res.json();
+            if (data.success) {
+              window.location.href = window.location.pathname;
+            } else {
+              msgEl.className = 'small mt-2 text-danger';
+              msgEl.textContent = data.message || 'Restock failed.';
+            }
+          } catch (err) {
+            msgEl.className = 'small mt-2 text-danger';
+            msgEl.textContent = 'Connection error.';
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+      }
+
+      // Add / Edit Medicine Modal (#addBTN & .edit-btn)
+      const medFormModalEl = document.getElementById('medicineFormModal');
+      const medFormModal = medFormModalEl ? new bootstrap.Modal(medFormModalEl) : null;
+      const addBtn = document.getElementById('addBTN');
+
+      if (addBtn && medFormModal) {
+        addBtn.addEventListener('click', () => {
+          document.getElementById('medFormModalTitle').textContent = 'Add Medicine Stock';
+          document.getElementById('medFormInvId').value = '0';
+          document.getElementById('medFormGeneric').value = '';
+          document.getElementById('medFormGeneric').readOnly = false;
+          document.getElementById('medFormBrand').value = '';
+          document.getElementById('medFormBrand').readOnly = false;
+          document.getElementById('medFormCategory').value = '';
+          document.getElementById('medFormDosageForm').value = 'Tablet';
+          document.getElementById('medFormDosageVal').value = '500';
+          document.getElementById('medFormDosageUnit').value = 'mg';
+          document.getElementById('medFormBatch').value = '';
+          document.getElementById('medFormPrice').value = '';
+          document.getElementById('medFormQty').value = '';
+          document.getElementById('medFormExpiry').value = '';
+          document.getElementById('medFormThreshold').value = '';
+          document.getElementById('medFormMsg').textContent = '';
+          medFormModal.show();
+        });
+      }
+
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!medFormModal) return;
+          document.getElementById('medFormModalTitle').textContent = 'Edit Medicine Stock';
+          document.getElementById('medFormInvId').value = btn.dataset.id || '0';
+          document.getElementById('medFormGeneric').value = btn.dataset.generic || '';
+          document.getElementById('medFormGeneric').readOnly = true;
+          document.getElementById('medFormBrand').value = btn.dataset.brand || '';
+          document.getElementById('medFormBrand').readOnly = true;
+          document.getElementById('medFormCategory').value = btn.dataset.category || '';
+          document.getElementById('medFormDosageForm').value = btn.dataset.dosageform || 'Tablet';
+          document.getElementById('medFormDosageVal').value = btn.dataset.dosagevalue || '';
+          document.getElementById('medFormDosageUnit').value = btn.dataset.dosageunit || 'mg';
+          document.getElementById('medFormBatch').value = btn.dataset.batch || '';
+          document.getElementById('medFormPrice').value = btn.dataset.price || '';
+          document.getElementById('medFormQty').value = btn.dataset.qty || '0';
+          document.getElementById('medFormExpiry').value = btn.dataset.expiry || '';
+          document.getElementById('medFormThreshold').value = btn.dataset.lowstock || '';
+          document.getElementById('medFormMsg').textContent = '';
+          medFormModal.show();
+        });
+      });
+
+      const medForm = document.getElementById('medicineForm');
+      if (medForm) {
+        medForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const submitBtn = document.getElementById('medFormSubmitBtn');
+          const msgEl = document.getElementById('medFormMsg');
+          submitBtn.disabled = true;
+          try {
+            const res = await fetch('api_inventory.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'save_medicine',
+                inventory_id: parseInt(document.getElementById('medFormInvId').value, 10) || 0,
+                generic_name: document.getElementById('medFormGeneric').value.trim(),
+                brand_name: document.getElementById('medFormBrand').value.trim(),
+                category_name: document.getElementById('medFormCategory').value.trim(),
+                dosage_form: document.getElementById('medFormDosageForm').value.trim(),
+                dosage_value: document.getElementById('medFormDosageVal').value.trim(),
+                unit_name: document.getElementById('medFormDosageUnit').value.trim(),
+                batch_number: document.getElementById('medFormBatch').value.trim(),
+                price: parseFloat(document.getElementById('medFormPrice').value) || 0,
+                quantity: parseInt(document.getElementById('medFormQty').value, 10) || 0,
+                expiry_date: document.getElementById('medFormExpiry').value,
+                low_stock_threshold: document.getElementById('medFormThreshold').value.trim()
+              })
+            });
+            const data = await res.json();
+            if (data.success) {
+              window.location.reload();
+            } else {
+              msgEl.className = 'small mt-3 text-danger';
+              msgEl.textContent = data.message || 'Unable to save medicine.';
+            }
+          } catch (err) {
+            msgEl.className = 'small mt-3 text-danger';
+            msgEl.textContent = 'Connection error.';
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+      }
       if (itemsPerPageSelect) {
         itemsPerPageSelect.addEventListener('change', function () {
           itemsPerPage = parseInt(this.value) || 10;
@@ -1403,8 +1874,15 @@ Paracetamol x 30"></textarea>
       // Initial render of pagination and items
       updateTableDisplay();
 
-      // Check if URL has ?openScan=1
+      // Check if URL has ?openScan=1 or ?restock=<invId>
       const urlParams = new URLSearchParams(window.location.search);
+      const restockTargetId = urlParams.get('restock');
+      if (restockTargetId) {
+        const targetBtn = document.querySelector(`.quick-restock-btn[data-id="${restockTargetId}"]`);
+        if (targetBtn) {
+          openQuickRestock(targetBtn);
+        }
+      }
       if (urlParams.get('openScan') === '1') {
         const scanModalEl = document.getElementById('scanStockModal');
         if (scanModalEl) {

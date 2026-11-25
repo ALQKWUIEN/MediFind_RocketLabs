@@ -195,7 +195,7 @@ $sysCount = count($systemNotices);
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Scripts & CSS -->
-  <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
+  <script src="../07_Assets/css/js/sidebar_and_topbar.js?v=<?= time() ?>"></script>
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/theme-tokens.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/admin-buttons.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-fonts.css" />

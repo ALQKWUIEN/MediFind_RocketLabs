@@ -389,7 +389,7 @@ $recentTransactions = $recentTxStmt->fetchAll();
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <!-- Scripts & Design System Styles -->
-  <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
+  <script src="../07_Assets/css/js/sidebar_and_topbar.js?v=<?= time() ?>"></script>
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/theme-tokens.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/override-fonts.css" />
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
