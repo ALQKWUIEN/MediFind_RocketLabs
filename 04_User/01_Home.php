@@ -283,6 +283,52 @@ $medicinesList = $medicinesData['medicines'] ?? [];
         padding-top: 0 !important;
       }
 
+      .mf-home-categories {
+        margin-bottom: 18px;
+      }
+      .mf-home-cat-row {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 4px 2px;
+        scrollbar-width: none;
+      }
+      .mf-home-cat-row::-webkit-scrollbar {
+        display: none;
+      }
+      .mf-home-cat-card {
+        flex: 0 0 auto;
+        width: 84px;
+        padding: 10px 6px;
+        border-radius: 14px;
+        border: 1px solid #e5ece9;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        text-decoration: none;
+        color: #1a2e27;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+      }
+      .mf-home-cat-circle {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid #1d9e75;
+        color: #1d9e75;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 6px;
+      }
+      .mf-home-cat-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+
       .category-nav {
         display: none !important;
       }
@@ -417,6 +463,44 @@ $medicinesList = $medicinesData['medicines'] ?? [];
                 </div>
 
                 <div class="mf-home-sheet">
+                <!-- Quick Categories -->
+                <div class="mf-home-categories">
+                  <div class="section-header">
+                    <h5>Categories</h5>
+                    <a href="03_Medicines.php">See all</a>
+                  </div>
+                  <div class="mf-home-cat-row">
+                    <a href="03_Medicines.php?category=Cold" class="mf-home-cat-card">
+                      <div class="mf-home-cat-circle"><span class="material-symbols-outlined">pulmonology</span></div>
+                      <span class="mf-home-cat-label">Cough &amp; Cold</span>
+                    </a>
+                    <a href="03_Medicines.php?category=Analgesic" class="mf-home-cat-card">
+                      <div class="mf-home-cat-circle"><span class="material-symbols-outlined">healing</span></div>
+                      <span class="mf-home-cat-label">Pain Relief</span>
+                    </a>
+                    <a href="03_Medicines.php?category=Antibiotic" class="mf-home-cat-card">
+                      <div class="mf-home-cat-circle"><span class="material-symbols-outlined">medication</span></div>
+                      <span class="mf-home-cat-label">Antibiotics</span>
+                    </a>
+                    <a href="03_Medicines.php?category=Cardiovascular" class="mf-home-cat-card">
+                      <div class="mf-home-cat-circle"><span class="material-symbols-outlined">cardiology</span></div>
+                      <span class="mf-home-cat-label">Heart Care</span>
+                    </a>
+                    <a href="03_Medicines.php?category=Endocrine" class="mf-home-cat-card">
+                      <div class="mf-home-cat-circle"><span class="material-symbols-outlined">water_drop</span></div>
+                      <span class="mf-home-cat-label">Diabetes</span>
+                    </a>
+                    <a href="03_Medicines.php?category=Antihistamine" class="mf-home-cat-card">
+                      <div class="mf-home-cat-circle"><span class="material-symbols-outlined">allergy</span></div>
+                      <span class="mf-home-cat-label">Allergy</span>
+                    </a>
+                    <a href="03_Medicines.php?category=Vitamin" class="mf-home-cat-card">
+                      <div class="mf-home-cat-circle"><span class="material-symbols-outlined">vaccines</span></div>
+                      <span class="mf-home-cat-label">Vitamins</span>
+                    </a>
+                  </div>
+                </div>
+
                 <!-- Nearby Pharmacies -->
                 <div class="nearby-section">
                   <div class="section-header">

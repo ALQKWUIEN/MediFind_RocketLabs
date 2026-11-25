@@ -25,7 +25,7 @@ $mfIsPortalSubdir = (strpos($_SERVER['PHP_SELF'] ?? '', '/04_User/') !== false
 
         function hydrateEarly(el, filePath) {
             if (!el || el.dataset.mfHydrated === "1" || el.children.length > 0) return;
-            var cached = sessionStorage.getItem("mf_html_v3_" + filePath);
+            var cached = sessionStorage.getItem("mf_html_v4_" + filePath);
             if (!cached) return;
             el.innerHTML = cached;
             el.dataset.mfHydrated = "1";
@@ -93,6 +93,18 @@ $mfIsPortalSubdir = (strpos($_SERVER['PHP_SELF'] ?? '', '/04_User/') !== false
 
     .notif-dropdown {
         z-index: 1060 !important;
+    }
+
+    #logoutModal {
+        z-index: 1070 !important;
+    }
+
+    #logoutModal .modal-content,
+    #logoutModal .modal-body,
+    #logoutModal .modal-footer {
+        background-color: #ffffff !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
 
     @media (min-width: 769px) {

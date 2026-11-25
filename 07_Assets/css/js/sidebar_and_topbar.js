@@ -34,7 +34,7 @@ function applySidebarHTML(elementId, data) {
 }
 
 function loadHTML(filePath, elementId) {
-  const cacheKey = "mf_html_v3_" + filePath;
+  const cacheKey = "mf_html_v4_" + filePath;
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) {
     applySidebarHTML(elementId, cached);

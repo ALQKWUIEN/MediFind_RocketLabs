@@ -8,9 +8,11 @@ $currentPrefix = explode('.', $currentPrefix)[0] ?? $currentPrefix;
 $navItems = [
     ['prefix' => '01', 'href' => '../04_User/01_Home.php', 'icon' => 'home', 'label' => 'Home'],
     ['prefix' => '02', 'href' => '../04_User/02_ScanRX.php', 'icon' => 'document_scanner', 'label' => 'Scan RX'],
+    ['prefix' => '03', 'href' => '../04_User/03_Medicines.php', 'icon' => 'medication', 'label' => 'Medicines'],
     ['prefix' => '04', 'href' => '../04_User/04_Pharmacies.php', 'icon' => 'local_hospital', 'label' => 'Pharmacies'],
     ['prefix' => '05', 'href' => '../04_User/05_Profile.php', 'icon' => 'person', 'label' => 'Profile'],
 ];
+$hideFloatingAi = in_array($currentFile, ['06_AIChatbot.php', '02.3_MedicineMap.php', '02.2_ScannedRx.php'], true);
 ?>
 <style>
   .mf-mobile-bottom-nav {
@@ -162,6 +164,37 @@ $navItems = [
     .mf-bnav-fab .material-symbols-outlined {
       font-size: 1.55rem;
     }
+
+    .mf-floating-ai-btn {
+      position: fixed;
+      right: 16px;
+      bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #1d9e75;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 8px 22px rgba(29, 158, 117, 0.36);
+      border: 2.5px solid #ffffff;
+      z-index: 1180;
+      transition: transform 0.16s ease, background 0.16s ease;
+    }
+
+    .mf-floating-ai-btn:hover,
+    .mf-floating-ai-btn:active {
+      background: #178764;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+  }
+  @media (min-width: 769px) {
+    .mf-floating-ai-btn {
+      display: none !important;
+    }
   }
 </style>
 
@@ -247,10 +280,10 @@ $navItems = [
     <span>Home</span>
   </a>
 
-  <button type="button" class="mf-bnav-item" id="mfMobileChatBtn">
-    <span class="material-symbols-outlined">smart_toy</span>
-    <span>AI Chatbot</span>
-  </button>
+  <a href="../04_User/03_Medicines.php" class="mf-bnav-item <?= $currentPrefix === '03' ? 'active' : '' ?>">
+    <span class="material-symbols-outlined">medication</span>
+    <span>Medicines</span>
+  </a>
 
   <a href="../04_User/02_ScanRX.php" class="mf-bnav-center <?= $currentPrefix === '02' ? 'active' : '' ?>">
     <div class="mf-bnav-fab">
@@ -270,6 +303,12 @@ $navItems = [
   </a>
 </nav>
 
+<?php if (!$hideFloatingAi): ?>
+<a href="../04_User/06_AIChatbot.php" class="mf-floating-ai-btn" aria-label="Open AI Chatbot" title="AI Assistant">
+  <span class="material-symbols-outlined" style="font-size: 1.45rem;">smart_toy</span>
+</a>
+<?php endif; ?>
+
 <script>
   (function () {
     const mobileNav = document.querySelector('.mf-mobile-bottom-nav');
@@ -277,17 +316,16 @@ $navItems = [
       document.body.appendChild(mobileNav);
     }
 
+    const floatingAi = document.querySelector('.mf-floating-ai-btn');
+    if (floatingAi && floatingAi.parentElement !== document.body) {
+      document.body.appendChild(floatingAi);
+    }
+
     const logoutModalEl = document.getElementById('logoutModal');
     if (logoutModalEl && logoutModalEl.parentElement !== document.body) {
       document.body.appendChild(logoutModalEl);
     }
 
-    const mobileChatBtn = document.getElementById('mfMobileChatBtn');
-    if (mobileChatBtn) {
-      mobileChatBtn.addEventListener('click', function () {
-        window.location.href = '../04_User/06_AIChatbot.php';
-      });
-    }
     window.toggleUserSidebar = function () {
       const btn = document.getElementById('sidebarToggle');
       if (btn) btn.click();

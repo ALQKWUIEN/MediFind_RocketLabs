@@ -12,10 +12,17 @@ include_once '../02_Actions/GlobalVariables.php';
 include_once '../00_Config/config.php';
 
 // ── Guard: must be logged in ───────────────────────────────────────
-if (!$_SESSION['user_id']) {
+if (empty($_SESSION['user_id'])) {
     header('Location: ../03_Authentication/login.php');
     exit;
 }
+
+$medJsonPath = __DIR__ . '/../database/medicines_db.json';
+$medJsonData = file_exists($medJsonPath) ? json_decode(file_get_contents($medJsonPath), true) : ['medicines' => []];
+$medicinesCatalog = $medJsonData['medicines'] ?? [];
+$categoriesList = array_values(array_unique(array_filter(array_map(function ($m) {
+    return $m['category'] ?? '';
+}, $medicinesCatalog))));
 ?>
 
 
@@ -36,6 +43,176 @@ if (!$_SESSION['user_id']) {
 
   <!-- Page transition -->
   <?php include '../01_Includes/page-transition-hardcode.php' ?>
+
+  <style>
+    .med-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .med-card-actions .view-details-btn,
+    .med-card-actions .find-map-btn {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.16s ease;
+    }
+    .med-card-actions .find-map-btn {
+      background: #1d9e75;
+      color: #ffffff;
+      border: 1px solid #1d9e75;
+    }
+    .med-card-actions .find-map-btn:hover {
+      background: #178764;
+      color: #ffffff;
+    }
+    .med-card-actions .view-details-btn {
+      margin-top: 0 !important;
+      background: #f4f9f7;
+      color: #1a2e27;
+      border: 1px solid #d5e6df;
+    }
+    .med-card-actions .view-details-btn:hover {
+      background: #e8f7f2;
+      color: #0f6e56;
+    }
+
+    @media (max-width: 768px) {
+      body,
+      .wrapper,
+      .main-panel,
+      #content,
+      .content-body,
+      .hero,
+      .search-section,
+      .all-medicines-section {
+        background: #ffffff !important;
+      }
+      #content {
+        padding: 0 0 100px !important;
+      }
+      .content-body {
+        padding: 16px 14px 0 !important;
+      }
+      .hero {
+        padding: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      .search-section {
+        padding: 0 0 10px !important;
+        border-radius: 0 !important;
+        color: #1a2e27 !important;
+      }
+      .welcome-user {
+        color: #1a2e27 !important;
+        font-size: 1.35rem !important;
+      }
+      .user-location {
+        color: #6b8f82 !important;
+      }
+      .search-filter-btn {
+        display: none !important;
+      }
+      .quick-categories-section .section-header h5,
+      .all-medicines-section .section-header h5 {
+        color: #1a2e27 !important;
+      }
+      .quick-categories-section .section-header a,
+      .all-medicines-section .section-header a {
+        color: #1d9e75 !important;
+      }
+      .category-nav {
+        display: none !important;
+      }
+      .quick-categories-wrapper {
+        overflow: hidden !important;
+      }
+      .quick-categories {
+        display: flex !important;
+        justify-content: flex-start !important;
+        gap: 10px !important;
+        overflow-x: auto !important;
+        padding: 4px 2px !important;
+        scrollbar-width: none !important;
+      }
+      .quick-categories::-webkit-scrollbar {
+        display: none !important;
+      }
+      .quick-categories .category-item {
+        flex: 0 0 auto !important;
+      }
+      .all-medicines-section {
+        padding: 8px 0 16px !important;
+      }
+      .medicine-list {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+      }
+      .medicine-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        padding: 10px !important;
+        background: #ffffff !important;
+        border: 1px solid #e5ece9 !important;
+        border-radius: 16px !important;
+      }
+      .medicine-card-img {
+        width: 100% !important;
+        height: 76px !important;
+        object-fit: contain !important;
+        border-radius: 10px !important;
+        background: #f8fafc !important;
+        padding: 6px !important;
+      }
+      .medicine-card-body {
+        flex: 1 !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      .medicine-name {
+        font-size: 0.86rem !important;
+        line-height: 1.2 !important;
+      }
+      .medicine-dose {
+        font-size: 0.68rem !important;
+        white-space: nowrap !important;
+      }
+      .medicine-brand,
+      .medicine-meta {
+        font-size: 0.72rem !important;
+      }
+      .medicine-price {
+        font-size: 0.88rem !important;
+        margin-bottom: 4px !important;
+      }
+      .med-card-actions {
+        margin-top: auto !important;
+        padding-top: 8px !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+      }
+      .med-card-actions .find-map-btn,
+      .med-card-actions .view-details-btn {
+        width: 100% !important;
+        padding: 7px 8px !important;
+        font-size: 0.75rem !important;
+      }
+    }
+  </style>
 
 </head>
 
@@ -69,7 +246,8 @@ if (!$_SESSION['user_id']) {
                   </span>
                   <input
                     type="text"
-                    placeholder="Search medicine by name..." />
+                    id="medSearchInput"
+                    placeholder="Search medicine by name or brand..." />
                 </div>
 
                 <button class="search-filter-btn">
@@ -176,92 +354,60 @@ if (!$_SESSION['user_id']) {
                   <a href="#">See all</a>
                 </div>
 
-                <div class="medicine-list">
-                  <div class="medicine-card">
-                    <img
-                      src="../07_Assets/images/medicines/Paracetamol.png"
-                      alt="Paracetamol"
-                      class="medicine-card-img" />
+                <div class="medicine-list" id="medicineCatalogGrid">
+                  <?php foreach ($medicinesCatalog as $med): ?>
+                    <?php
+                    $gName = $med['generic_name'] ?? 'Medicine';
+                    $bName = $med['brand_name'] ?? 'Generic';
+                    $catName = $med['category'] ?? 'General';
+                    $dosage = $med['dosage'] ?? '';
+                    $form = $med['dosage_form'] ?? 'Tablet';
+                    $price = number_format((float)($med['unit_price'] ?? 0), 2);
+                    $isRx = !empty($med['requires_prescription']);
+                    $imgPath = '../' . ltrim((string)($med['image'] ?? '07_Assets/images/medicines/Paracetamol.png'), '/');
+                    $searchBlob = strtolower($gName . ' ' . $bName . ' ' . $catName);
+                    ?>
+                    <div class="medicine-card"
+                      data-category="<?= htmlspecialchars(strtolower($catName)) ?>"
+                      data-search="<?= htmlspecialchars($searchBlob) ?>">
+                      <img
+                        src="<?= htmlspecialchars($imgPath) ?>"
+                        alt="<?= htmlspecialchars($gName) ?>"
+                        class="medicine-card-img" />
 
-                    <div class="medicine-card-body">
-                      <div class="medicine-top">
-                        <div>
-                          <h6 class="medicine-name">Paracetamol</h6>
-                          <p class="medicine-brand">Biogesic</p>
+                      <div class="medicine-card-body">
+                        <div class="medicine-top">
+                          <div>
+                            <h6 class="medicine-name"><?= htmlspecialchars($gName) ?></h6>
+                            <p class="medicine-brand"><?= htmlspecialchars($bName) ?></p>
+                          </div>
+                          <?php if ($dosage): ?>
+                            <span class="medicine-dose"><?= htmlspecialchars($dosage) ?></span>
+                          <?php endif; ?>
                         </div>
-                        <span class="medicine-dose">500mg</span>
-                      </div>
 
-                      <p class="medicine-meta">Tablet · Analgesic</p>
-                      <p class="medicine-price">
-                        ₱5.00 <span>/ tablet</span>
-                      </p>
-                      <span class="medicine-tag no-rx">No Rx</span>
+                        <p class="medicine-meta"><?= htmlspecialchars($form) ?> &middot; <?= htmlspecialchars($catName) ?></p>
+                        <p class="medicine-price">
+                          ₱<?= $price ?> <span>/ <?= htmlspecialchars(strtolower($form)) ?></span>
+                        </p>
+                        <span class="medicine-tag <?= $isRx ? 'rx-required' : 'no-rx' ?>">
+                          <?= $isRx ? 'Rx Required' : 'No Rx' ?>
+                        </span>
 
-                      <a
-                        class="view-details-btn"
-                        style="text-decoration: none"
-                        href="../04_User/03.2_MedicineDetails.php">View Details</a>
-                    </div>
-                  </div>
-
-                  <div class="medicine-card">
-                    <img
-                      src="../07_Assets/images/medicines/Ibuprofen.png"
-                      alt="Ibuprofen"
-                      class="medicine-card-img" />
-
-                    <div class="medicine-card-body">
-                      <div class="medicine-top">
-                        <div>
-                          <h6 class="medicine-name">Ibuprofen</h6>
-                          <p class="medicine-brand">Advil</p>
+                        <div class="med-card-actions">
+                          <a class="find-map-btn"
+                            href="02.3_MedicineMap.php?q=<?= urlencode($gName) ?>&from=medicines">
+                            <span class="material-symbols-outlined" style="font-size:0.95rem;">location_on</span>
+                            Find on Map
+                          </a>
+                          <a class="view-details-btn"
+                            href="03.2_MedicineDetails.php?med=<?= urlencode($gName) ?>">
+                            Details
+                          </a>
                         </div>
-                        <span class="medicine-dose">200mg</span>
                       </div>
-
-                      <p class="medicine-meta">Tablet · Analgesic</p>
-                      <p class="medicine-price">
-                        ₱7.50 <span>/ tablet</span>
-                      </p>
-                      <span class="medicine-tag no-rx">No Rx</span>
-
-                      <a
-                        class="view-details-btn"
-                        style="text-decoration: none"
-                        href="../04_User/03.2_MedicineDetails.php">View Details</a>
                     </div>
-                  </div>
-
-                  <div class="medicine-card">
-                    <img
-                      src="../07_Assets/images/medicines/Amoxicilin.png"
-                      alt="Amoxicillin"
-                      class="medicine-card-img" />
-
-                    <div class="medicine-card-body">
-                      <div class="medicine-top">
-                        <div>
-                          <h6 class="medicine-name">Amoxicillin</h6>
-                          <p class="medicine-brand">Amoxil</p>
-                        </div>
-                        <span class="medicine-dose">500mg</span>
-                      </div>
-
-                      <p class="medicine-meta">Capsule · Antibiotic</p>
-                      <p class="medicine-price">
-                        ₱20.00 <span>/ capsule</span>
-                      </p>
-                      <span class="medicine-tag rx-required">Rx Required</span>
-
-                      <a
-                        class="view-details-btn"
-                        style="text-decoration: none"
-                        href="../04_User/03.2_MedicineDetails.php">View Details</a>
-                    </div>
-                  </div>
-
-
+                  <?php endforeach; ?>
                 </div>
               </div>
             </div>
@@ -497,6 +643,52 @@ if (!$_SESSION['user_id']) {
     });
   </script>
 
+  <script>
+    (function initMedicinesFilter() {
+      const searchInput = document.getElementById('medSearchInput');
+      const cards = Array.from(document.querySelectorAll('#medicineCatalogGrid .medicine-card'));
+      const catItems = Array.from(document.querySelectorAll('#quickCategories .category-item'));
+      let activeCat = new URLSearchParams(window.location.search).get('category') || '';
+
+      function applyFilter() {
+        const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        const catQ = activeCat.trim().toLowerCase();
+        cards.forEach(card => {
+          const blob = card.dataset.search || '';
+          const cCat = card.dataset.category || '';
+          const matchQ = !q || blob.includes(q);
+          const matchCat = !catQ || cCat.includes(catQ) || blob.includes(catQ);
+          card.style.display = (matchQ && matchCat) ? '' : 'none';
+        });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', applyFilter);
+      }
+
+      catItems.forEach(item => {
+        const lbl = (item.querySelector('.category-label')?.textContent || '').trim();
+        if (activeCat && lbl.toLowerCase().includes(activeCat.toLowerCase())) {
+          catItems.forEach(c => c.classList.remove('active'));
+          item.classList.add('active');
+        }
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const wasActive = item.classList.contains('active');
+          catItems.forEach(c => c.classList.remove('active'));
+          if (wasActive && activeCat) {
+            activeCat = '';
+          } else {
+            item.classList.add('active');
+            activeCat = lbl.split('&')[0].trim();
+          }
+          applyFilter();
+        });
+      });
+
+      if (activeCat) applyFilter();
+    })();
+  </script>
   <script src="../07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../bootstrap/js/jquery.min.js"></script>
   <script src="../bootstrap/js/popper.js"></script>

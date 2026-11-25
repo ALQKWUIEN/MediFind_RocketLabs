@@ -124,24 +124,24 @@ if (isset($_POST['logout'])) {
     <!-- Logout Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden">
+            <div class="modal-content" style="background-color: #ffffff !important; border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);">
                 <div class="modal-header" style="background: #1d9e75; border: none;">
                     <h5 class="modal-title text-white" id="logoutModalLabel">
                         <i class="fa fa-sign-out me-2"></i> Confirm Logout
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center py-4">
+                <div class="modal-body text-center py-4" style="background-color: #ffffff !important;">
                     <div style="font-size: 3rem; color: #1d9e75; margin-bottom: 1rem">
                         <i class="fa fa-circle-question"></i>
                     </div>
                     <h6 style="font-weight: 600; color: #374151">Are you sure you want to log out?</h6>
-                    <p style="font-size: 0.85rem; color: #9ca3af">You will be redirected to the login page.</p>
+                    <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 0;">You will be redirected to the login page.</p>
                 </div>
-                <div class="modal-footer justify-content-center" style="border: none">
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                <div class="modal-footer justify-content-center gap-2 pb-4" style="background-color: #ffffff !important; border: none;">
+                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">Cancel</button>
                     <form method="POST" action="../index.php" data-no-transition="true" class="d-inline">
-                        <button type="submit" name="logout" class="btn px-4 text-white" style="background: #1d9e75;">Yes, Log Out</button>
+                        <button type="submit" name="logout" class="btn rounded-3 px-4 text-white" style="background: #1d9e75;">Yes, Log Out</button>
                     </form>
                 </div>
             </div>

@@ -446,6 +446,14 @@ if (!$_SESSION['user_id']) {
     }
   </script>
 
+  <script>
+    document.querySelectorAll('.directions-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const medTitle = (document.querySelector('.medicine-title')?.textContent || 'Ibuprofen').split(' ')[0];
+        window.location.href = `02.3_MedicineMap.php?q=${encodeURIComponent(medTitle)}&from=medicines`;
+      });
+    });
+  </script>
   <script src="../07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
 

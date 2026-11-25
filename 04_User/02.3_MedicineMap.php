@@ -191,6 +191,8 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
         if ($fromParam === 'scannedrx' || strpos($referer, '02.2_ScannedRx.php') !== false) {
             $mapBackHref = '02.2_ScannedRx.php';
+        } elseif ($fromParam === 'medicines' || strpos($referer, '03_Medicines.php') !== false || strpos($referer, '03.2_MedicineDetails.php') !== false) {
+            $mapBackHref = '03_Medicines.php';
         } elseif ($fromParam === 'home' || strpos($referer, '01_Home.php') !== false) {
             $mapBackHref = '01_Home.php';
         } elseif ($fromParam === 'scan' || strpos($referer, '02_ScanRX.php') !== false) {

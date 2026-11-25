@@ -278,6 +278,7 @@ class MediFindReports {
         scale: 2,
         useCORS: true,
         letterRendering: true,
+        scrollY: 0,
         logging: false
       },
       jsPDF: {
@@ -285,7 +286,7 @@ class MediFindReports {
         format: 'a4',
         orientation: 'landscape'
       },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      pagebreak: { mode: ['css', 'legacy'] }
     };
 
     html2pdf()

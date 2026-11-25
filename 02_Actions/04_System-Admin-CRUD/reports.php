@@ -94,13 +94,24 @@ $allUsersAddr = $pdo->query("
     WHERE a.Full_Address IS NOT NULL
 ")->fetchAll();
 
-$stmtInv = $pdo->prepare("
-    SELECT Generic_Name, Brand_Name, Category_Name, Dosage_Form,
-           Dosage_Value, Unit_Name, Dosage, Quantity, Price, Price_Per,
-           Expiry_date, Last_updated, Availability_Status
-    FROM view_06_inventory_stocks
-    WHERE Pharmacy_ID = ?
-");
-$stmtInv->execute([$_SESSION['pharmacy_id']]);
+$pharmacyIdFilter = $_SESSION['pharmacy_id'] ?? null;
+if (!empty($pharmacyIdFilter)) {
+    $stmtInv = $pdo->prepare("
+        SELECT Generic_Name, Brand_Name, Category_Name, Dosage_Form,
+               Dosage, Quantity, Price, Price_Per,
+               Expiry_date, Last_updated, Availability_Status
+        FROM view_06_inventory_stocks
+        WHERE Pharmacy_ID = ? AND (IsDeleted = 0 OR IsDeleted IS NULL)
+    ");
+    $stmtInv->execute([$pharmacyIdFilter]);
+} else {
+    $stmtInv = $pdo->query("
+        SELECT Pharmacy_name, Generic_Name, Brand_Name, Category_Name, Dosage_Form,
+               Dosage, Quantity, Price, Price_Per,
+               Expiry_date, Last_updated, Availability_Status
+        FROM view_06_inventory_stocks
+        WHERE IsDeleted = 0 OR IsDeleted IS NULL
+    ");
+}
 $allInventory = $stmtInv->fetchAll();
 ?>
