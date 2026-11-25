@@ -34,6 +34,15 @@
   border-color: #b7ead9;
 }
 
+/* Full-screen toggle button (POS page only) */
+.pos-focus-btn {
+  display: none;
+}
+
+body[data-active="pos"] .pos-focus-btn {
+  display: inline-flex;
+}
+
 /* Left: Page title + breadcrumb */
 .topbar-left {
   display: flex;

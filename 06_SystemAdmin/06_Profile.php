@@ -46,7 +46,7 @@ if (!$_SESSION['user_id']) {
   </div>
 
   <script src="../07_Assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../07_Assets/css/js/sidebar_and_topbar.js"></script>
+  <script src="../07_Assets/css/js/sidebar_and_topbar.js?v=<?= time() ?>"></script>
 
   <script>
     // Tab switching

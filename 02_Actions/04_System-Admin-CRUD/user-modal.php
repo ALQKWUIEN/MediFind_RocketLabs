@@ -220,13 +220,54 @@
       });
     });
 
-    // ── Unified Filter Function ────────────────────────────────
+    // ── Unified Multi-Filter & Address Cascading ───────────────
+    function updateFilterChips(chips) {
+      const $wrapper = $('#activeFilterChips');
+      if (!$wrapper.length) return;
+
+      $wrapper.empty();
+      if (chips.length > 0) {
+        $wrapper.append('<span class="chips-label text-muted small me-1">Active filters:</span>');
+        chips.forEach(function (c) {
+          $wrapper.append(
+            '<span class="filter-chip badge-soft-pill">' +
+              '<span class="chip-text">' + c.label + ': <strong>' + c.value + '</strong></span>' +
+              '<button type="button" class="btn-close-chip remove-chip" data-target="' + c.target + '" title="Remove ' + c.label + ' filter">&times;</button>' +
+            '</span>'
+          );
+        });
+        $('#clearFiltersBtn').removeClass('d-none');
+        $wrapper.removeClass('d-none');
+      } else {
+        $('#clearFiltersBtn').addClass('d-none');
+        $wrapper.addClass('d-none');
+      }
+    }
+
     function applyFilters() {
       const search = $('#searchInput').val().toLowerCase().trim();
       const role = $('#filterRole').val().toLowerCase().trim();
       const status = $('#filterStatus').val().toLowerCase().trim();
+      const provinceId = $('#filterProvince').val();
+      const provinceName = $('#filterProvince option:selected').text();
+      const cityId = $('#filterCity').val();
+      const cityName = $('#filterCity option:selected').text();
+      const barangayId = $('#filterBarangay').val();
+      const barangayName = $('#filterBarangay option:selected').text();
 
-      $('tbody tr').each(function () {
+      const chips = [];
+      if (search !== '') chips.push({ label: 'Search', value: '"' + search + '"', target: 'search' });
+      if (role !== '') chips.push({ label: 'Role', value: $('#filterRole option:selected').text(), target: 'role' });
+      if (status !== '') chips.push({ label: 'Status', value: $('#filterStatus option:selected').text(), target: 'status' });
+      if (provinceId) chips.push({ label: 'Province', value: provinceName, target: 'province' });
+      if (cityId) chips.push({ label: 'City', value: cityName, target: 'city' });
+      if (barangayId) chips.push({ label: 'Barangay', value: barangayName, target: 'barangay' });
+
+      let visibleCount = 0;
+      const $rows = $('tbody tr.user-row');
+      const totalCount = $rows.length;
+
+      $rows.each(function () {
         const $row = $(this);
         const fullname = $row.find('td:nth-child(3)').text().toLowerCase();
         const email = $row.find('td:nth-child(4)').text().toLowerCase();
@@ -235,17 +276,144 @@
         const address = $row.find('td:nth-child(7)').text().toLowerCase();
         const rowStatus = $row.find('td:nth-child(8)').text().toLowerCase().trim();
 
+        // 1. Existing search, role, status matches
         const matchSearch = search === '' || fullname.includes(search) || email.includes(search) || contact.includes(search) || address.includes(search);
         const matchRole = role === '' || rowRole.includes(role);
         const matchStatus = status === '' || rowStatus.includes(status);
 
-        $row.toggle(matchSearch && matchRole && matchStatus);
+        // 2. Address Cascading matches
+        const rowProvId = String($row.data('province-id') || '');
+        const rowCityId = String($row.data('city-id') || '');
+        const rowBrgyId = String($row.data('barangay-id') || '');
+
+        const matchProvince = !provinceId || (rowProvId === String(provinceId));
+        const matchCity     = !cityId     || (rowCityId === String(cityId));
+        const matchBarangay = !barangayId || (rowBrgyId === String(barangayId));
+
+        const isVisible = matchSearch && matchRole && matchStatus && matchProvince && matchCity && matchBarangay;
+        $row.toggle(isVisible);
+        if (isVisible) visibleCount++;
       });
+
+      // Update empty state row
+      $('#noResultsRow').toggle(visibleCount === 0 && totalCount > 0);
+
+      // Update Result Counter: "Showing N of M users"
+      $('#visibleUserCount').text(visibleCount);
+      $('#totalUserCount').text(totalCount);
+
+      // Render filter chips
+      updateFilterChips(chips);
     }
 
+    // ── Input & Select Listeners ───────────────────────────────
     $('#searchInput').on('input', applyFilters);
     $('#filterRole').on('change', applyFilters);
     $('#filterStatus').on('change', applyFilters);
+
+    // ── Cascading Province Change ──────────────────────────────
+    $('#filterProvince').on('change', function () {
+      const provId = $(this).val();
+      const $citySel = $('#filterCity');
+      const $brgySel = $('#filterBarangay');
+
+      $citySel.html('<option value="">All Cities / Municipalities</option>');
+      $brgySel.html('<option value="">All Barangays</option>').prop('disabled', true);
+
+      if (provId) {
+        $citySel.prop('disabled', true).html('<option value="">Loading cities...</option>');
+        $.getJSON('../02_Actions/04_System-Admin-CRUD/get-address-filters.php', { action: 'cities', province_id: provId }, function (data) {
+          let opts = '<option value="">All Cities / Municipalities</option>';
+          if (Array.isArray(data)) {
+            data.forEach(function (c) {
+              opts += '<option value="' + c.City_ID + '">' + c.City_Name + '</option>';
+            });
+          }
+          $citySel.html(opts).prop('disabled', false);
+          applyFilters();
+        }).fail(function () {
+          $citySel.html('<option value="">All Cities / Municipalities</option>').prop('disabled', false);
+          applyFilters();
+        });
+      } else {
+        $citySel.prop('disabled', true);
+        applyFilters();
+      }
+    });
+
+    // ── Cascading City Change ──────────────────────────────────
+    $('#filterCity').on('change', function () {
+      const cityId = $(this).val();
+      const $brgySel = $('#filterBarangay');
+
+      $brgySel.html('<option value="">All Barangays</option>');
+
+      if (cityId) {
+        $brgySel.prop('disabled', true).html('<option value="">Loading barangays...</option>');
+        $.getJSON('../02_Actions/04_System-Admin-CRUD/get-address-filters.php', { action: 'barangays', city_id: cityId }, function (data) {
+          let opts = '<option value="">All Barangays</option>';
+          if (Array.isArray(data)) {
+            data.forEach(function (b) {
+              opts += '<option value="' + b.Barangay_ID + '">' + b.Barangay_Name + '</option>';
+            });
+          }
+          $brgySel.html(opts).prop('disabled', false);
+          applyFilters();
+        }).fail(function () {
+          $brgySel.html('<option value="">All Barangays</option>').prop('disabled', false);
+          applyFilters();
+        });
+      } else {
+        $brgySel.prop('disabled', true);
+        applyFilters();
+      }
+    });
+
+    // ── Cascading Barangay Change ──────────────────────────────
+    $('#filterBarangay').on('change', applyFilters);
+
+    // ── Clear All Filters ──────────────────────────────────────
+    window.resetAllFilters = function () {
+      $('#searchInput').val('');
+      $('#filterRole').val('');
+      $('#filterStatus').val('');
+      $('#filterProvince').val('');
+      $('#filterCity').html('<option value="">All Cities / Municipalities</option>').prop('disabled', true);
+      $('#filterBarangay').html('<option value="">All Barangays</option>').prop('disabled', true);
+      applyFilters();
+    };
+
+    $('#clearFiltersBtn').on('click', resetAllFilters);
+
+    // ── Remove Individual Filter Chip ──────────────────────────
+    $(document).on('click', '.remove-chip', function (e) {
+      e.preventDefault();
+      const target = $(this).data('target');
+      switch (target) {
+        case 'search':
+          $('#searchInput').val('');
+          applyFilters();
+          break;
+        case 'role':
+          $('#filterRole').val('');
+          applyFilters();
+          break;
+        case 'status':
+          $('#filterStatus').val('');
+          applyFilters();
+          break;
+        case 'province':
+          $('#filterProvince').val('').trigger('change');
+          break;
+        case 'city':
+          $('#filterCity').val('').trigger('change');
+          break;
+        case 'barangay':
+          $('#filterBarangay').val('');
+          applyFilters();
+          break;
+      }
+    });
 
     // ── SELECT ALL CHECKBOX ────────────────────────────────────
     $('#selectAll').on('change', function () {

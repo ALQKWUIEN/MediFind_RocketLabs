@@ -7,7 +7,7 @@ $mfIsPortalSubdir = (strpos($_SERVER['PHP_SELF'] ?? '', '/04_User/') !== false
 ?>
 <?php if ($mfIsPortalSubdir): ?>
 <link rel="stylesheet" href="<?= $mfTransitionPrefix ?>07_Assets/css/04_Includes CSS/sidebar.css" media="(min-width: 769px)" />
-<link rel="stylesheet" href="<?= $mfTransitionPrefix ?>07_Assets/css/04_Includes CSS/topbar.css" />
+<link rel="stylesheet" href="<?= $mfTransitionPrefix ?>07_Assets/css/04_Includes CSS/topbar.css?v=20261126" />
 <?php endif; ?>
 <script>
     if ("onpagereveal" in window) {

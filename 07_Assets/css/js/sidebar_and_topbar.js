@@ -245,49 +245,73 @@ function initTopbar() {
     });
   }
 
-  // ── Notifications data (Pharmacy Stock Outage & Inventory Samples) ──
-  let notifications = [
-    {
-      id: "sample_1",
-      icon: "fas fa-times-circle",
-      color: "#dc2626",
-      text: "<strong>Stock Outage:</strong> Mefenamic Acid (Ponstan) has <strong>0 units</strong> remaining.",
-      time: "Just now",
-      unread: true,
-    },
-    {
-      id: "sample_2",
-      icon: "fas fa-exclamation-triangle",
-      color: "#d97706",
-      text: "<strong>Low Stock Warning:</strong> Losartan Potassium (Cozaar) is down to <strong>5 / 10 units</strong>.",
-      time: "12 min ago",
-      unread: true,
-    },
-    {
-      id: "sample_3",
-      icon: "fas fa-exclamation-triangle",
-      color: "#d97706",
-      text: "<strong>Low Stock Warning:</strong> Amoxicillin (Amoxil) reached <strong>8 / 10 units</strong>.",
-      time: "45 min ago",
-      unread: true,
-    },
-    {
-      id: "sample_4",
-      icon: "fas fa-calendar-times",
-      color: "#b45309",
-      text: "<strong>Expiring Soon:</strong> Cetirizine (Alnix) batch expires in <strong>18 days</strong>.",
-      time: "2 hrs ago",
-      unread: false,
-    },
-    {
-      id: "sample_5",
-      icon: "fas fa-check-circle",
-      color: "#059669",
-      text: "<strong>Restock Logged:</strong> Paracetamol (Biogesic) inventory synced with POS.",
-      time: "Today",
-      unread: false,
-    },
-  ];
+  // ── Notifications data (Context-aware: System Admin vs Pharmacy Admin) ──
+  const isSystemAdminPortal = window.location.pathname.includes("06_SystemAdmin");
+  let notifications = isSystemAdminPortal
+    ? [
+      {
+        id: "sys_1",
+        icon: "fas fa-clinic-medical",
+        color: "#d97706",
+        text: "<strong>Pending Approval:</strong> New pharmacy applications awaiting LGU review.",
+        time: "Just now",
+        unread: true,
+        actionLabel: "Review",
+        actionHref: "../06_SystemAdmin/03_Pharmacies.php",
+      },
+      {
+        id: "sys_2",
+        icon: "fas fa-exclamation-triangle",
+        color: "#dc2626",
+        text: "<strong>City-Wide Stock Monitor:</strong> Partner pharmacy inventory alerts updated.",
+        time: "Today",
+        unread: true,
+        actionLabel: "View Report",
+        actionHref: "../06_SystemAdmin/04_Reports.php",
+      },
+    ]
+    : [
+      {
+        id: "sample_1",
+        icon: "fas fa-times-circle",
+        color: "#dc2626",
+        text: "<strong>Stock Outage:</strong> Mefenamic Acid (Ponstan) has <strong>0 units</strong> remaining.",
+        time: "Just now",
+        unread: true,
+      },
+      {
+        id: "sample_2",
+        icon: "fas fa-exclamation-triangle",
+        color: "#d97706",
+        text: "<strong>Low Stock Warning:</strong> Losartan Potassium (Cozaar) is down to <strong>5 / 10 units</strong>.",
+        time: "12 min ago",
+        unread: true,
+      },
+      {
+        id: "sample_3",
+        icon: "fas fa-exclamation-triangle",
+        color: "#d97706",
+        text: "<strong>Low Stock Warning:</strong> Amoxicillin (Amoxil) reached <strong>8 / 10 units</strong>.",
+        time: "45 min ago",
+        unread: true,
+      },
+      {
+        id: "sample_4",
+        icon: "fas fa-calendar-times",
+        color: "#b45309",
+        text: "<strong>Expiring Soon:</strong> Cetirizine (Alnix) batch expires in <strong>18 days</strong>.",
+        time: "2 hrs ago",
+        unread: false,
+      },
+      {
+        id: "sample_5",
+        icon: "fas fa-check-circle",
+        color: "#059669",
+        text: "<strong>Restock Logged:</strong> Paracetamol (Biogesic) inventory synced with POS.",
+        time: "Today",
+        unread: false,
+      },
+    ];
 
   // ── Messages data ─────────────────────────────────────────
   let messages = [
@@ -352,7 +376,7 @@ function initTopbar() {
                         <p class="notif-text">${n.text}</p>
                         <div class="d-flex align-items-center justify-content-between gap-2 mt-1">
                           <span class="notif-time"><i class="fas fa-clock me-1"></i>${n.time}</span>
-                          ${n.inventoryId ? `<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.72rem;background:#e8f7f2;color:#0f6e56;border:1px solid #bce6d7;border-radius:999px;font-weight:600;" onclick="restockFromNotif(${n.inventoryId}, '${String(n.id).replace(/'/g, "\\'")}'); event.stopPropagation();">Restock</button>` : ""}
+                          ${n.inventoryId ? `<button type="button" class="btn btn-sm py-0 px-2" style="font-size:0.72rem;background:#e8f7f2;color:#0f6e56;border:1px solid #bce6d7;border-radius:999px;font-weight:600;" onclick="restockFromNotif(${n.inventoryId}, '${String(n.id).replace(/'/g, "\\'")}'); event.stopPropagation();">Restock</button>` : (n.actionHref ? `<a href="${n.actionHref}" class="btn btn-sm py-0 px-2" style="font-size:0.72rem;background:#e8f7f2;color:#0f6e56;border:1px solid #bce6d7;border-radius:999px;font-weight:600;text-decoration:none;" onclick="event.stopPropagation();">${n.actionLabel || 'View'}</a>` : "")}
                         </div>
                     </div>
                     ${n.unread ? '<div class="notif-unread-dot"></div>' : ""}
@@ -362,8 +386,19 @@ function initTopbar() {
       : `<div class="notif-empty"><i class="fas fa-bell-slash"></i>No notifications</div>`;
   }
 
-  // Load live low-stock alerts for Pharmacy Admin portal
-  (function loadLiveInventoryAlerts() {
+  // Load live alerts for Pharmacy Admin or System / LGU Admin
+  (function loadLivePortalAlerts() {
+    if (window.location.pathname.includes("06_SystemAdmin")) {
+      fetch("../02_Actions/04_System-Admin-CRUD/get_alerts.php", { credentials: "same-origin" })
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data || !data.success || !Array.isArray(data.alerts) || !data.alerts.length) return;
+          notifications = data.alerts;
+          renderNotifications();
+        })
+        .catch(() => { });
+      return;
+    }
     if (!window.location.pathname.includes("05_PharmacyAdmin")) return;
     fetch("../05_PharmacyAdmin/api_inventory.php?action=get_alerts", { credentials: "same-origin" })
       .then((r) => r.json())
