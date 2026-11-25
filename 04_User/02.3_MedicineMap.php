@@ -187,7 +187,17 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
         $mapBasePath = '../';
         $mapMode = 'embedded';
         $mapInitialQuery = $searchQuery !== '' ? $searchQuery : 'Paracetamol';
-        $mapBackHref = '02_ScanRX.php';
+        $fromParam = $_GET['from'] ?? '';
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        if ($fromParam === 'scannedrx' || strpos($referer, '02.2_ScannedRx.php') !== false) {
+            $mapBackHref = '02.2_ScannedRx.php';
+        } elseif ($fromParam === 'home' || strpos($referer, '01_Home.php') !== false) {
+            $mapBackHref = '01_Home.php';
+        } elseif ($fromParam === 'scan' || strpos($referer, '02_ScanRX.php') !== false) {
+            $mapBackHref = '02_ScanRX.php';
+        } else {
+            $mapBackHref = '02.2_ScannedRx.php';
+        }
         include '../01_Includes/medicine-map-component.php';
         ?>
       </div><!-- /#content -->

@@ -910,6 +910,8 @@ $mfPharmsList = file_exists($mfPharmsPath) ? (json_decode(file_get_contents($mfP
         <div id="guestMedSubtext" class="w-100" style="font-size:0.78rem;color:#6b8f82;">Malaybalay City, Bukidnon</div>
       </div>
 
+      <div id="guestRxMedPills" style="display:none;gap:6px;flex-wrap:nowrap;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;"></div>
+
       <div class="guest-chip-row">
         <div class="guest-chip active" data-filter="nearest">Nearest</div>
         <div class="guest-chip" data-filter="available">Available Only</div>
@@ -1516,6 +1518,32 @@ $mfPharmsList = file_exists($mfPharmsPath) ? (json_decode(file_get_contents($mfP
         renderMapResults(currentQuery);
       });
     });
+
+    // Optional multi-medicine switcher pills when launched from a multi-med prescription (?meds=A,B,C)
+    (function initMultiMedPills() {
+      const pillsEl = document.getElementById('guestRxMedPills');
+      if (!pillsEl) return;
+      const medsParam = new URLSearchParams(window.location.search).get('meds') || '';
+      const meds = medsParam.split(',').map(s => s.trim()).filter(Boolean);
+      if (meds.length < 2) return;
+
+      pillsEl.style.display = 'flex';
+      function renderPills(activeMed) {
+        pillsEl.innerHTML = meds.map(m => {
+          const isActive = activeMed.toLowerCase().includes(m.toLowerCase()) || m.toLowerCase().includes(activeMed.toLowerCase());
+          return `<button type="button" data-rx-med="${m.replace(/"/g, '&quot;')}" style="border:1px solid ${isActive ? '#ff5b27' : '#d5e6df'};background:${isActive ? '#ff5b27' : '#f5fbf8'};color:${isActive ? '#ffffff' : '#1a2e27'};border-radius:999px;padding:4px 11px;font-size:0.75rem;font-weight:600;white-space:nowrap;cursor:pointer;flex-shrink:0;">${m}</button>`;
+        }).join('');
+
+        pillsEl.querySelectorAll('[data-rx-med]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetMed = btn.dataset.rxMed;
+            renderMapResults(targetMed, { animateIntro: true });
+            renderPills(targetMed);
+          });
+        });
+      }
+      renderPills(currentQuery || meds[0]);
+    })();
 
     // Auto-start when embedded (e.g. 04_User/02.3_MedicineMap.php)
     if (MAP_MODE === 'embedded') {

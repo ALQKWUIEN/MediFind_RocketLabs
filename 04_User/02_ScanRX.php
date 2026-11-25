@@ -433,53 +433,85 @@ if (!$_SESSION['user_id']) {
       <div class="rxm-header">
         <div class="rxm-header-left">
           <span class="material-symbols-outlined" style="color:#1d9e75;font-size:1.3rem">medication</span>
-          <h5 id="modalMedicineName">Amoxicillin</h5>
+          <h5 id="modalMedicineName">Scanned Prescription</h5>
         </div>
         <button class="rxm-close-btn" onclick="closeModal()">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
+
+      <!-- Desktop 2-column body -->
       <div class="rxm-body rxm-body-with-image">
-        <div class="rxm-details">
-          <div class="rxm-row">
-            <span class="rxm-label">Date Scanned</span>
-            <span class="rxm-value" id="modalDateScanned">Dec 31, 2026</span>
-          </div>
-
-          <div class="rxm-row">
-            <span class="rxm-label">Dosage</span>
-            <span class="rxm-value" id="modalDosage">500mg</span>
-          </div>
-
-          <div class="rxm-row">
-            <span class="rxm-label">Frequency</span>
-            <span class="rxm-value" id="modalFrequency">3x a day</span>
-          </div>
-
-          <div class="rxm-row">
-            <span class="rxm-label">Duration</span>
-            <span class="rxm-value" id="modalDuration">7 days</span>
-          </div>
-
-          <div class="rxm-row">
-            <span class="rxm-label">Prescribed by</span>
-            <span class="rxm-value" id="modalDoctor">Dr. Santos</span>
-          </div>
+        <!-- Single Prescription Image (Desktop: Left column) -->
+        <div class="modal-image-wrap" id="modalImageWrap">
+          <img id="modalRxImage" src="../07_Assets/images/sample-rx/1.jpeg" alt="Scanned Prescription" />
+          <p class="modal-image-hint" id="modalImageHint">Scanned Prescription</p>
         </div>
 
-        <div class="modal-image-wrap" id="modalImageWrap" style="display:none;">
-          <img id="modalRxImage" src="" alt="Prescription Image" />
-          <p class="modal-image-hint">Scanned prescription image</p>
+        <!-- Extracted Text (+ Right-side slider on Desktop when multi-med) -->
+        <div class="rxm-details-wrap" id="modalSlideText">
+          <div class="rxm-details" id="desktopDetailsList">
+            <div class="rxm-row">
+              <span class="rxm-label">Date Scanned</span>
+              <span class="rxm-value" id="modalDateScanned">Nov 25, 2026</span>
+            </div>
+
+            <div class="rxm-row">
+              <span class="rxm-label">Dosage</span>
+              <span class="rxm-value" id="modalDosage">500 mg</span>
+            </div>
+
+            <div class="rxm-row">
+              <span class="rxm-label">Frequency</span>
+              <span class="rxm-value" id="modalFrequency">3x a day</span>
+            </div>
+
+            <div class="rxm-row">
+              <span class="rxm-label">Duration</span>
+              <span class="rxm-value" id="modalDuration">7 days</span>
+            </div>
+
+            <div class="rxm-row">
+              <span class="rxm-label">Prescribed by</span>
+              <span class="rxm-value" id="modalDoctor">Dr. Santos</span>
+            </div>
+          </div>
+
+          <div class="rxm-slider-nav rxm-desktop-slider-nav" id="desktopSliderNav" style="display:none;">
+            <button type="button" class="rxm-slide-arrow" onclick="stepModalMed(-1)" aria-label="Previous medicine">
+              <span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_left</span>
+            </button>
+            <div class="rxm-slide-dots" id="desktopSliderDots"></div>
+            <button type="button" class="rxm-slide-arrow" onclick="stepModalMed(1)" aria-label="Next medicine">
+              <span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_right</span>
+            </button>
+          </div>
         </div>
       </div>
-      <div class="rxm-footer">
-        <button class="btn-delete" onclick="closeModal()">
-          <span class="material-symbols-outlined">delete</span>
-          Delete
+
+      <!-- Mobile smooth horizontal carousel -->
+      <div class="rxm-mobile-carousel" id="rxModalSwipeArea">
+        <div class="rxm-mobile-track" id="rxModalMobileTrack"></div>
+      </div>
+
+      <!-- Mobile Carousel Controls (Slide 1: Prescription Image, Slide 2+: Extracted Text) -->
+      <div class="rxm-mobile-carousel-bar" id="mobileCarouselBar">
+        <button type="button" class="rxm-slide-arrow" onclick="stepMobileSlide(-1)" aria-label="Previous slide">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_left</span>
         </button>
-        <button class="btn-view" onclick="closeModal()">
-          <span class="material-symbols-outlined">close</span>
-          Close
+        <div class="d-flex flex-column align-items-center gap-1">
+          <div class="rxm-slide-dots" id="mobileSlideDots"></div>
+          <span class="rxm-mobile-slide-label" id="mobileSlideLabel">1 / 2 &bull; Prescription Image</span>
+        </div>
+        <button type="button" class="rxm-slide-arrow" onclick="stepMobileSlide(1)" aria-label="Next slide">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="rxm-footer">
+        <button type="button" class="btn-map-view" id="modalViewMapBtn" onclick="viewModalInMap()">
+          <span class="material-symbols-outlined">map</span>
+          View in Map
         </button>
       </div>
     </div>
@@ -487,22 +519,224 @@ if (!$_SESSION['user_id']) {
 
 
   <script>
-    function openRxModal(medicineName, dateScanned, imageSrc = '') {
-      document.getElementById('modalMedicineName').textContent = medicineName;
-      document.getElementById('modalDateScanned').textContent = dateScanned;
+    const DEFAULT_RX_IMAGE = "../07_Assets/images/sample-rx/1.jpeg";
 
-      const imgWrap = document.getElementById('modalImageWrap');
-      const img = document.getElementById('modalRxImage');
-      if (imageSrc) {
-        img.src = imageSrc;
-        imgWrap.style.display = 'block';
+    let modalScanItems = [];
+    let modalActiveMedIdx = 0;
+    let modalMobileSlide = 0; // 0 = single prescription image, 1..N = extracted medicine text
+    let modalScanDate = "";
+    let modalRxImgSrc = DEFAULT_RX_IMAGE;
+
+    function buildMobileSlides() {
+      const track = document.getElementById('rxModalMobileTrack');
+      if (!track) return;
+
+      const imgHint = modalScanItems.length > 1
+        ? `Prescription (${modalScanItems.length} medicines)`
+        : "Scanned Prescription";
+
+      const imageSlide = `
+        <div class="rxm-mobile-slide">
+          <div class="modal-image-wrap">
+            <img src="${modalRxImgSrc || DEFAULT_RX_IMAGE}" alt="Scanned Prescription" />
+            <p class="modal-image-hint">${imgHint}</p>
+          </div>
+        </div>
+      `;
+
+      const textSlides = modalScanItems.map(item => `
+        <div class="rxm-mobile-slide">
+          <div class="rxm-details">
+            <div class="rxm-row">
+              <span class="rxm-label">Date Scanned</span>
+              <span class="rxm-value">${modalScanDate || "Nov 25, 2026"}</span>
+            </div>
+            <div class="rxm-row">
+              <span class="rxm-label">Dosage</span>
+              <span class="rxm-value">${item.dosage || item.strength || "500 mg"}</span>
+            </div>
+            <div class="rxm-row">
+              <span class="rxm-label">Frequency</span>
+              <span class="rxm-value">${item.frequency || "3x a day"}</span>
+            </div>
+            <div class="rxm-row">
+              <span class="rxm-label">Duration</span>
+              <span class="rxm-value">${item.duration || "7 days"}</span>
+            </div>
+            <div class="rxm-row">
+              <span class="rxm-label">Prescribed by</span>
+              <span class="rxm-value">${item.doctor || "Dr. Santos"}</span>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      track.innerHTML = imageSlide + textSlides;
+    }
+
+    function renderModalMedState() {
+      const medIndexForText = window.innerWidth <= 768
+        ? Math.max(0, modalMobileSlide - 1)
+        : modalActiveMedIdx;
+
+      const item = modalScanItems[medIndexForText] || {
+        med: "Paracetamol",
+        strength: "500 mg",
+        dosage: "500 mg",
+        frequency: "3x a day",
+        duration: "7 days",
+        doctor: "Dr. Santos"
+      };
+
+      const fullLabel = `${item.med}${item.strength ? " " + item.strength : ""}`.trim();
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile && modalMobileSlide === 0) {
+        document.getElementById('modalMedicineName').textContent = modalScanItems.length > 1
+          ? `Scanned Prescription (${modalScanItems.length} Meds)`
+          : fullLabel;
       } else {
-        imgWrap.style.display = 'none';
+        document.getElementById('modalMedicineName').textContent = modalScanItems.length > 1
+          ? `${fullLabel} (${medIndexForText + 1}/${modalScanItems.length})`
+          : fullLabel;
       }
 
+      document.getElementById('modalDateScanned').textContent = modalScanDate || "Nov 25, 2026";
+      document.getElementById('modalDosage').textContent = item.dosage || item.strength || "500 mg";
+      document.getElementById('modalFrequency').textContent = item.frequency || "3x a day";
+      document.getElementById('modalDuration').textContent = item.duration || "7 days";
+      document.getElementById('modalDoctor').textContent = item.doctor || "Dr. Santos";
+
+      document.getElementById('modalRxImage').src = modalRxImgSrc || DEFAULT_RX_IMAGE;
+      document.getElementById('modalImageHint').textContent = modalScanItems.length > 1
+        ? `Prescription (${modalScanItems.length} medicines)`
+        : "Scanned Prescription";
+
+      // Desktop right-side slider (only if 2+ medicines)
+      const desktopNav = document.getElementById('desktopSliderNav');
+      const desktopDots = document.getElementById('desktopSliderDots');
+      if (modalScanItems.length > 1) {
+        desktopNav.style.display = 'flex';
+        desktopDots.innerHTML = modalScanItems.map((_, i) => `
+          <button type="button" class="rxm-slide-dot ${i === modalActiveMedIdx ? 'active' : ''}" onclick="selectModalMed(${i})" aria-label="Medicine ${i + 1}"></button>
+        `).join("");
+      } else {
+        desktopNav.style.display = 'none';
+      }
+
+      // Mobile smooth horizontal track transform
+      const track = document.getElementById('rxModalMobileTrack');
+      if (track) {
+        track.style.transform = `translateX(-${modalMobileSlide * 100}%)`;
+      }
+
+      const totalMobileSlides = 1 + modalScanItems.length;
+      const mobileDotsEl = document.getElementById('mobileSlideDots');
+      mobileDotsEl.innerHTML = Array.from({ length: totalMobileSlides }, (_, i) => `
+        <button type="button" class="rxm-slide-dot ${i === modalMobileSlide ? 'active' : ''}" onclick="setMobileSlide(${i})" aria-label="Slide ${i + 1}"></button>
+      `).join("");
+
+      document.getElementById('mobileSlideLabel').textContent = modalMobileSlide === 0
+        ? `1 / ${totalMobileSlides} • Prescription Image`
+        : `${modalMobileSlide + 1} / ${totalMobileSlides} • ${fullLabel}`;
+    }
+
+    function selectModalMed(idx) {
+      if (!modalScanItems.length) return;
+      const detailsEl = document.getElementById('desktopDetailsList');
+      if (detailsEl) {
+        detailsEl.classList.add('is-switching');
+        setTimeout(() => {
+          modalActiveMedIdx = (idx + modalScanItems.length) % modalScanItems.length;
+          renderModalMedState();
+          detailsEl.classList.remove('is-switching');
+        }, 120);
+      } else {
+        modalActiveMedIdx = (idx + modalScanItems.length) % modalScanItems.length;
+        renderModalMedState();
+      }
+    }
+
+    function stepModalMed(delta) {
+      selectModalMed(modalActiveMedIdx + delta);
+    }
+
+    function setMobileSlide(slideIdx) {
+      const totalMobileSlides = 1 + modalScanItems.length;
+      modalMobileSlide = (slideIdx + totalMobileSlides) % totalMobileSlides;
+      if (modalMobileSlide > 0) {
+        modalActiveMedIdx = modalMobileSlide - 1;
+      }
+      renderModalMedState();
+    }
+
+    function stepMobileSlide(delta) {
+      setMobileSlide(modalMobileSlide + delta);
+    }
+
+    function viewModalInMap() {
+      const meds = modalScanItems.map(m => m.med).filter(Boolean);
+      const primary = meds[modalActiveMedIdx] || meds[0] || "Paracetamol";
+      const params = new URLSearchParams({ q: primary, from: "scan" });
+      if (meds.length > 1) {
+        params.set("meds", meds.join(","));
+      }
+      window.location.href = `02.3_MedicineMap.php?${params.toString()}`;
+    }
+
+    function openRxModal(scanOrName, dateScanned = '', imageSrc = '') {
+      modalMobileSlide = 0; // Always start mobile carousel on Slide 1 (Prescription Image)
+      modalActiveMedIdx = 0;
+
+      if (scanOrName && typeof scanOrName === 'object') {
+        modalScanDate = scanOrName.date || dateScanned || 'Nov 25, 2026';
+        modalRxImgSrc = scanOrName.rxImage || imageSrc || DEFAULT_RX_IMAGE;
+        if (Array.isArray(scanOrName.items) && scanOrName.items.length) {
+          modalScanItems = scanOrName.items;
+        } else {
+          modalScanItems = [{
+            med: scanOrName.med || 'Paracetamol',
+            strength: scanOrName.strength || '500 mg',
+            dosage: scanOrName.dosage || scanOrName.strength || '500 mg',
+            frequency: scanOrName.frequency || '3x a day',
+            duration: scanOrName.duration || '7 days',
+            doctor: scanOrName.doctor || 'Dr. Santos'
+          }];
+        }
+      } else {
+        modalScanDate = dateScanned || 'Nov 25, 2026';
+        modalRxImgSrc = imageSrc || DEFAULT_RX_IMAGE;
+        modalScanItems = [{
+          med: scanOrName || 'Paracetamol',
+          strength: '',
+          dosage: '500 mg',
+          frequency: '3x a day',
+          duration: '7 days',
+          doctor: 'Dr. Santos'
+        }];
+      }
+
+      buildMobileSlides();
+      renderModalMedState();
       document.getElementById('rxModal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
+
+    // Touch swipe support for mobile modal carousel
+    (function initModalSwipe() {
+      const area = document.getElementById('rxModalSwipeArea');
+      if (!area) return;
+      let startX = 0;
+      area.addEventListener('touchstart', e => {
+        startX = e.changedTouches[0].clientX;
+      }, { passive: true });
+      area.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40 && window.innerWidth <= 768) {
+          stepMobileSlide(dx < 0 ? 1 : -1);
+        }
+      }, { passive: true });
+    })();
 
     function closeModal() {
       document.getElementById('rxModal').classList.remove('active');
@@ -1085,49 +1319,119 @@ if (!$_SESSION['user_id']) {
     });
 
     // Render persistent text-only Recent Scans from localStorage
-    (function renderRecentScans() {
+    (function initRecentScans() {
       const listEl = document.getElementById("recentScansList");
       if (!listEl) return;
+
+      const multiMedDemo = {
+        id: "rx-multi-demo",
+        med: "Amoxicillin, Paracetamol +1",
+        strength: "3 Meds",
+        date: "Nov 25, 2026",
+        doctor: "Dr. Santos",
+        rxImage: "../07_Assets/images/sample-rx/1.jpeg",
+        items: [
+          {
+            med: "Amoxicillin",
+            strength: "500 mg",
+            dosage: "500 mg",
+            frequency: "3x a day",
+            duration: "7 days",
+            doctor: "Dr. Santos"
+          },
+          {
+            med: "Paracetamol",
+            strength: "500 mg",
+            dosage: "500 mg",
+            frequency: "Every 4-6 hrs PRN",
+            duration: "5 days",
+            doctor: "Dr. Santos"
+          },
+          {
+            med: "Carbocisteine",
+            strength: "500 mg",
+            dosage: "500 mg",
+            frequency: "3x a day",
+            duration: "5 days",
+            doctor: "Dr. Santos"
+          }
+        ]
+      };
+
       const defaultScans = [
-        { med: "Amoxicillin", strength: "500 mg", date: "Dec 31, 2026" },
-        { med: "Metformin", strength: "850 mg", date: "Nov 15, 2026" },
-        { med: "Losartan", strength: "50 mg", date: "Oct 08, 2026" }
+        multiMedDemo,
+        { med: "Paracetamol", strength: "500 mg", date: "Nov 25, 2026", dosage: "500 mg", frequency: "Every 4-6 hrs", duration: "5 days", doctor: "Dr. Santos", rxImage: "../07_Assets/images/sample-rx/2.png" },
+        { med: "Metformin", strength: "500 mg", date: "Nov 15, 2026", dosage: "500 mg", frequency: "2x a day", duration: "30 days", doctor: "Dr. Reyes", rxImage: "../07_Assets/images/sample-rx/1.jpeg" },
+        { med: "Losartan", strength: "50 mg", date: "Oct 08, 2026", dosage: "50 mg", frequency: "1x a day", duration: "30 days", doctor: "Dr. Cruz", rxImage: "../07_Assets/images/sample-rx/2.png" }
       ];
+
       let scans;
       try {
         const stored = localStorage.getItem("mf_recent_scans");
         scans = stored ? JSON.parse(stored) : defaultScans;
-        if (!stored) localStorage.setItem("mf_recent_scans", JSON.stringify(defaultScans));
+        // Ensure multi-medicine demo prescription is present for presentation
+        if (Array.isArray(scans) && !scans.some(s => Array.isArray(s.items) && s.items.length > 1)) {
+          scans.unshift(multiMedDemo);
+          localStorage.setItem("mf_recent_scans", JSON.stringify(scans));
+        } else if (!stored) {
+          localStorage.setItem("mf_recent_scans", JSON.stringify(defaultScans));
+        }
       } catch (e) {
         scans = defaultScans;
       }
 
-      if (!scans.length) {
-        listEl.innerHTML = `<div class="text-muted small py-3 text-center">No recent scans yet. Scan or upload a prescription to get started.</div>`;
-        return;
+      window.deleteRecentScanByIdx = function (idx) {
+        if (idx < 0 || idx >= scans.length) return;
+        scans.splice(idx, 1);
+        localStorage.setItem("mf_recent_scans", JSON.stringify(scans));
+        renderRecentScans();
+      };
+
+      function renderRecentScans() {
+        if (!scans.length) {
+          listEl.innerHTML = `<div class="text-muted small py-3 text-center">No recent scans yet. Scan or upload a prescription to get started.</div>`;
+          return;
+        }
+
+        listEl.innerHTML = scans.map((s, idx) => {
+          const isMulti = Array.isArray(s.items) && s.items.length > 1;
+          const badge = isMulti
+            ? `<span class="badge rounded-pill ms-1" style="background:#e8f7f2;color:#0f6e56;font-size:0.7rem;font-weight:600;">${s.items.length} Meds</span>`
+            : "";
+          const label = isMulti
+            ? `${s.med}${badge}`
+            : `${s.med}${s.strength ? " &bull; " + s.strength : ""}`;
+          return `
+            <div class="recent-scan-row">
+              <span class="recent-scan-med">${label}</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="recent-scan-date">${s.date}</span>
+                <button type="button" class="recent-view-btn" data-view-idx="${idx}">View</button>
+                <button type="button" class="recent-del-btn" data-idx="${idx}" title="Delete">
+                  <span class="material-symbols-outlined" style="font-size:1rem;">delete</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        listEl.querySelectorAll("[data-view-idx]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const i = parseInt(btn.dataset.viewIdx, 10);
+            const scan = scans[i];
+            if (scan) openRxModal(scan, scan.date, '', i);
+          });
+        });
+
+        listEl.querySelectorAll(".recent-del-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const i = parseInt(btn.dataset.idx, 10);
+            window.deleteRecentScanByIdx(i);
+          });
+        });
       }
 
-      listEl.innerHTML = scans.map((s, idx) => `
-        <div class="recent-scan-row">
-          <span class="recent-scan-med">${s.med}${s.strength ? " &bull; " + s.strength : ""}</span>
-          <div class="d-flex align-items-center gap-2">
-            <span class="recent-scan-date">${s.date}</span>
-            <button type="button" class="recent-view-btn" onclick="openRxModal('${(s.med + ' ' + (s.strength || '')).trim().replace(/'/g, "\\'")}', '${s.date.replace(/'/g, "\\'")}')">View</button>
-            <button type="button" class="recent-del-btn" data-idx="${idx}" title="Delete">
-              <span class="material-symbols-outlined" style="font-size:1rem;">delete</span>
-            </button>
-          </div>
-        </div>
-      `).join("");
-
-      listEl.querySelectorAll(".recent-del-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const i = parseInt(btn.dataset.idx, 10);
-          scans.splice(i, 1);
-          localStorage.setItem("mf_recent_scans", JSON.stringify(scans));
-          renderRecentScans();
-        });
-      });
+      renderRecentScans();
     })();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

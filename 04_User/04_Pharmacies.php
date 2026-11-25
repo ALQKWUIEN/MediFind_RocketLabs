@@ -664,6 +664,94 @@ if (!$_SESSION['user_id']) {
         font-size: 0.9rem !important;
       }
     }
+    /* Match Medicine Map two-part pharmacy popup */
+    #map .leaflet-popup-content-wrapper {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22);
+      padding: 0;
+      overflow: hidden;
+      border: none;
+    }
+    #map .leaflet-popup-tip {
+      background: #ffffff;
+    }
+    #map .leaflet-popup-content {
+      margin: 0;
+      width: auto !important;
+    }
+    #map .leaflet-popup-close-button {
+      width: 24px !important;
+      height: 24px !important;
+      line-height: 24px !important;
+      border-radius: 50% !important;
+      background: rgba(15, 23, 42, 0.72) !important;
+      color: #ffffff !important;
+      top: 8px !important;
+      right: 8px !important;
+      z-index: 10 !important;
+      font-size: 16px !important;
+      text-align: center !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    #map .mf-popup-inner {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      min-width: 228px;
+      max-width: 262px;
+      background: #ffffff;
+      color: #1f2937;
+      padding: 0;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    #map .mf-popup-hero {
+      position: relative;
+      height: 98px;
+      overflow: hidden;
+    }
+    #map .mf-popup-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    #map .mf-popup-hero-grad {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.32) 55%, rgba(15, 23, 42, 0.05) 100%);
+      pointer-events: none;
+    }
+    #map .mf-popup-titlebar {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 8px;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.88rem;
+      line-height: 1.25;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+      z-index: 2;
+    }
+    #map .mf-popup-body {
+      background: #ffffff;
+      padding: 9px 12px 11px;
+    }
+    #map .mf-popup-addr {
+      font-size: 0.74rem;
+      color: #64748b;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    #map .mf-popup-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 
@@ -1371,17 +1459,30 @@ if (!$_SESSION['user_id']) {
           zIndexOffset: isSelected ? 500 : 0
         }).addTo(leafletMap);
 
+        const statusStr = c.dataset.status || 'Open';
+        const isOpen = !/^closed/i.test(statusStr);
+        const distShort = (c.dataset.distance || '').replace(/\s*away$/i, '');
+
         marker.bindPopup(`
-          <div class="popup-inner">
-            <div class="popup-top-bar">
-              <div class="popup-name">${c.dataset.name}</div>
+          <div class="mf-popup-inner">
+            <div class="mf-popup-hero">
+              <img src="${c.dataset.img || '../07_Assets/images/pharmacies/RosePharmacy.png'}" alt="${c.dataset.name}" class="mf-popup-photo" />
+              <div class="mf-popup-hero-grad"></div>
+              <div class="mf-popup-titlebar">${c.dataset.name}</div>
             </div>
-            <div class="popup-bottom-bar">
-              <div class="popup-address">${c.dataset.address}</div>
-              <div class="popup-dist">${c.dataset.distance}</div>
+            <div class="mf-popup-body">
+              <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
+                <div class="mf-popup-addr mb-0">${c.dataset.address}</div>
+                <div style="font-size:0.72rem;font-weight:700;color:#1d9e75;white-space:nowrap;">${distShort}</div>
+              </div>
+              <div style="font-size:0.71rem;color:#64748b;margin-bottom:6px;">${statusStr}</div>
+              <span class="mf-popup-pill" style="background:${isOpen ? '#e8f7f2' : '#fef2f2'};color:${isOpen ? '#0f6e56' : '#b91c1c'};">
+                <span class="material-symbols-outlined" style="font-size:0.85rem;">${isOpen ? 'check_circle' : 'schedule'}</span>
+                ${isOpen ? 'Open Now' : 'Closed'}
+              </span>
             </div>
           </div>
-        `, { maxWidth: 260 });
+        `, { maxWidth: 262, autoPan: false });
 
         marker.on("click", () => {
           updatePharmacyDetailUI(c);

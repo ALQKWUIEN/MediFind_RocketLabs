@@ -576,38 +576,14 @@ $medicinesList = $medicinesData['medicines'] ?? [];
       fdaBadgeEl.style.background = "#e8f7f2";
       fdaBadgeEl.style.color = "#0f6e56";
 
-      const alts = SCANNED_MEDICINES.filter(m =>
-        m.id !== match.id && (
-          m.generic_name.toLowerCase() === match.generic_name.toLowerCase() ||
-          m.category.toLowerCase() === match.category.toLowerCase()
-        )
-      ).slice(0, 2);
-
       fdaBodyEl.innerHTML = `
-        <div class="d-flex align-items-center gap-3 mb-2">
+        <div class="d-flex align-items-center gap-3">
           <img src="../${match.image}" alt="${match.brand_name}" style="width:42px;height:42px;object-fit:contain;border-radius:8px;border:1px solid #e6efec;padding:2px;" />
           <div>
             <div class="fw-bold text-dark">${match.brand_name} (${match.generic_name})</div>
             <div class="text-muted" style="font-size:0.78rem;">${match.dosage} &bull; ${match.dosage_form} &bull; ${match.requires_prescription ? "Requires Rx" : "Over-the-Counter"}</div>
           </div>
         </div>
-        ${alts.length ? `
-          <div class="mt-2 pt-2 border-top" style="font-size:0.78rem;">
-            <div class="fw-semibold text-dark mb-2">Informational Alternatives:</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;">
-              ${alts.map(a => `
-                <div style="display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:12px;border:1px solid #e5ece9;background:#f8fafc;">
-                  <img src="../${a.image}" alt="${a.brand_name}" style="width:38px;height:38px;object-fit:contain;border-radius:8px;background:#ffffff;border:1px solid #e6efec;padding:2px;flex-shrink:0;" />
-                  <div style="min-width:0;flex:1;">
-                    <div class="fw-semibold text-dark" style="font-size:0.78rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.brand_name}</div>
-                    <div class="text-muted" style="font-size:0.7rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.generic_name} &bull; ${a.dosage}</div>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
-            <div class="text-muted mt-2" style="font-size:0.72rem;">For informational purposes only — confirm any substitution with a licensed pharmacist or physician.</div>
-          </div>
-        ` : ""}
       `;
     }
 
@@ -667,7 +643,7 @@ $medicinesList = $medicinesData['medicines'] ?? [];
         localStorage.setItem("mf_recent_scans", JSON.stringify(updated));
       } catch (e) {}
 
-      window.location.href = `02.3_MedicineMap.php?q=${encodeURIComponent(medName)}`;
+      window.location.href = `02.3_MedicineMap.php?q=${encodeURIComponent(medName)}&from=scannedrx`;
     });
   </script>
 </body>
