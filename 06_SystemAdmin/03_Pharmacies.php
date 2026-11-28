@@ -130,6 +130,7 @@ foreach ($pharmaciesList as $ph) {
   <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/01_Home.css" />
   <link rel="stylesheet" href="../07_Assets/css/00_Global CSS/admin-buttons.css" />
   <link rel="stylesheet" href="../07_Assets/css/03_SystemAdminCSS/dashboard.css" />
+  <link rel="stylesheet" href="../07_Assets/css/03_SystemAdminCSS/pharmacies.css?v=20261126" />
   <link rel="stylesheet" href="../07_Assets/css/03_SystemAdminCSS/pharmacies.css?v=20261126b" />
 
   <!-- Navigation Scripts -->
@@ -652,6 +653,18 @@ foreach ($pharmaciesList as $ph) {
             </div><!-- /#pharmacyTableScrollArea -->
           </div>
 
+          <!-- ═══════════════════════════════════════════════════════════ -->
+          <!-- RECENT RECOMMENDATIONS WIDGET (SESSION / LOCAL STORAGE)      -->
+          <!-- ═══════════════════════════════════════════════════════════ -->
+          <div class="recent-rec-card" id="recentRecWidget">
+            <div class="recent-rec-header">
+              <h6 class="recent-rec-title">
+                <span class="material-symbols-outlined" style="color: #1d9e75; font-size: 20px;">history_edu</span>
+                Recent Patient Recommendations
+              </h6>
+              <button class="btn btn-sm btn-outline-secondary" id="clearRecHistoryBtn" style="font-size: 11px; border-radius: 8px;">
+                Clear History
+              </button>
         </div>
       </div>
     </div>
@@ -678,7 +691,13 @@ foreach ($pharmaciesList as $ph) {
             <div class="text-muted small py-4 text-center" id="emptyRecNotice">
               <i class="bi bi-clipboard2-check me-1"></i> No recommendations generated yet in this session. Click "Recommend Pharmacy" to match medicines for patients.
             </div>
+            <div class="recent-rec-list" id="recentRecListContainer">
+              <div class="text-muted small py-2 text-center" id="emptyRecNotice">
+                <i class="bi bi-clipboard2-check me-1"></i> No recommendations generated yet in this session. Click "Recommend Pharmacy" to match medicines for patients.
+              </div>
+            </div>
           </div>
+
         </div>
         <div class="modal-footer border-top bg-white d-flex justify-content-between">
           <button type="button" class="btn btn-sm btn-outline-secondary" id="clearRecHistoryBtn" style="border-radius: 8px;">
