@@ -1299,7 +1299,8 @@ $mfPharmsList = file_exists($mfPharmsPath) ? (json_decode(file_get_contents($mfP
       const availableCount = list.filter(p => p.isAvailable).length;
       guestResultCount.textContent = `${availableCount} of ${list.length} participating pharmacies have`;
 
-      const firstAvailable = list.find(p => p.isAvailable) || list[0] || null;
+      const targetPharmacyParam = (new URLSearchParams(window.location.search).get('pharmacy') || '').trim().toLowerCase();
+      const firstAvailable = (targetPharmacyParam ? list.find(p => p.name.toLowerCase() === targetPharmacyParam) : null) || list.find(p => p.isAvailable) || list[0] || null;
       let activeIdx = Math.max(0, firstAvailable ? list.findIndex(p => p.id === firstAvailable.id) : 0);
 
       if (window._mfCarouselTimer) {

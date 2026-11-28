@@ -64,13 +64,40 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
     /* Sticky Top Header */
     .chat-page-header {
       display: grid;
-      grid-template-columns: 44px 1fr 44px;
+      grid-template-columns: 96px 1fr 96px;
       align-items: center;
       padding: 12px 14px;
       background: #ffffff;
       border-bottom: 1px solid #f1f5f9;
       flex-shrink: 0;
       z-index: 10;
+    }
+
+    .chat-lang-toggle {
+      justify-self: end;
+      display: inline-flex;
+      background: #f1f5f9;
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .chat-lang-btn {
+      border: none;
+      background: transparent;
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .chat-lang-btn.is-active {
+      background: #1d9e75;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(29, 158, 117, 0.25);
     }
 
     .chat-back-btn {
@@ -230,6 +257,100 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
       color: #ffffff;
       border-top-left-radius: 4px;
       box-shadow: 0 3px 10px rgba(29, 158, 117, 0.16);
+    }
+
+    .chat-pharmacy-list {
+      margin-top: 8px;
+      margin-left: 52px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: calc(100% - 64px);
+    }
+
+    .chat-pharmacy-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 8px 10px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.14s ease;
+    }
+
+    .chat-pharmacy-card:hover {
+      border-color: #1d9e75;
+      box-shadow: 0 4px 14px rgba(29, 158, 117, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .chat-pharmacy-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #f1f5f9;
+    }
+
+    .chat-pharmacy-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-pharmacy-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-pharmacy-addr {
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-pharmacy-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .chat-pharmacy-status {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #e8f7f2;
+      color: #0f6e56;
+    }
+
+    .chat-pharmacy-status.is-closed {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .chat-pharmacy-map-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.71rem;
+      font-weight: 700;
+      color: #1d9e75;
+      white-space: nowrap;
     }
 
     .chat-time {
@@ -415,7 +536,10 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <h1 class="chat-page-title">AI Chatbot</h1>
-      <div></div>
+      <div class="chat-lang-toggle" role="group" aria-label="Chat language">
+        <button type="button" class="chat-lang-btn is-active" data-lang="ceb">Bisaya</button>
+        <button type="button" class="chat-lang-btn" data-lang="en">EN</button>
+      </div>
     </header>
 
     <main class="chat-thread" id="chatThread">
@@ -431,20 +555,20 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
           </svg>
         </div>
         <h2 class="chat-intro-name">MediFind Assistant</h2>
-        <p class="chat-intro-note">
+        <p class="chat-intro-note" id="chatIntroNote">
           <span class="material-symbols-outlined align-middle" style="font-size:0.88rem;vertical-align:-2px;">lock</span>
-          For informational purposes only. Do not share personal medical details — always consult a licensed physician or pharmacist.
+          Alang sa impormasyon lamang. Ayaw pagpaambit og personal nga medikal nga detalye — konsulta kanunay sa lisensyadong doktor o pharmacist.
         </p>
         <div class="chat-intro-time" id="chatIntroTime"></div>
       </div>
     </main>
 
     <div class="chat-suggestions-wrap is-open" id="chatSuggestionsWrap">
-      <div class="chat-suggestions-list">
-        <button type="button" class="suggest-pill" data-prompt="What is Paracetamol used for?">What is Paracetamol used for?</button>
-        <button type="button" class="suggest-pill" data-prompt="Which pharmacies in Malaybalay are participating?">Malaybalay pharmacies</button>
-        <button type="button" class="suggest-pill" data-prompt="How should adults usually take Biogesic 500mg?">Biogesic 500mg</button>
-        <button type="button" class="suggest-pill" data-prompt="Can I ask about Amoxicillin availability?">Amoxicillin</button>
+      <div class="chat-suggestions-list" id="chatSuggestionsList">
+        <button type="button" class="suggest-pill" data-prompt="Unsa ang gamit sa Paracetamol?">Unsa ang gamit sa Paracetamol?</button>
+        <button type="button" class="suggest-pill" data-prompt="Asa nga mga botika sa Malaybalay ang apil?">Mga botika sa Malaybalay</button>
+        <button type="button" class="suggest-pill" data-prompt="Unsaon pag-inom sa Biogesic 500mg?">Biogesic 500mg</button>
+        <button type="button" class="suggest-pill" data-prompt="Naa bay Amoxicillin ug kinahanglan ba og reseta?">Amoxicillin</button>
       </div>
     </div>
 
@@ -457,7 +581,7 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
           type="text"
           class="composer-input"
           id="chatInput"
-          placeholder="Message..."
+          placeholder="Pag-type og mensahe..."
           autocomplete="off" />
         <button type="button" class="composer-send-btn" id="chatSendBtn" aria-label="Send message">
           <span class="material-symbols-outlined" style="font-size:1.15rem;">arrow_upward</span>
@@ -476,6 +600,55 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
     const chatSendBtn = document.getElementById('chatSendBtn');
     const composerPlusBtn = document.getElementById('composerPlusBtn');
     const suggestionsWrap = document.getElementById('chatSuggestionsWrap');
+    const suggestionsList = document.getElementById('chatSuggestionsList');
+    const introNoteEl = document.getElementById('chatIntroNote');
+
+    let currentLang = 'ceb';
+
+    const LANG_UI = {
+      ceb: {
+        placeholder: 'Pag-type og mensahe...',
+        introNote: '<span class="material-symbols-outlined align-middle" style="font-size:0.88rem;vertical-align:-2px;">lock</span> Alang sa impormasyon lamang. Ayaw pagpaambit og personal nga medikal nga detalye — konsulta kanunay sa lisensyadong doktor o pharmacist.',
+        welcome: 'Maayong adlaw! Ako ang imong MediFind Assistant. Pangutana bahin sa mga tambal, dosis, o mga botika sa Malaybalay City.',
+        suggestions: [
+          { label: 'Unsa ang gamit sa Paracetamol?', prompt: 'Unsa ang gamit sa Paracetamol?' },
+          { label: 'Mga botika sa Malaybalay', prompt: 'Asa nga mga botika sa Malaybalay ang apil?' },
+          { label: 'Biogesic 500mg', prompt: 'Unsaon pag-inom sa Biogesic 500mg?' },
+          { label: 'Amoxicillin', prompt: 'Naa bay Amoxicillin ug kinahanglan ba og reseta?' }
+        ]
+      },
+      en: {
+        placeholder: 'Message...',
+        introNote: '<span class="material-symbols-outlined align-middle" style="font-size:0.88rem;vertical-align:-2px;">lock</span> For informational purposes only. Do not share personal medical details — always consult a licensed physician or pharmacist.',
+        welcome: "Hi! I'm your MediFind Assistant. Ask me about medicines, dosages, or participating pharmacies in Malaybalay City.",
+        suggestions: [
+          { label: 'What is Paracetamol used for?', prompt: 'What is Paracetamol used for?' },
+          { label: 'Malaybalay pharmacies', prompt: 'Which pharmacies in Malaybalay are participating?' },
+          { label: 'Biogesic 500mg', prompt: 'How should adults usually take Biogesic 500mg?' },
+          { label: 'Amoxicillin', prompt: 'Can I ask about Amoxicillin availability?' }
+        ]
+      }
+    };
+
+    function renderSuggestions(lang) {
+      if (!suggestionsList) return;
+      suggestionsList.innerHTML = LANG_UI[lang].suggestions
+        .map((s) => `<button type="button" class="suggest-pill" data-prompt="${escapeHtml(s.prompt)}">${escapeHtml(s.label)}</button>`)
+        .join('');
+    }
+
+    document.querySelectorAll('.chat-lang-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const lang = btn.getAttribute('data-lang');
+        if (!lang || lang === currentLang) return;
+        currentLang = lang;
+        document.querySelectorAll('.chat-lang-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+        chatInput.placeholder = LANG_UI[lang].placeholder;
+        if (introNoteEl) introNoteEl.innerHTML = LANG_UI[lang].introNote;
+        renderSuggestions(lang);
+        appendMessage(LANG_UI[lang].welcome, 'bot');
+      });
+    });
 
     document.getElementById('chatBackBtn').addEventListener('click', () => {
       try {
@@ -505,14 +678,16 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
 
     chatSendBtn.addEventListener('click', sendUserMessage);
 
-    document.querySelectorAll('.suggest-pill').forEach((btn) => {
-      btn.addEventListener('click', () => {
+    if (suggestionsList) {
+      suggestionsList.addEventListener('click', (e) => {
+        const btn = e.target.closest('.suggest-pill');
+        if (!btn) return;
         const prompt = btn.getAttribute('data-prompt') || '';
         if (!prompt) return;
         chatInput.value = prompt;
         sendUserMessage();
       });
-    });
+    }
 
     function getTimeString() {
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -540,10 +715,41 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
       `;
     }
 
-    function appendMessage(text, sender, customTime) {
+    function renderPharmacyCardsHtml(pharmacies, useCeb) {
+      const btnLabel = useCeb ? 'Tan-awa sa Mapa' : 'View on Map';
+      return `
+        <div class="chat-pharmacy-list">
+          ${pharmacies.map((p) => {
+            const imgSrc = p.image ? `../${escapeHtml(p.image)}` : '../07_Assets/images/pharmacies/RosePharmacy.png';
+            const mapHref = `02.3_MedicineMap.php?pharmacy=${encodeURIComponent(p.name)}`;
+            const statusLabel = p.is_open ? (useCeb ? 'Abli' : 'Open') : (useCeb ? 'Sirado' : 'Closed');
+            return `
+              <a href="${mapHref}" class="chat-pharmacy-card">
+                <img src="${imgSrc}" alt="${escapeHtml(p.name)}" class="chat-pharmacy-thumb" />
+                <div class="chat-pharmacy-info">
+                  <div class="chat-pharmacy-name">${escapeHtml(p.name)}</div>
+                  <div class="chat-pharmacy-addr">${escapeHtml(p.short_address || p.address || '')}</div>
+                  <div class="chat-pharmacy-meta">
+                    <span class="chat-pharmacy-status ${p.is_open ? '' : 'is-closed'}">${statusLabel}</span>
+                    <span class="chat-pharmacy-map-link">
+                      ${btnLabel}
+                      <span class="material-symbols-outlined" style="font-size:0.88rem;">north_east</span>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function appendMessage(payload, sender, customTime) {
       const row = document.createElement('div');
       row.className = `chat-row ${sender}`;
       const timeLabel = customTime || getTimeString();
+      const isRichObj = payload && typeof payload === 'object';
+      const text = isRichObj ? payload.text : payload;
 
       if (sender === 'user') {
         row.innerHTML = `
@@ -554,11 +760,15 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
           <div class="chat-time">${timeLabel}</div>
         `;
       } else {
+        const cardsHtml = isRichObj && Array.isArray(payload.pharmacies)
+          ? renderPharmacyCardsHtml(payload.pharmacies, payload.useCeb)
+          : '';
         row.innerHTML = `
           <div class="chat-row-inner">
             ${botAvatarHtml()}
             <div class="chat-bubble">${escapeHtml(text)}</div>
           </div>
+          ${cardsHtml}
           <div class="chat-time">${timeLabel}</div>
         `;
       }
@@ -588,13 +798,41 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
       if (row) row.remove();
     }
 
+    function isCebuanoQuery(q) {
+      const cebMarkers = [
+        'unsa', 'unsaon', 'asa', 'kinsa', 'kanus-a', 'ngano', 'pila', 'pwede', 'puwede',
+        'botika', 'parmasya', 'tambal', 'reseta', 'tiyan', 'kaon', 'inom', 'nalimtan',
+        'limot', 'naa', 'wala', 'walay', 'palihug', 'salamat', 'maayong', 'kumusta',
+        'kamusta', 'duol', 'abli', 'sirado', 'presyo', 'dosis', 'gamit', 'giunsa', 'apil'
+      ];
+      return cebMarkers.some((w) => q.includes(w));
+    }
+
     function buildReply(query) {
       const q = query.toLowerCase();
+      const useCeb = currentLang === 'ceb' || isCebuanoQuery(q);
 
-      if (q.includes('pharmac') || q.includes('malaybalay') || q.includes('where') || q.includes('open')) {
+      if (q.includes('maayong') || q.includes('kumusta') || q.includes('kamusta') || q === 'hi' || q === 'hello') {
+        return useCeb
+          ? 'Maayong adlaw! Unsa nga tambal o botika sa Malaybalay City ang gusto nimong pangitaon karon?'
+          : 'Hello! Which medicine or pharmacy in Malaybalay City can I help you check today?';
+      }
+
+      if (q.includes('salamat') || q.includes('thank')) {
+        return useCeb
+          ? 'Walay sapayan! Kung naa pa kay pangutana bahin sa mga tambal o botika, pangutana lang.'
+          : "You're welcome! Let me know if you have more questions about medicines or pharmacies.";
+      }
+
+      if (q.includes('pharmac') || q.includes('botika') || q.includes('parmasya') || q.includes('malaybalay') || q.includes('where') || q.includes('asa') || q.includes('open') || q.includes('abli') || q.includes('duol')) {
         if (PHARMACIES_DB.length) {
-          const names = PHARMACIES_DB.map((p) => `${p.name} (${p.address})`).join(', ');
-          return `MediFind currently connects with ${PHARMACIES_DB.length} participating pharmacies in Malaybalay City: ${names}. You can check live availability and routes from the Pharmacies or Map tab.`;
+          return {
+            text: useCeb
+              ? `Ania ang ${PHARMACIES_DB.length} ka kauban nga botika sa Malaybalay City. I-tap ang usa aron makita sa mapa:`
+              : `Here are ${PHARMACIES_DB.length} participating pharmacies in Malaybalay City. Tap any pharmacy to view it on the map:`,
+            pharmacies: PHARMACIES_DB,
+            useCeb
+          };
         }
       }
 
@@ -604,21 +842,39 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
       );
 
       if (matchedMed) {
+        if (useCeb) {
+          const rxNote = matchedMed.requires_prescription
+            ? 'Kinahanglan kini og balido nga reseta gikan sa doktor.'
+            : 'Over-the-counter kini nga tambal ug mapalit bisan walay reseta.';
+          return `Ang ${matchedMed.brand_name} (${matchedMed.generic_name} ${matchedMed.dosage}, ${matchedMed.dosage_form}) nahisakop sa kategorya nga ${matchedMed.category}. ${rxNote} Palihug konsulta kanunay sa lisensyadong doktor o pharmacist alang sa husto nga dosis ug pag-inom.`;
+        }
         const rxNote = matchedMed.requires_prescription
           ? 'This medicine requires a valid prescription.'
           : 'This is an over-the-counter medicine.';
         return `${matchedMed.brand_name} (${matchedMed.generic_name} ${matchedMed.dosage}, ${matchedMed.dosage_form}) is categorized under ${matchedMed.category}. ${rxNote} Always confirm dosage and safety with a licensed physician or pharmacist.`;
       }
 
-      if (q.includes('empty stomach') || q.includes('food') || q.includes('meal')) {
-        return `Many common medicines like Paracetamol are generally gentle on the stomach and can often be taken with or without food. If you have stomach sensitivity or other conditions, please ask a doctor or pharmacist.`;
+      if (q.includes('empty stomach') || q.includes('food') || q.includes('meal') || q.includes('tiyan') || q.includes('kaon') || q.includes('walay sulod')) {
+        return useCeb
+          ? 'Kasagaran sa mga tambal sama sa Paracetamol dili makasakit sa tiyan ug pwede imnon nga naay kaon o wala. Apan kung sensitibo ang imong tiyan, mas maayo nga mokonsulta sa doktor o pharmacist.'
+          : `Many common medicines like Paracetamol are generally gentle on the stomach and can often be taken with or without food. If you have stomach sensitivity or other conditions, please ask a doctor or pharmacist.`;
       }
 
-      if (q.includes('miss a dose') || q.includes('missed')) {
-        return `If a medicine is taken only when needed for pain or fever, there may not be a strict schedule. For regular prescriptions, ask your pharmacist or physician before doubling a dose.`;
+      if (q.includes('miss a dose') || q.includes('missed') || q.includes('nalimtan') || q.includes('limot')) {
+        return useCeb
+          ? 'Kung ang tambal ginatomar lamang kung naay sakit o hilanat, laktawi na lang ang nalimtan nga dosis. Kung regular nga reseta, pangutana sa imong doktor o pharmacist sa dili pa modoble og inom.'
+          : `If a medicine is taken only when needed for pain or fever, there may not be a strict schedule. For regular prescriptions, ask your pharmacist or physician before doubling a dose.`;
       }
 
-      return `I can help explain medicine details, prescription status, or participating pharmacies in Malaybalay City. For personal medical advice or dosage changes, please consult a licensed physician or pharmacist.`;
+      if (q.includes('reseta') || q.includes('prescription')) {
+        return useCeb
+          ? 'Ang mga antibiotic ug pipila ka maintenance nga tambal nagkinahanglan og balido nga reseta sa doktor, samtang ang mga over-the-counter nga tambal sama sa Paracetamol mapalit nga walay reseta. Pwede nimo i-check ang matag tambal sa Medicines page.'
+          : 'Antibiotics and certain maintenance medicines require a valid prescription, while over-the-counter options like Paracetamol do not. You can check each medicine on the Medicines page.';
+      }
+
+      return useCeb
+        ? 'Makatabang ko sa pagpasabot sa impormasyon sa tambal, kung kinahanglan ba og reseta, ug sa mga botika sa Malaybalay City. Alang sa personal nga medikal nga tambag o pag-usab sa dosis, palihug konsulta sa lisensyadong doktor o pharmacist.'
+        : `I can help explain medicine details, prescription status, or participating pharmacies in Malaybalay City. For personal medical advice or dosage changes, please consult a licensed physician or pharmacist.`;
     }
 
     function sendUserMessage() {
@@ -643,7 +899,7 @@ $pharmaciesList = $pharmaciesData['pharmacies'] ?? [];
     if (introTimeEl) introTimeEl.textContent = getTimeString();
 
     appendMessage(
-      "Hi! I'm your MediFind Assistant. Ask me about medicines, dosages, or participating pharmacies in Malaybalay City.",
+      LANG_UI[currentLang].welcome,
       'bot'
     );
   </script>

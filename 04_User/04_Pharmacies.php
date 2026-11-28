@@ -29,7 +29,7 @@ if (!$_SESSION['user_id']) {
   <link rel="icon" href="../07_Assets/images/logo.png" type="image/png" />
   <!-- <link href="../07_Assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" /> -->
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/pharmacies.css" />
+  <link rel="stylesheet" href="../07_Assets/css/01_PatientUser CSS/pharmacies.css?v=20261128" />
 
   <!-- Page transition -->
   <?php include '../01_Includes/page-transition-hardcode.php' ?>
@@ -705,6 +705,93 @@ if (!$_SESSION['user_id']) {
 
                 <div class="pharmacy-list">
                   <div class="pharmacy-card"
+                    data-name="Rodel Pharmacy"
+                    data-address="Market Site, Barangay 9, Malaybalay City, 8700 Bukidnon (44XM+34M)"
+                    data-distance="1.2 km away"
+                    data-status="Open · Closes 8PM"
+                    data-lat="8.147688" data-lng="125.132813"
+                    data-img="../07_Assets/images/pharmacies/RodelPharmacy.jpg"
+                    data-medicines='[
+                      {"name":"Paracetamol","dosage":"500mg · Tablet","stock":"In Stock · 14 packs","price":"₱2.50","per":"tablet","status":"in"},
+                      {"name":"Amoxicillin","dosage":"500mg · Capsule","stock":"In Stock · 7 packs","price":"₱7.50","per":"capsule","status":"in"},
+                      {"name":"Mefenamic Acid","dosage":"500mg · Capsule","stock":"In Stock · 10 packs","price":"₱3.75","per":"capsule","status":"in"}
+                    ]'>
+                    <img src="../07_Assets/images/pharmacies/RodelPharmacy.jpg" alt="Rodel Pharmacy" class="pharmacy-card-img" />
+                    <div class="pharmacy-card-body">
+                      <h6>Rodel Pharmacy</h6>
+                      <div class="pharmacy-distance">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <span>1.2 km away</span>
+                      </div>
+                      <div class="pharmacy-status">
+                        <span class="open-text">Open</span><span class="dot">·</span><span>Closes 8PM</span>
+                      </div>
+                      <button class="direction-btn">
+                        <span class="material-symbols-outlined">north_east</span>
+                        Get Directions
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="pharmacy-card"
+                    data-name="Rodel Pharmacy (Sumpong Branch)"
+                    data-address="546C+HFG, Sta. Cruz St, Sumpong, Malaybalay City, Bukidnon"
+                    data-distance="0.9 km away"
+                    data-status="Open · Closes 8PM"
+                    data-lat="8.161438" data-lng="125.121188"
+                    data-img="../07_Assets/images/pharmacies/RodelPharmacySumpong.jpg"
+                    data-medicines='[
+                      {"name":"Paracetamol","dosage":"500mg · Tablet","stock":"In Stock · 11 packs","price":"₱2.50","per":"tablet","status":"in"},
+                      {"name":"Ibuprofen","dosage":"200mg · Tablet","stock":"In Stock · 8 packs","price":"₱3.25","per":"tablet","status":"in"},
+                      {"name":"Amoxicillin","dosage":"500mg · Capsule","stock":"Low Stock · 3 packs","price":"₱8.00","per":"capsule","status":"low"}
+                    ]'>
+                    <img src="../07_Assets/images/pharmacies/RodelPharmacySumpong.jpg" alt="Rodel Pharmacy Sumpong Branch" class="pharmacy-card-img" />
+                    <div class="pharmacy-card-body">
+                      <h6>Rodel Pharmacy (Sumpong)</h6>
+                      <div class="pharmacy-distance">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <span>0.9 km away</span>
+                      </div>
+                      <div class="pharmacy-status">
+                        <span class="open-text">Open</span><span class="dot">·</span><span>Closes 8PM</span>
+                      </div>
+                      <button class="direction-btn">
+                        <span class="material-symbols-outlined">north_east</span>
+                        Get Directions
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="pharmacy-card"
+                    data-name="A&L Pharma"
+                    data-address="543H+WHF, San Isidro St, Malaybalay City, Bukidnon · 0915 496 9350"
+                    data-distance="0.4 km away"
+                    data-status="Open · Closes 8PM"
+                    data-lat="8.154813" data-lng="125.128938"
+                    data-img="../07_Assets/images/pharmacies/ALPharma.jpg"
+                    data-medicines='[
+                      {"name":"Paracetamol","dosage":"500mg · Tablet","stock":"In Stock · 12 packs","price":"₱2.50","per":"tablet","status":"in"},
+                      {"name":"Cetirizine","dosage":"10mg · Tablet","stock":"In Stock · 9 packs","price":"₱4.50","per":"tablet","status":"in"},
+                      {"name":"Losartan","dosage":"50mg · Tablet","stock":"In Stock · 6 packs","price":"₱6.00","per":"tablet","status":"in"}
+                    ]'>
+                    <img src="../07_Assets/images/pharmacies/ALPharma.jpg" alt="A&L Pharma" class="pharmacy-card-img" />
+                    <div class="pharmacy-card-body">
+                      <h6>A&amp;L Pharma</h6>
+                      <div class="pharmacy-distance">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <span>0.4 km away</span>
+                      </div>
+                      <div class="pharmacy-status">
+                        <span class="open-text">Open</span><span class="dot">·</span><span>Closes 8PM</span>
+                      </div>
+                      <button class="direction-btn">
+                        <span class="material-symbols-outlined">north_east</span>
+                        Get Directions
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="pharmacy-card"
                     data-name="Rose Pharmacy"
                     data-address="Sayre Highway, Poblacion, Malaybalay City, Bukidnon"
                     data-distance="0.5 km away"
@@ -1371,17 +1458,31 @@ if (!$_SESSION['user_id']) {
           zIndexOffset: isSelected ? 500 : 0
         }).addTo(leafletMap);
 
+        const popupImg = c.querySelector(".pharmacy-card-img")?.getAttribute("src") || c.dataset.img || "../07_Assets/images/pharmacies/RosePharmacy.png";
+        const statusText = (c.dataset.status || "Open").trim();
+        const isClosed = /^closed/i.test(statusText);
+        const distLabel = (c.dataset.distance || "").replace(/\s*away$/i, "");
+
         marker.bindPopup(`
-          <div class="popup-inner">
-            <div class="popup-top-bar">
-              <div class="popup-name">${c.dataset.name}</div>
+          <div class="mf-popup-inner">
+            <div class="mf-popup-hero">
+              <img src="${popupImg}" alt="${c.dataset.name}" class="mf-popup-photo" />
+              <div class="mf-popup-hero-grad"></div>
+              <div class="mf-popup-titlebar">${c.dataset.name}</div>
             </div>
-            <div class="popup-bottom-bar">
-              <div class="popup-address">${c.dataset.address}</div>
-              <div class="popup-dist">${c.dataset.distance}</div>
+            <div class="mf-popup-body">
+              <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
+                <div class="mf-popup-addr mb-0">${c.dataset.address}</div>
+                <div class="mf-popup-dist">${distLabel}</div>
+              </div>
+              <div class="mf-popup-hours">${statusText}</div>
+              <span class="mf-popup-pill ${isClosed ? 'unavail' : ''}" style="background:${isClosed ? '#fef2f2' : '#e8f7f2'};color:${isClosed ? '#b91c1c' : '#0f6e56'};">
+                <span class="material-symbols-outlined" style="font-size:0.85rem;">${isClosed ? 'cancel' : 'check_circle'}</span>
+                ${isClosed ? 'Closed' : 'Open Now'}
+              </span>
             </div>
           </div>
-        `, { maxWidth: 260 });
+        `, { maxWidth: 262, autoPan: false });
 
         marker.on("click", () => {
           updatePharmacyDetailUI(c);

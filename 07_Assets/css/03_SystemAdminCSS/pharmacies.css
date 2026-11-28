@@ -174,13 +174,14 @@
 /* Toolbar Controls Row */
 .toolbar-controls-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.75rem;
 }
 
 .search-input-group {
-  flex: 1 1 280px;
+  flex: 1 1 auto;
+  min-width: 220px;
   position: relative;
 }
 
@@ -211,14 +212,18 @@
   box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.15);
 }
 
+.toolbar-controls-grid .form-select.filter-select,
 .filter-select {
+  width: auto !important;
+  flex: 0 0 auto;
   height: 44px;
   border-radius: 12px;
   border: 1px solid #d1d5db;
   font-size: 0.88rem;
   padding: 0 2.2rem 0 0.9rem;
   background-color: #ffffff;
-  min-width: 150px;
+  min-width: 155px;
+  max-width: 210px;
   color: #374151;
   transition: border-color 0.2s;
 }
@@ -252,6 +257,79 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(29, 158, 117, 0.35);
   color: #ffffff;
+}
+
+.btn-recent-rec-trigger {
+  height: 44px;
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+  border-radius: var(--mf-btn-radius, 8px);
+  padding: 0 1.05rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-recent-rec-trigger:hover {
+  background: #eef9f4;
+  border-color: #1d9e75;
+  color: #15805e;
+  transform: translateY(-1px);
+}
+
+.recent-rec-count-badge {
+  background: #1d9e75;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Smooth Recent Recommendations Modal */
+#recentRecModal.fade .modal-dialog {
+  transform: translateY(14px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out;
+}
+
+#recentRecModal.show .modal-dialog {
+  transform: translateY(0) scale(1);
+}
+
+#recentRecModal .modal-content {
+  border-radius: 24px;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#recentRecModal .modal-header {
+  background: linear-gradient(135deg, #23423a 0%, #15805e 100%);
+  color: #ffffff;
+  padding: 1.25rem 1.75rem;
+  border: none;
+}
+
+#recentRecModal .modal-title {
+  font-weight: 700;
+  font-size: 1.15rem;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+#recentRecModal .modal-body {
+  padding: 1.5rem;
+  background: #f8fafc;
 }
 
 /* ── MAP VIEW SECTION ───────────────────────────────────────────────────── */
@@ -866,9 +944,15 @@ tbody tr td {
   .pharmacies-admin-container {
     padding: 1rem;
   }
-  
+
   #pharmaciesMap {
     height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .toolbar-controls-grid {
+    flex-wrap: wrap;
   }
 }
 
@@ -876,71 +960,36 @@ tbody tr td {
   .pharmacy-stat-value {
     font-size: 1.5rem;
   }
-  
+
   .pharmacy-cards-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .toolbar-controls-grid {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
+  .toolbar-controls-grid .form-select.filter-select,
+  .filter-select {
+    width: 100% !important;
+    max-width: none;
+  }
+
   .btn-recommend-trigger {
     width: 100%;
     justify-content: center;
   }
 }
 
-/* ── Fixed layout for Desktop (>= 992px): Table View scrolls inside dedicated area ── */
+/* ── Desktop Table Scroll & Sticky Header (without squishing short viewports) ── */
 @media (min-width: 992px) {
-  body[data-active="03"] .wrapper {
-    height: 100vh;
-    min-height: 0;
-  }
-
-  body[data-active="03"] .main-panel {
-    height: 100vh;
-    min-height: 0;
-    overflow: hidden !important;
-  }
-
-  body[data-active="03"] .main-panel > .content {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  body[data-active="03"] .pharmacies-admin-container {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    padding-bottom: 1.5rem;
-  }
-
-  body[data-active="03"] .stat-card-row {
-    flex: 0 0 auto;
-  }
-
-  body[data-active="03"] .pharmacy-toolbar-card {
-    flex: 0 0 auto;
-  }
-
   body[data-active="03"] #tableViewSection {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    margin-bottom: 1.5rem;
   }
 
   body[data-active="03"] #pharmacyTableScrollArea {
-    flex: 1 1 auto !important;
-    min-height: 0;
+    max-height: 540px;
     overflow-y: auto;
     overflow-x: auto;
     padding-right: 2px;
@@ -959,17 +1008,5 @@ tbody tr td {
     top: 0;
     z-index: 3;
     box-shadow: 0 1px 0 #d1ded8;
-  }
-
-  /* Cards View and Map View scroll naturally when active */
-  body[data-active="03"] #cardViewSection,
-  body[data-active="03"] #mapViewSection {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-  }
-
-  body[data-active="03"] .recent-rec-card {
-    flex: 0 0 auto;
   }
 }

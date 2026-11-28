@@ -58,12 +58,12 @@ if (!$_SESSION['user_id']) {
       }
 
       .mf-mobile-profile-hub {
-        display: block;
+        display: block !important;
         background: #ffffff;
       }
 
       .mf-mobile-profile-hub.is-hidden {
-        display: none;
+        display: none !important;
       }
 
       .mf-mobile-profile-hero {

@@ -4,16 +4,19 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
 .wrapper {
   height: 100vh;
   overflow: hidden;
 }
+
 #sidebar-container {
   height: 100vh;
   flex-shrink: 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .main-panel {
   height: 100vh;
   overflow: hidden;
@@ -21,10 +24,12 @@ body {
   flex-direction: column;
   min-width: 0;
 }
+
 #topbar-container {
   flex-shrink: 0;
   overflow: hidden;
 }
+
 #content {
   flex: 1;
   min-height: 0;
@@ -64,11 +69,14 @@ body {
 .welcome-location-block {
   margin-bottom: 18px;
 }
+
 .welcome-user {
   margin: 0;
-  font-size: 1.6rem;    /* was 1.8rem */
+  font-size: 1.6rem;
+  /* was 1.8rem */
   font-weight: 600;
-  color: #3f444d;         /* was #3f444d */
+  color: #3f444d;
+  /* was #3f444d */
   line-height: 1.2;
 }
 
@@ -76,11 +84,15 @@ body {
   margin-top: 6px;
   display: flex;
   align-items: center;
-  gap: 3px;          /* was 6px */
-  color: #919497;        /* was #7a8088 */
+  gap: 3px;
+  /* was 6px */
+  color: #919497;
+  /* was #7a8088 */
   font-size: 0.95rem;
-  font-weight: 400;       /* was 500 */
+  font-weight: 400;
+  /* was 500 */
 }
+
 .user-location .material-symbols-outlined {
   font-size: 1.1rem;
   color: #1d9e75;
@@ -93,6 +105,7 @@ body {
   width: 100%;
   margin-top: 20px;
 }
+
 .search-wrapper {
   flex: 1;
   min-width: 0;
@@ -106,6 +119,7 @@ body {
   gap: 10px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
+
 .search-wrapper input {
   border: none;
   outline: none;
@@ -115,9 +129,11 @@ body {
   color: #555;
   background: transparent;
 }
+
 .search-wrapper input::placeholder {
   color: #87a199;
 }
+
 .search-filter-btn {
   background: #fff;
   border: 1.5px solid #8db8aa;
@@ -132,6 +148,7 @@ body {
   flex-shrink: 0;
   transition: all 0.2s;
 }
+
 .search-filter-btn:hover {
   background: #1d9e75;
   color: #fff;
@@ -151,17 +168,20 @@ body {
   justify-content: space-between;
   margin-bottom: 14px;
 }
+
 .section-header h5 {
   margin: 0;
   color: #23423a;
   font-weight: 600;
 }
+
 .section-header a {
   text-decoration: none;
   color: #1d9e75;
   font-size: 0.9rem;
   font-weight: 500;
 }
+
 /* =============================================
    NEARBY PHARMACIES
    ============================================= */
@@ -259,6 +279,7 @@ body {
 .direction-btn .material-symbols-outlined {
   font-size: 1rem;
 }
+
 /* ── Back button ── */
 .back-btn {
   display: inline-flex;
@@ -276,11 +297,13 @@ body {
   margin-bottom: 20px;
   transition: all 0.2s;
 }
+
 .back-btn:hover {
   background: #eef9f4;
   border-color: #5dcaa5;
   color: #0f6e56;
 }
+
 .back-btn .material-symbols-outlined {
   font-size: 1.1rem;
 }
@@ -336,7 +359,8 @@ body {
   margin: 0 0 8px;
   font-size: 1.2rem;
   font-weight: 700;
-  color: #4a4a4a;   /* was #1d9e75 — now matches card h6 color */
+  color: #4a4a4a;
+  /* was #1d9e75 — now matches card h6 color */
 }
 
 .detail-actions {
@@ -360,10 +384,12 @@ body {
   cursor: pointer;
   transition: 0.2s;
 }
+
 .save-btn:hover {
   border-color: #1d9e75;
   color: #1d9e75;
 }
+
 .save-btn .material-symbols-outlined {
   font-size: 0.95rem;
 }
@@ -386,71 +412,138 @@ body {
   cursor: pointer;
   transition: background 0.15s;
 }
+
 .detail-meta-item:last-child {
   border-bottom: none;
 }
+
 .detail-meta-item:hover {
   background: #f8f8f8;
 }
+
 .detail-meta-item .material-symbols-outlined {
   font-size: 1.1rem;
   color: #9a9a9a;
 }
 
 
-/* ── LEAFLET POPUP ── */
+/* ── LEAFLET POPUP (Matches 02.3_MedicineMap.php Photo Card) ── */
 .leaflet-popup-content-wrapper {
+  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22);
   padding: 0;
   overflow: hidden;
   border: none;
 }
 
+.leaflet-popup-tip {
+  background: #ffffff;
+}
+
 .leaflet-popup-content {
-  margin: 0 !important;  /* ← add !important, Leaflet forces inline margin */
+  margin: 0 !important;
   padding: 0 !important;
   width: auto !important;
 }
+
 .leaflet-popup-tip-container {
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.08));
 }
-.popup-inner {
+
+.leaflet-popup-close-button {
+  width: 24px !important;
+  height: 24px !important;
+  line-height: 24px !important;
+  border-radius: 50% !important;
+  background: rgba(15, 23, 42, 0.72) !important;
+  color: #ffffff !important;
+  top: 8px !important;
+  right: 8px !important;
+  z-index: 10 !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.mf-popup-inner {
   font-family: "Plus Jakarta Sans", sans-serif;
-  min-width: 200px;
+  min-width: 228px;
+  max-width: 262px;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
 }
-.popup-top-bar {
-  background: #2d3748;
-  padding: 10px 14px 10px;
-  border-radius: 16px 16px 0 0;
+
+.mf-popup-hero {
+  position: relative;
+  height: 98px;
+  overflow: hidden;
 }
-.popup-name {
+
+.mf-popup-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mf-popup-hero-grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.32) 55%, rgba(15, 23, 42, 0.05) 100%);
+  pointer-events: none;
+}
+
+.mf-popup-titlebar {
+  position: absolute;
+  left: 12px;
+  right: 36px;
+  bottom: 8px;
+  color: #ffffff;
   font-weight: 700;
   font-size: 0.88rem;
-  color: #ffffff;
-  margin-bottom: 2px;
+  line-height: 1.25;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  z-index: 2;
 }
-.popup-bottom-bar {
-  background: #fff;
-  padding: 8px 14px 10px;
-  border-radius: 0 0 16px 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+
+.mf-popup-body {
+  background: #ffffff;
+  padding: 9px 12px 11px;
 }
-.popup-address {
-  font-size: 0.72rem;
-  color: #6b7280;
-  font-weight: 500;
-  line-height: 1.4;
+
+.mf-popup-addr {
+  font-size: 0.74rem;
+  color: #64748b;
+  line-height: 1.35;
+  margin-bottom: 4px;
 }
-.popup-dist {
-  margin-left: auto;
+
+.mf-popup-dist {
   font-size: 0.72rem;
   font-weight: 700;
   color: #1d9e75;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.mf-popup-hours {
+  font-size: 0.71rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.mf-popup-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 
 /* ── MEDICINES SECTION ── */
@@ -473,6 +566,7 @@ body {
   border-bottom: 1px solid #f0f0f0;
   background: #f8fffe;
 }
+
 .medicines-section-header .material-symbols-outlined {
   font-size: 1.1rem;
   color: #1d9e75;
@@ -487,9 +581,11 @@ body {
   border-bottom: 1px solid #f5f5f5;
   transition: background 0.15s;
 }
+
 .medicine-item:last-child {
   border-bottom: none;
 }
+
 .medicine-item:hover {
   background: #fafafa;
 }
@@ -524,12 +620,15 @@ body {
   align-items: center;
   gap: 3px;
 }
+
 .medicine-stock .material-symbols-outlined {
   font-size: 0.72rem;
 }
+
 .medicine-stock.in-stock {
   color: #1d9e75;
 }
+
 .medicine-stock.low-stock {
   color: #d97706;
 }
@@ -562,15 +661,18 @@ body {
 
 /* ── FLOATING BUTTON ── */
 .floating-btns {
-  position: fixed;        /* fixed, not absolute */
+  position: fixed;
+  /* fixed, not absolute */
   bottom: 1.4rem;
   right: 1.4rem;
-  z-index: 9999;          /* above map, above bottom sheet */
+  z-index: 9999;
+  /* above map, above bottom sheet */
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
 }
+
 .float-btn {
   width: 60px;
   height: 60px;
@@ -587,6 +689,7 @@ body {
     transform 0.18s,
     background 0.18s;
 }
+
 .float-btn:hover {
   transform: scale(1.08);
   background: #178a63;
@@ -785,16 +888,19 @@ body {
 .typing-dot:nth-child(2) {
   animation-delay: 0.2s;
 }
+
 .typing-dot:nth-child(3) {
   animation-delay: 0.4s;
 }
 
 @keyframes typingBounce {
+
   0%,
   60%,
   100% {
     transform: translateY(0);
   }
+
   30% {
     transform: translateY(-6px);
   }
